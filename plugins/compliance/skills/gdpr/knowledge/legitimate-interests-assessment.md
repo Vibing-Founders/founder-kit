@@ -25,9 +25,12 @@ Identify why you want to process the data and whether that purpose is legitimate
 
 **Questions to answer:**
 - Why are you processing this data, and what benefit does it produce?
+- How important are those benefits — are they significant and proportionate, or minor and convenient?
 - Does the processing benefit third parties or the public, beyond just your organisation?
 - What would happen if you didn't do this processing?
 - Is the purpose compliant with relevant laws and ethical standards?
+- Does the processing comply with any other applicable laws (e.g. PECR for electronic marketing or tracking, profiling rules)? Legitimate interests cannot rescue processing that is unlawful under another regime.
+- Are there relevant industry guidelines, codes of practice, or ethical concerns?
 
 **What counts as a legitimate interest:**
 - Commercial interests (operating your business, preventing fraud, ensuring security)
@@ -63,16 +66,20 @@ This is the most complex part. You must weigh your legitimate interest against t
 - Is it special category data (health, biometrics, religion, sexuality, etc.)? Higher bar.
 - Is it financial, location, or behavioural data? Higher bar.
 - Is it children's data? The balancing test tips significantly in children's favour — see below.
+- Are data subjects acting in a **personal capacity** (consumer, citizen) or a **professional capacity** (employee acting on behalf of their employer)? Processing business contact data in a B2B context tends to tip the balance in the controller's favour; consumer data typically tilts the other way.
 - Is it general, less sensitive professional or contact data? Lower impact concern.
 
 **Reasonable expectations**
 An objective test applies: would a reasonable person in the data subject's position expect this processing, given the context? Consider:
 - The nature of your relationship with the data subject (existing customer, new contact, employee)
 - How and where the data was collected, and what you told them at that point
+- If the data came from a third party rather than directly from the individual, whether the processing is consistent with the context in which it was originally shared
+- Whether time has passed since the data was collected and circumstances may have changed
+- Whether the processing is new or innovative — individuals are unlikely to anticipate novel uses of their data, which tips the balance against the controller
 - Whether you've processed data in this way before without objection
 - What is standard or known practice in your sector
 
-If the purpose or method of processing is not immediately obvious, you should conduct research (user testing, consultation) to demonstrate what expectations are reasonable.
+If the purpose or method of processing is not immediately obvious, you should conduct research (user testing, consultation) to demonstrate what expectations are reasonable. Evidence of expectation is stronger than absence of objection.
 
 **Impact on the data subject**
 Assess the realistic harms the processing could cause:
@@ -83,6 +90,8 @@ Assess the realistic harms the processing could cause:
 - Reputational damage or embarrassment
 - Physical or emotional harm
 - Being unable to access a service
+
+Also consider: how likely are individuals to object if they found out about this processing? A useful test: **would you be happy to explain this processing openly to the people whose data you're using?** If not — if you would be reluctant to describe it honestly — that is a strong signal the balance tips against you.
 
 **Safeguards that can shift the balance in your favour:**
 - Providing a clear, accessible opt-out (Right to Object under Article 21)
@@ -146,9 +155,14 @@ Use this to document a specific processing activity:
 
 ```
 Processing activity: [e.g. "Fraud detection — IP address logging and device fingerprinting"]
+Completed by: [Name / role]
+Date: [Date]
 
 Part 1 — Purpose test
 Legitimate interest: [What is the interest? Who benefits?]
+Importance of benefits: [Why significant and proportionate?]
+Other law compliance: [PECR, profiling rules, sector regulation — any issues?]
+Industry guidelines / ethics: [Relevant codes or concerns]
 Assessment: Pass / Fail / Uncertain
 
 Part 2 — Necessity test
@@ -157,13 +171,14 @@ Alternatives considered: [What alternatives were evaluated and why rejected?]
 Assessment: Pass / Fail / Uncertain
 
 Part 3 — Balancing test
-Nature of data: [Sensitive? Children's data? General?]
-Reasonable expectations: [Would data subjects expect this?]
-Potential impact: [Realistic harms to data subjects]
+Nature of data: [Sensitive? Special category? Children's? Personal or professional capacity?]
+Reasonable expectations: [Relationship, how collected, third-party source, age of data, novel processing?]
+Potential impact: [Realistic harms — include likelihood of objection and transparency test]
 Safeguards in place: [What reduces the impact?]
 Assessment: Balance tips in favour of controller / Balance tips in favour of data subject
 
 Outcome: Legitimate interests [appropriate / not appropriate] for this activity
 Safeguards to implement: [List]
+Privacy notice updated: Yes / No / To do
 Review date: [Date]
 ```

@@ -41,6 +41,7 @@ Read `lia.md` for instructions.
 |---|---|
 | `knowledge/lawful-basis.md` | When the question involves lawful basis for processing, or whether to rely on consent vs contract vs LI |
 | `knowledge/legitimate-interests-assessment.md` | When the user needs to document a legitimate interests basis, run an LIA, or understand the three-part test in detail |
+| `knowledge/dpia.md` | When the question involves whether a DPIA is required, how to carry one out, the nine high-risk criteria, prior consultation, or DPIA methodology |
 | `knowledge/data-subject-rights.md` | When the question involves subject access requests, erasure, portability, or other data subject rights |
 | `knowledge/childrens-data.md` | When the feature involves under-18 users, Article 8 consent, the Children's Code, or age-of-digital-consent |
 | `../../_shared/legislation/uk-gdpr.md` | When specific UK GDPR articles are needed |

@@ -1,0 +1,93 @@
+{
+  "skill_name": "dpia",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you scan our codebase and figure out whether we need to do any DPIAs? We're launching soon and I want to make sure we've covered this. Our project is in the current directory.",
+      "expected_output": "A scope analysis that identifies processing activities found in the codebase, applies the nine WP29 criteria to each, and produces a DPIA scope table with clear recommendations on which activities need a DPIA and which don't. Should ask targeted follow-up questions about scale and any gaps. Should save a scope analysis markdown file.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "scans-codebase",
+          "text": "The output shows evidence of actually scanning the codebase — it mentions specific files, directories, or dependencies found in the project, not just generic descriptions"
+        },
+        {
+          "id": "scope-table-present",
+          "text": "The output includes a structured scope table or list that enumerates individual processing activities with DPIA assessment per activity"
+        },
+        {
+          "id": "applies-nine-criteria",
+          "text": "The output references at least some of the nine WP29 high-risk criteria by name when assessing activities"
+        },
+        {
+          "id": "clear-recommendations",
+          "text": "Each processing activity gets a clear recommendation: DPIA required, DPIA not required, or borderline with explanation"
+        },
+        {
+          "id": "saves-markdown-file",
+          "text": "A scope analysis markdown file is saved to disk"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We're adding a recommendation engine to our platform — it'll track what content users view and build engagement profiles to personalise what they see. We have about 80,000 registered users. Do we need a DPIA for this and if so can you do one?",
+      "expected_output": "Should identify DPIA is required, cite evaluation/scoring and large-scale criteria, and produce a complete DPIA covering Article 35(7) elements with risk assessment, mitigation measures, and data subject rights. Saves as markdown.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "correctly-requires-dpia",
+          "text": "The output correctly concludes that a DPIA is required"
+        },
+        {
+          "id": "cites-correct-criteria",
+          "text": "Cites evaluation/scoring (criterion 1) and large-scale processing (criterion 5) as triggers"
+        },
+        {
+          "id": "dpia-has-risk-assessment",
+          "text": "The DPIA includes a risk assessment with at least 2 specific named risks"
+        },
+        {
+          "id": "dpia-covers-data-subject-rights",
+          "text": "The DPIA addresses data subject rights for profiling — at minimum right to object and right to erasure"
+        },
+        {
+          "id": "saves-dpia-file",
+          "text": "A DPIA markdown file is saved to disk"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need to do a DPIA for our fraud detection system. It analyses transaction data, device fingerprints, and user behaviour to score each transaction as low/medium/high risk, and automatically declines high-risk ones. UK users only, around 40,000 active users.",
+      "expected_output": "Produces a DPIA for a fraud detection system. Identifies automated decision-making with significant effect as a trigger. Addresses Article 22 and right to human review. Flags LIA needed for legitimate interests basis. Names ICO as supervisory authority. Includes wrongful-block and bias risks.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "identifies-automated-decision-criterion",
+          "text": "Identifies automated decision-making with legal or significant effect (criterion 2) as a DPIA trigger"
+        },
+        {
+          "id": "addresses-article-22",
+          "text": "Mentions Article 22 and the right to human review of automated decline decisions"
+        },
+        {
+          "id": "flags-lia-needed",
+          "text": "Notes that fraud prevention via legitimate interests requires an LIA alongside the DPIA"
+        },
+        {
+          "id": "names-ico-as-authority",
+          "text": "Names the ICO as the relevant supervisory authority for UK-only processing"
+        },
+        {
+          "id": "includes-wrongful-block-risk",
+          "text": "Risk assessment includes wrongful transaction blocking as a harm to data subjects"
+        },
+        {
+          "id": "saves-dpia-file",
+          "text": "A DPIA markdown file is saved to disk"
+        }
+      ]
+    }
+  ]
+}
