@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "VibingFounders",
+  "description": "Compliance plugins for platform builders — online safety, GDPR, and application security.",
+  "owner": {
+    "name": "Vibing Founders",
+    "url": "https://github.com/Vibing-Founders"
+  },
+  "plugins": [
+    {
+      "name": "compliance",
+      "description": "Online safety, GDPR, and application security compliance for platform builders. Covers UK OSA, EU DSA, UK/EU GDPR, Children's Code, COPPA, and OWASP.",
+      "version": "0.0.1",
+      "author": {
+        "name": "VibingFounders",
+        "url": "https://github.com/Vibing-Founders"
+      },
+      "source": "./plugins/compliance",
+      "category": "productivity"
+    }
+  ]
+}
