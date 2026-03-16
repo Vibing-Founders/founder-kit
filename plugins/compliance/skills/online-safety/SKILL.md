@@ -42,6 +42,7 @@ Load the relevant knowledge files based on the feature being assessed. Don't loa
 |---|---|
 | `knowledge/regulatory-map.md` | Always — foundational overview of which laws apply where |
 | `knowledge/age-assurance-blueprint.md` | When the feature involves age verification, age gating, or minor/adult classification |
+| `knowledge/ofcom-childrens-risk-assessment-guidance.md` | When conducting or reviewing a children's risk assessment under UK OSA, understanding Ofcom's four-step methodology, risk levels, significant change triggers, or evidence requirements |
 | `knowledge/benchmarks/tiktok-teen-safety.md` | When comparing against industry benchmarks or looking for design inspiration |
 | `../../_shared/legislation/uk-online-safety-act-2023.md` | When specific OSA provisions are needed |
 | `../../_shared/legislation/uk-childrens-code.md` | When Children's Code standards are directly relevant |
