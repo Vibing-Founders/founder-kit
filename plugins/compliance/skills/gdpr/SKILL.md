@@ -28,6 +28,11 @@ Triggered by: "GDPR checklist for X", "what do I need to implement for GDPR comp
 
 Read `checklist.md` for instructions.
 
+### `lia` — Legitimate Interests Assessment
+Triggered by: "run an LIA for X", "help me do a legitimate interests assessment", "document our legitimate interests basis", "can we rely on LI for X", "legitimate interests assessment for X", "do an LIA"
+
+Read `lia.md` for instructions.
+
 ---
 
 ## Knowledge files
