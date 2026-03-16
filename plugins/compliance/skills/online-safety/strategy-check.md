@@ -5,7 +5,7 @@ Check a specific product decision against the project's own compliance strategy 
 
 ## Steps
 
-1. **Read the project's compliance strategy** at `docs/product/compliance/compliance-strategy.md`. If the file doesn't exist or can't be found, tell the user and offer to do a general regulatory assessment instead (using assess mode).
+1. **Read the project's compliance strategy** at `docs/compliance-strategy.md`. If the file doesn't exist or can't be found, tell the user and offer to do a general regulatory assessment instead (using assess mode).
 
 2. **Understand the product decision** being checked. If it's vague, ask:
    - What is being changed or decided?
