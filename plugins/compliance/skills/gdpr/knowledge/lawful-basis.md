@@ -140,19 +140,61 @@ You must identify a lawful basis **before** you start processing. You must recor
 
 | Activity | Recommended Basis | Notes |
 |---|---|---|
+| **Account & identity** | | |
 | Account creation (name, email, DOB) | Contract | Necessary to provide the service |
-| Age verification at signup | Contract / LI | Necessary to perform age-gated service |
-| Session booking and payment | Contract | Core transactional |
-| Running a video call | Contract | Delivering the contracted service |
-| Recording calls for safety review | LI (safety) | Needs strong safeguards; short retention for non-incidents |
-| Safety logging and risk scoring | LI (safety) | Proportionate and expected for child-safety services |
-| CSAM detection / reporting | Legal obligation + LI | Required under law; legitimate interest in child protection |
-| Marketing emails (opted-in) | Consent | Must be freely given, withdrawable |
-| Push notification curfews for minors | LI (child welfare) | Would be seen as clearly in children's best interests |
-| Non-essential analytics/tracking | Consent | Cannot rely on LI for behavioural advertising |
-| Behavioural advertising | Consent | LI almost certainly fails for minors; requires explicit consent for adults |
-| Retaining financial records | Legal obligation | Accounting law requirements |
-| Responding to law enforcement | Legal obligation | Police orders, court orders |
+| Login / session tokens / authentication | Contract | Necessary to maintain the authenticated session |
+| Password reset and account recovery | Contract | Necessary to restore access to the contracted service |
+| Profile updates (name, bio, avatar) | Contract | Maintaining the user's account as contracted |
+| Account deletion and data removal | Legal obligation + Contract | Erasure rights under Art. 17; fulfilling the termination of contract |
+| Suspended / banned account records | LI (safety + legal defence) | Retention needed to prevent re-registration and to defend enforcement decisions; define a proportionate retention period |
+| Appeal and dispute records | LI (legal defence) | Reasonable to retain records of decisions in case of challenge |
+| **Payments & transactions** | | |
+| Processing a payment | Contract | Core transactional; also Legal obligation for financial records |
+| Retaining financial records and invoices | Legal obligation | Companies Act / HMRC requirements (typically 6–7 years) |
+| Fraud detection and chargeback prevention | LI (fraud prevention) | Recognised legitimate interest; conduct LIA; data minimisation applies |
+| Creator / seller payouts | Contract | Delivering contracted remuneration |
+| **Communications** | | |
+| Transactional emails (receipts, booking confirmations, password resets) | Contract | Necessary to perform the service |
+| Service notification emails (downtime, policy changes, security alerts) | LI (service operation) | Users reasonably expect operational communications; keep to genuine service matters |
+| Marketing emails to opted-in users | Consent | Freely given, specific, withdrawable; also consider PECR (UK) / ePrivacy |
+| Push notifications — operational | Contract / LI | Delivery of service; LIA needed if not strictly necessary |
+| Push notification curfews for minors | LI (child welfare) | Clearly in children's best interests; low privacy impact |
+| SMS / WhatsApp / in-app messaging | Consent or Contract | Depends on purpose — transactional = Contract; marketing = Consent |
+| **Content & user-generated data** | | |
+| Storing user-generated content (posts, uploads, messages) | Contract | User submitted it as part of using the service |
+| Content moderation decisions and action logs | LI (safety + legal defence) | Necessary to enforce T&Cs and defend against regulatory or legal challenge |
+| Automated content scanning for illegal content (CSAM hash-matching) | Legal obligation + LI | Required under OSA / national law; LI in child protection also applies |
+| Proactive content classifiers (hate speech, self-harm, spam) | LI (safety + service integrity) | Must document LIA; proportionate detection; not used for unrelated profiling |
+| User reports of harmful content and outcomes | LI (safety + legal defence) | Necessary for trust & safety operations and regulatory accountability |
+| **Safety, security & trust** | | |
+| Safety logging and behavioural risk scoring | LI (safety) | Proportionate for child-safety services; document LIA; short retention for non-incidents |
+| Recording sessions / calls for safety review | LI (safety) | Needs strong safeguards; short retention policy for recordings not flagged |
+| Incident reports involving children | LI (child safeguarding) | Legitimate interest in child protection; balance against privacy; retain for safeguarding purposes |
+| Referrals to law enforcement / NCMEC | Legal obligation + LI | Mandatory reporting obligations under national law and OSA |
+| Responding to law enforcement requests / court orders | Legal obligation | Police orders, court orders, regulatory demands |
+| Fraud and abuse pattern detection (account-level) | LI (fraud + security) | Widely recognised; conduct LIA; minimise scope |
+| IP address logging (access logs, server logs) | LI (security + service operation) | Short retention periods; not used for tracking or profiling without stronger basis |
+| **Analytics & product** | | |
+| Essential analytics (page load errors, crash reports, uptime monitoring) | LI (service operation) | Users expect the service to function; keep to aggregated/pseudonymised where possible |
+| Error logging including user identifiers | LI (service operation) | Minimum necessary; short retention; access restricted to engineering |
+| Product analytics (feature usage, funnel analysis) | LI (product improvement) or Consent | Pseudonymised aggregate data = LI likely fine; individual-level behavioural tracking = Consent or at minimum a robust LIA |
+| A/B testing and product experimentation | LI (product improvement) or Consent | Depends on what data is processed; personalised experiments may need Consent; purely functional tests may rely on LI |
+| Non-essential tracking / behavioural analytics | Consent | Cannot rely on LI for non-essential cookies or cross-site tracking (see PECR / ePrivacy) |
+| Behavioural advertising | Consent | LI fails for minors under DSA/Children's Code; requires explicit consent for adults |
+| User surveys and feedback collection | Consent or LI | Voluntary surveys = LI (users choose to respond); contact for research = Consent if unsolicited |
+| **Age & identity verification** | | |
+| Age assurance at sign-up (self-declared DOB) | Contract | Necessary to apply minimum age requirement |
+| Enhanced age verification (ID check, credit card, third-party) | Contract + Legal obligation | Necessary for age-gated service; OSA may impose legal obligation for some services |
+| Parental consent verification for under-13s | Legal obligation (GDPR Art. 8) | Required to rely on consent for ISS processing by under-13s |
+| **Third parties & data sharing** | | |
+| Sharing data with payment processors | Contract (necessary sub-processing) | Processor relationship; DPA required |
+| Sharing data with cloud / infrastructure providers | Contract (necessary sub-processing) | Processor relationship; DPA required; international transfer rules apply if outside UK/EU |
+| Sharing data with analytics/advertising SDKs | Consent (if non-essential) | Third-party tracking beyond what is necessary for the service requires Consent; review carefully |
+| Responding to subject access requests | Legal obligation | Right of access under Art. 15; must comply |
+| Data portability exports | Legal obligation | Right to portability under Art. 20 where basis is Consent or Contract |
+| **Customer support** | | |
+| Support tickets and correspondence | Contract + LI | Processing necessary to resolve the contracted service issue; LI in retaining records for quality and legal defence |
+| Support data retention after account closure | LI (legal defence) | Retain for a defined period (e.g. limitation period) to defend claims; do not retain indefinitely |
 
 ---
 
