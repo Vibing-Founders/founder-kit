@@ -2,13 +2,15 @@
 name: online-safety
 description: >
   Assess features for online safety regulatory risk (UK OSA, EU DSA, UK Children's Code, COPPA),
-  generate implementation checklists, and check product decisions against a project's compliance
-  strategy. Use this skill whenever someone asks about online safety compliance, child safety
-  regulations, age assurance requirements, or wants to know whether a feature is compliant with
-  the Online Safety Act, Digital Services Act, Children's Code, or COPPA. Also triggers on:
-  "assess this feature for online safety", "online safety checklist for X", "check this against
-  our online safety strategy", "does this comply with the Children's Code", "/compliance:online-safety",
-  "OSA risk for X", "DSA obligations for X", "is this safe for minors", "child safety requirements for X".
+  generate implementation checklists, conduct Ofcom Children's Risk Assessments (CRA), and check
+  product decisions against a project's compliance strategy. Use this skill whenever someone asks
+  about online safety compliance, child safety regulations, age assurance requirements, or wants to
+  know whether a feature is compliant with the Online Safety Act, Digital Services Act, Children's
+  Code, or COPPA. Also triggers on: "assess this feature for online safety", "online safety checklist
+  for X", "check this against our online safety strategy", "does this comply with the Children's Code",
+  "/compliance:online-safety", "OSA risk for X", "DSA obligations for X", "is this safe for minors",
+  "child safety requirements for X", "do a children's risk assessment", "run a CRA", "Ofcom CRA",
+  "OSA children's risk assessment", "draft my CRA".
 ---
 
 # Online Safety Skill
@@ -31,6 +33,11 @@ Read `checklist.md` for instructions.
 Triggered by: "check this against our strategy", "does this align with our compliance strategy", "strategy-check: X"
 
 Read `strategy-check.md` for instructions.
+
+### `cra` — Ofcom Children's Risk Assessment
+Triggered by: "do a children's risk assessment", "run a CRA for my service", "help me with the OSA children's risk assessment", "I need to do a CRA", "draft my children's risk assessment", "what's my children's risk level under OSA", "Ofcom CRA"
+
+Read `cra.md` for instructions.
 
 ---
 
