@@ -38,7 +38,7 @@ Once added, you can install any plugin from this marketplace:
 
 | Plugin | Description | Skills |
 |--------|-------------|--------|
-| `compliance` | Online safety, GDPR, and application security compliance for platform builders | `online-safety`, `gdpr`, `application-security` |
+| `compliance` | Online safety, GDPR, and application security compliance for platform builders | `online-safety`, `gdpr`, `application-security`, `dpia`, `lia`, `cra` |
 
 ---
 
@@ -77,6 +77,27 @@ Provides a starting point for exploring the regulations most relevant to platfor
 /application-security checklist for a new feature handling payments
 ```
 
+**`/dpia`** — Full Data Protection Impact Assessment under Article 35 UK/EU GDPR
+```
+/dpia do we need a DPIA for our recommendation engine?
+/dpia run a DPIA on our codebase
+/dpia for our new user profiling feature
+```
+
+**`/lia`** — Legitimate Interests Assessment for Article 6(1)(f) lawful basis
+```
+/lia for sending marketing emails to existing customers
+/lia assess our behavioural analytics processing
+/lia for sharing user data with third-party ad partners
+```
+
+**`/cra`** — Children's Risk Assessment under the UK Online Safety Act 2023
+```
+/cra for my social platform
+/cra children's risk assessment for a forum with user-generated content
+/cra assess a consumer app that might have teen users
+```
+
 ---
 
 ## Repository Structure
@@ -91,6 +112,12 @@ plugins/
       gdpr/             # UK/EU GDPR skills
       application-security/  # OWASP skills
 ```
+
+---
+
+## Feedback
+
+Found a bug, have a suggestion, or want to request a skill, agent, plugin, or legislation update? [Open a GitHub issue](https://github.com/Vibing-Founders/founder-kit/issues) — all feedback is welcome.
 
 ---
 
