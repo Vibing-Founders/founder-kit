@@ -29,7 +29,7 @@ A Claude plugin marketplace hosting bootstrapping founder focused plugins for we
 Once added, you can install any plugin from this marketplace:
 
 ```
-/plugin add compliance@VibingFounders
+/plugin add compliance@founder-kit
 ```
 
 ---
