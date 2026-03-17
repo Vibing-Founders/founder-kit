@@ -1,6 +1,7 @@
 # US Children's Online Privacy Protection Act (COPPA)
 > **Source**: 15 U.S.C. §§ 6501–6506; implementing rule at 16 C.F.R. Part 312 (COPPA Rule, as amended 2013; amendments proposed 2023)
 > **Compiled**: From training knowledge (August 2025 cutoff) — verify against current official text
+> **Knowledge reviewed**: March 2026
 > **Enforcement body**: Federal Trade Commission (FTC); state attorneys general
 > **Scope**: Operators of websites and online services directed to children under 13, and operators with actual knowledge that they are collecting personal information from children under 13
 

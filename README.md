@@ -13,6 +13,8 @@ A Claude plugin marketplace hosting bootstrapping founder focused plugins for we
 > Use of these plugins does not create a solicitor-client relationship or any other professional relationship between you and the plugin authors.
 >
 > Laws and regulatory guidance change. The information in these plugins reflects the legislation and guidance available at the time of writing and may not reflect subsequent amendments, new guidance, or regulatory decisions.
+>
+> No warranty is given as to the accuracy, completeness, or currency of any information produced by these plugins. You use this content entirely at your own risk.
 
 ---
 
@@ -42,7 +44,7 @@ Once added, you can install any plugin from this marketplace:
 
 ### `compliance`
 
-Covers the regulations that matter most to platform builders:
+Provides a starting point for exploring the regulations most relevant to platform builders:
 
 - **UK Online Safety Act 2023** — illegal content duties, children's safety, risk assessments
 - **EU Digital Services Act 2022** — platform obligations, transparency, content moderation

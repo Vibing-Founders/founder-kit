@@ -1,6 +1,7 @@
 # UK GDPR (General Data Protection Regulation — UK retained law)
 > **Source**: https://www.legislation.gov.uk/eur/2016/679/contents (as retained and amended by the Data Protection, Privacy and Electronic Communications (Amendments etc) (EU Exit) Regulations 2019); read alongside the Data Protection Act 2018
 > **Compiled**: From training knowledge (August 2025 cutoff) — verify against current official text
+> **Knowledge reviewed**: March 2026
 > **Enforcement body**: Information Commissioner's Office (ICO)
 > **Scope**: Processing of personal data of individuals in the UK, or by UK-established controllers/processors; extraterritorial reach where processing relates to offering goods/services to UK individuals or monitoring behaviour in the UK
 

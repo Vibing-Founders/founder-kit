@@ -1,6 +1,7 @@
 # EU GDPR (General Data Protection Regulation)
 > **Source**: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32016R0679 (Regulation (EU) 2016/679 of the European Parliament and of the Council)
 > **Compiled**: From training knowledge (August 2025 cutoff) — verify against current official text
+> **Knowledge reviewed**: March 2026
 > **Enforcement body**: National Data Protection Authorities (DPAs) in each EU/EEA member state; European Data Protection Board (EDPB) for cross-border coordination
 > **Scope**: Processing of personal data of individuals in the EU/EEA; extraterritorial reach for non-EU controllers/processors offering goods/services to, or monitoring behaviour of, EU individuals
 
