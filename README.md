@@ -23,7 +23,7 @@ A Claude plugin marketplace hosting bootstrapping founder focused plugins for we
 ## Install this marketplace
 
 ```
-/plugin marketplace add Vibing-Founders/VibingFounders
+/plugin marketplace add Vibing-Founders/founder-kit
 ```
 
 Once added, you can install any plugin from this marketplace:
