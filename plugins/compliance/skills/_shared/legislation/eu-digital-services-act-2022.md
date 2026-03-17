@@ -1,7 +1,6 @@
 # EU Digital Services Act 2022 (Regulation (EU) 2022/2065)
 > **Source**: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX%3A32022R2065
 > **Compiled**: From training knowledge (August 2025 cutoff) — verify against current official text
-> **Knowledge reviewed**: March 2026
 > **Enforcement body**: Digital Services Coordinators (DSCs) in each EU member state; European Commission (for VLOPs/VLOSEs); European Board for Digital Services
 > **Scope**: Intermediary services (including hosting services, online platforms, search engines) offered to EU recipients; tiered obligations based on service type and size
 

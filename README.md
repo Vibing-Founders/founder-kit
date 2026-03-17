@@ -12,6 +12,8 @@ A Claude plugin marketplace hosting bootstrapping founder focused plugins for we
 >
 > Use of these plugins does not create a solicitor-client relationship or any other professional relationship between you and the plugin authors.
 >
+> **Not suitable for regulated industries**: If your project operates in a heavily regulated sector — financial services, healthcare, insurance, legal services, or similar — you face additional sector-specific regulatory obligations that these plugins do not address. Do not use these plugins as a substitute for specialist compliance advice in those contexts.
+>
 > Laws and regulatory guidance change. The information in these plugins reflects the legislation and guidance available at the time of writing and may not reflect subsequent amendments, new guidance, or regulatory decisions.
 >
 > No warranty is given as to the accuracy, completeness, or currency of any information produced by these plugins. You use this content entirely at your own risk.

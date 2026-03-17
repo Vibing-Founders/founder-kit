@@ -1,7 +1,6 @@
 # UK Online Safety Act 2023
 > **Source**: https://www.legislation.gov.uk/ukpga/2023/50/contents
 > **Compiled**: From training knowledge (August 2025 cutoff) — verify against current official text
-> **Knowledge reviewed**: March 2026
 > **Enforcement body**: Ofcom (Office of Communications)
 > **Scope**: Regulated user-to-user services and search services accessible to UK users; duties vary by service category and risk level
 

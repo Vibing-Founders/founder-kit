@@ -1,7 +1,6 @@
 # UK Age Appropriate Design Code (Children's Code)
 > **Source**: https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/age-appropriate-design-a-code-of-practice-for-online-services/
 > **Compiled**: From training knowledge (August 2025 cutoff) — verify against current official text
-> **Knowledge reviewed**: March 2026
 > **Enforcement body**: Information Commissioner's Office (ICO)
 > **Scope**: Providers of "information society services" that are likely to be accessed by children (under 18) in the UK. Enforcement is via UK GDPR / Data Protection Act 2018.
 
