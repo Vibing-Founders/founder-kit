@@ -1,0 +1,333 @@
+{
+  "metadata": {
+    "skill_name": "dpia",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-03-16T18:48:10Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 265.2,
+        "tokens": 31528,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Identifies automated decision-making with legal or significant effect (criterion 2) as a DPIA trigger",
+          "passed": true,
+          "evidence": "DPIA trigger explicitly: 'Criterion 2 \u2014 Automated decision-making with legal or similarly significant effect: high-risk scores automatically decline transactions, which produces a significant financial effect on data subjects without human intervention'."
+        },
+        {
+          "text": "Mentions Article 22 and the right to human review of automated decline decisions",
+          "passed": true,
+          "evidence": "Summary: 'Article 22 automated decision-making: The automatic decline is a solely automated decision with significant financial effect. Data subjects must have the right to human review, to express their view, and to contest the decision.' Also flags Art. 22(2)(b) gateway specifically."
+        },
+        {
+          "text": "Notes that fraud prevention via legitimate interests requires an LIA alongside the DPIA",
+          "passed": true,
+          "evidence": "Document section 1.7 (from partial read): 'Where legitimate interests is relied upon, a Legitimate Interests Assessment (LIA) must accompany this DPIA.' Summary also: 'The DPIA explicitly flags that an LIA must accompany it'. Additionally flags Art. 6(1)(c) as potentially stronger alternative."
+        },
+        {
+          "text": "Names the ICO as the relevant supervisory authority for UK-only processing",
+          "passed": true,
+          "evidence": "Section 1.5: 'The supervisory authority is the Information Commissioner's Office (ICO). UK GDPR (as retained by the Data Protection Act 2018 and the UK GDPR SI) applies in full'."
+        },
+        {
+          "text": "Risk assessment includes wrongful transaction blocking as a harm to data subjects",
+          "passed": true,
+          "evidence": "Summary: 'Risk 1: Wrongful transaction block (false positive) \u2014 residual: Medium'. This is listed as the first and most prominent risk."
+        },
+        {
+          "text": "A DPIA markdown file is saved to disk",
+          "passed": true,
+          "evidence": "File saved to: /dpia-skill-workspace/iteration-1/eval-fraud-detection/with_skill/outputs/dpia-fraud-detection-2026-03.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 307.0,
+        "tokens": 34713,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output correctly concludes that a DPIA is required",
+          "passed": true,
+          "evidence": "DPIA trigger line states: 'Two criteria are met; a DPIA is mandatory.' Document is a full DPIA, not just a recommendation."
+        },
+        {
+          "text": "Cites evaluation/scoring (criterion 1) and large-scale processing (criterion 5) as triggers",
+          "passed": true,
+          "evidence": "DPIA trigger explicitly: 'Evaluation/scoring (criterion 1) \u2014 building behavioural engagement profiles' and 'Large-scale processing (criterion 5) \u2014 approximately 80,000 registered users affected'."
+        },
+        {
+          "text": "The DPIA includes a risk assessment with at least 2 specific named risks",
+          "passed": true,
+          "evidence": "Summary lists 5 named risks: data breach (Medium), inaccurate profiling (Low-Medium), scope creep (Low-Medium), failure to honour right to object (Low), children's data (Medium conditional). Each has full likelihood/severity/residual analysis."
+        },
+        {
+          "text": "The DPIA addresses data subject rights for profiling \u2014 at minimum right to object and right to erasure",
+          "passed": true,
+          "evidence": "Full data subject rights table in Section 2.3. Right to object (Art. 21) and right to erasure (Art. 17) both explicitly covered with implementation requirements. One of the 5 risks is specifically 'failure to honour right to object'."
+        },
+        {
+          "text": "A DPIA markdown file is saved to disk",
+          "passed": true,
+          "evidence": "File saved to: /dpia-skill-workspace/iteration-1/eval-recommendation-engine/with_skill/outputs/dpia-recommendation-engine-2026-03.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 196.7,
+        "tokens": 37614,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output shows evidence of actually scanning the codebase \u2014 it mentions specific files, directories, or dependencies found in the project",
+          "passed": true,
+          "evidence": "Document explicitly lists: .claude-plugin/ manifests, plugins/compliance/skills/ markdown files, evaluation workspace directories, README.md, CONTRIBUTING.md, settings.local.json. Section 1 ('Codebase summary') enumerates exact repository contents."
+        },
+        {
+          "text": "The output includes a structured scope table or list that enumerates individual processing activities with DPIA assessment per activity",
+          "passed": true,
+          "evidence": "Section 4 'Scope table' contains a markdown table with 4 processing activities, each with criteria met, DPIA required?, and Notes columns."
+        },
+        {
+          "text": "The output references at least some of the nine WP29 high-risk criteria by name when assessing activities",
+          "passed": true,
+          "evidence": "Section 3 contains a full nine-criteria table enumerating all nine criteria by name and number, with assessments for each."
+        },
+        {
+          "text": "Each processing activity gets a clear recommendation: DPIA required, DPIA not required, or borderline with explanation",
+          "passed": true,
+          "evidence": "Each row in the scope table has an explicit DPIA required? column: 'No', 'Borderline \u2014 needs scale confirmation', 'One criterion only \u2014 No DPIA required on current evidence', 'No'."
+        },
+        {
+          "text": "A scope analysis markdown file is saved to disk",
+          "passed": true,
+          "evidence": "File saved to: /dpia-skill-workspace/iteration-1/eval-scope-analysis/with_skill/outputs/dpia-scope-analysis-2026-03.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8333,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 134.1,
+        "tokens": 15451,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Identifies automated decision-making with legal or significant effect (criterion 2) as a DPIA trigger",
+          "passed": true,
+          "evidence": "Summary: 'Article 22 automated decision-making: the automatic decline of high-risk transactions triggers Article 22 obligations'. Criterion 2 (automated decisions) is identified as the primary concern."
+        },
+        {
+          "text": "Mentions Article 22 and the right to human review of automated decline decisions",
+          "passed": true,
+          "evidence": "Summary explicitly: 'Users must have the right to obtain human review, express their view, and contest decisions. This is one of the most significant compliance gaps identified.' Section 6.X on Article 22 confirmed present."
+        },
+        {
+          "text": "Notes that fraud prevention via legitimate interests requires an LIA alongside the DPIA",
+          "passed": true,
+          "evidence": "Summary: 'Article 6(1)(f) legitimate interests as the recommended primary basis, with an LIA flagged as a required follow-on action'."
+        },
+        {
+          "text": "Names the ICO as the relevant supervisory authority for UK-only processing",
+          "passed": true,
+          "evidence": "Grep confirmed: document references 'ICO' in prior consultation section (Art. 36 UK GDPR), ICO guidance on automated decision-making, and footnotes the DPIA as prepared per 'ICO's recommended DPIA framework'."
+        },
+        {
+          "text": "Risk assessment includes wrongful transaction blocking as a harm to data subjects",
+          "passed": false,
+          "evidence": "Summary lists the 10 assessed risks as: 'model bias producing discriminatory outcomes, PECR compliance for device fingerprinting, data breach, lack of transparency'. Wrongful transaction block / false positive causing direct customer harm is not explicitly named as a discrete risk, though model bias (which could cause wrongful blocks) is present."
+        },
+        {
+          "text": "A DPIA markdown file is saved to disk",
+          "passed": true,
+          "evidence": "File saved to: /dpia-skill-workspace/iteration-1/eval-fraud-detection/without_skill/outputs/dpia-fraud-detection.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 191.8,
+        "tokens": 37985,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output correctly concludes that a DPIA is required",
+          "passed": true,
+          "evidence": "Summary states: 'Yes, a DPIA is legally required \u2014 and must be completed before launch.' Produces a full DPIA document."
+        },
+        {
+          "text": "Cites evaluation/scoring (criterion 1) and large-scale processing (criterion 5) as triggers",
+          "passed": true,
+          "evidence": "Summary: 'it constitutes systematic and extensive profiling of individuals (the primary named trigger under Art. 35(3)(a)), and it operates at large scale on 80,000 users'. Both criteria correctly identified, though numbered as Art. 35(3)(a) rather than WP29 criterion 1/5 by label."
+        },
+        {
+          "text": "The DPIA includes a risk assessment with at least 2 specific named risks",
+          "passed": true,
+          "evidence": "Summary lists risks: users unaware of depth of profiling; content consumption patterns inferring special category data; 80K profiles as breach target; no Art. 21 opt-out mechanism. Multiple specific risks identified."
+        },
+        {
+          "text": "The DPIA addresses data subject rights for profiling \u2014 at minimum right to object and right to erasure",
+          "passed": true,
+          "evidence": "Summary explicitly: 'no mechanism for the right to object (Art. 21) if not built proactively' and 'Right to erasure (Art. 17)' in required measures. Confirmed by grep showing full Art. 21 risk row and 4.4 data subject rights section."
+        },
+        {
+          "text": "A DPIA markdown file is saved to disk",
+          "passed": true,
+          "evidence": "File saved to: /dpia-skill-workspace/iteration-1/eval-recommendation-engine/without_skill/outputs/dpia-recommendation-engine.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 125.7,
+        "tokens": 48763,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output shows evidence of actually scanning the codebase \u2014 it mentions specific files, directories, or dependencies found in the project",
+          "passed": true,
+          "evidence": "Phase 1 Discovery table lists specific searches performed (schema files, PII fields, analytics SDKs, routes, documentation). Conclusion references plugin manifests, marketplace.json, plugin.json specifically."
+        },
+        {
+          "text": "The output includes a structured scope table or list that enumerates individual processing activities with DPIA assessment per activity",
+          "passed": true,
+          "evidence": "Phase 2 contains a 4-row scope table with processing activities, criteria met, DPIA required?, and Notes columns."
+        },
+        {
+          "text": "The output references at least some of the nine WP29 high-risk criteria by name when assessing activities",
+          "passed": true,
+          "evidence": "Conclusion section lists all nine criteria by name: 'evaluation/scoring, automated decisions with significant effects, systematic monitoring, sensitive data, large-scale processing, dataset combining, vulnerable data subjects, novel technology, or access-preventing processing'."
+        },
+        {
+          "text": "Each processing activity gets a clear recommendation: DPIA required, DPIA not required, or borderline with explanation",
+          "passed": true,
+          "evidence": "All activities in the scope table have 'No' or 'Not applicable' in the DPIA required column, with the final Conclusion section stating 'No DPIAs are required at this time'."
+        },
+        {
+          "text": "A scope analysis markdown file is saved to disk",
+          "passed": true,
+          "evidence": "File saved to: /dpia-skill-workspace/iteration-1/eval-scope-analysis/without_skill/outputs/dpia-scope-analysis-2026-03.md"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 256.3,
+        "stddev": 55.686,
+        "min": 196.7,
+        "max": 307.0
+      },
+      "tokens": {
+        "mean": 34618.3333,
+        "stddev": 3044.1042,
+        "min": 31528,
+        "max": 37614
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.9444,
+        "stddev": 0.0962,
+        "min": 0.8333,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 150.5333,
+        "stddev": 35.9839,
+        "min": 125.7,
+        "max": 191.8
+      },
+      "tokens": {
+        "mean": 34066.3333,
+        "stddev": 16998.2145,
+        "min": 15451,
+        "max": 48763
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.06",
+      "time_seconds": "+105.8",
+      "tokens": "+552"
+    }
+  },
+  "notes": []
+}
