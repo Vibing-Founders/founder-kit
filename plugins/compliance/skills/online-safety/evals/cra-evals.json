@@ -1,0 +1,27 @@
+{
+  "skill_name": "cra",
+  "note": "Prompts below are reconstructed from iteration-1 output content (plugins/compliance/skills/cra-workspace/) — the original prompts were not saved alongside the runs. Verify wording before relying on these for scoring.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "health-forum",
+      "prompt": "We run a community forum where UK users discuss chronic illness, mental health, and general wellbeing. Users can post threads, reply to others, and send private messages. No algorithmic feed, no video, no livestreaming. Stated minimum age is 16, self-declared at sign-up with no verification. About 45,000 monthly UK users. Can you do a Children's Risk Assessment for us?",
+      "expected_output": "A CRA under Ofcom guidance / OSA s.11 that treats the service as likely accessed by children despite the stated 16+ minimum (no effective age assurance), assesses risk factors specific to a health/mental-health forum (private messaging, pseudonymity, vulnerable-topic appeal to adolescents), and gives clear mitigations and a recommendation on completing a formal Children's Access Assessment.",
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "online-game",
+      "prompt": "We operate a competitive online multiplayer game, PEGI 12, around 200,000 monthly UK users. Players get in-game voice and text chat during matches, can add friends and DM outside matches, have profiles with usernames/avatars. Automated profanity filter on text chat, user reporting available. Self-declared date of birth at signup only. Please assess our children's risk under the Online Safety Act.",
+      "expected_output": "A CRA identifying voice/text chat and DM functionality as key risk vectors (grooming, harmful contact), noting the lack of verified age assurance despite PEGI 12 rating, and covering relevant Ofcom risk categories with mitigations proportionate to the ~200K user band.",
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "social-platform",
+      "prompt": "General consumer social network — photo and short video posting, commenting, following, direct messages, algorithmic recommended feed, pseudonymous accounts. Minimum age 13, self-declared DOB only, no verification. Keyword filtering plus user reports reviewed by a small human moderation team. About 800,000 UK monthly active users. No Children's Access Assessment completed yet. Run a Children's Risk Assessment.",
+      "expected_output": "A CRA that flags the missing Children's Access Assessment as a priority action, estimates child user population from MAU, assesses recommender-feed and DM risk factors, and places the service in the correct Ofcom size tier (100K–1M) with matching mitigation expectations.",
+      "assertions": []
+    }
+  ]
+}

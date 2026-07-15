@@ -125,4 +125,4 @@ Found a bug, have a suggestion, or want to request a skill, agent, plugin, or le
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) to add a new plugin to this marketplace.
 
-To add or update legislation in the compliance plugin, see [LEGISLATION.md](./LEGISLATION.md).
+To add or update legislation in the compliance plugin, see [LEGISLATION.md](./plugins/compliance/LEGISLATION.md).

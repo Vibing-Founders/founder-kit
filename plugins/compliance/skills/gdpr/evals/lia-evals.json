@@ -1,0 +1,27 @@
+{
+  "skill_name": "lia",
+  "note": "Prompts below are reconstructed from iteration-1 output content (plugins/compliance/skills/lia-workspace/) — the original prompts were not saved alongside the runs. Verify wording before relying on these for scoring.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "childrens-platform",
+      "prompt": "We run a social platform for teenagers. We continuously log behavioural data — session duration, content viewed, features used — for two purposes: (1) generating an individual safeguarding risk score to flag potentially vulnerable users to our internal team, and (2) [a second related purpose using the same dataset]. Can you do an LIA covering this processing?",
+      "expected_output": "An LIA that separates the two processing activities sharing the same underlying dataset, runs the purpose/necessity/balancing three-part test independently for each given their differing impact on data subjects, and gives appropriate weight to child-safeguarding as a legitimate interest under ICO guidance and the Children's Code.",
+      "assertions": []
+    },
+    {
+      "id": 2,
+      "name": "fraud-detection",
+      "prompt": "We're a payments platform doing fraud detection using transaction pattern analysis and device fingerprinting (passive browser/app signals) across our user base to flag suspicious transactions. Please run an LIA for this processing.",
+      "expected_output": "An LIA that logs assumptions explicitly where scale/jurisdiction/automation details are unstated, correctly runs the three-part test for fraud prevention as a recognised legitimate interest, and flags Article 22 considerations if the fraud score leads to automated decisions without human review.",
+      "assertions": []
+    },
+    {
+      "id": 3,
+      "name": "marketing-profiling",
+      "prompt": "We're an e-commerce company and want to share our customer email list with a third-party marketing partner so they can build lookalike audiences and run targeted social media ads. Run an LIA for this.",
+      "expected_output": "An LIA that recognises this as a purely self-serving commercial interest with no third-party benefit, applies extra scrutiny at the balancing stage, and surfaces less intrusive alternatives (e.g. pixel-based audiences) that should be considered before relying on legitimate interests for a full email list share.",
+      "assertions": []
+    }
+  ]
+}
