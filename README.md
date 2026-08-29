@@ -39,6 +39,7 @@ Once added, you can install any plugin from this marketplace:
 | Plugin | Description | Skills |
 |--------|-------------|--------|
 | `compliance` | Online safety, GDPR, and application security compliance for platform builders | `online-safety`, `gdpr`, `application-security`, `dpia`, `lia`, `cra` |
+| `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `onboard`, `dispatch` |
 
 ---
 

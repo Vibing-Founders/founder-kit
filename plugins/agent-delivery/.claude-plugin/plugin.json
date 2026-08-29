@@ -1,0 +1,14 @@
+{
+  "name": "agent-delivery",
+  "version": "0.0.1",
+  "description": "Dispatch a planned ticket into a Claude cloud sandbox, run its tests against a disposable Supabase preview branch, and get back a pull request with the ticket closed out. Includes guided onboarding for a first-time repository.",
+  "author": {
+    "name": "Vibing Founders",
+    "url": "https://github.com/Vibing-Founders"
+  },
+  "homepage": "https://github.com/Vibing-Founders/founder-kit",
+  "repository": "https://github.com/Vibing-Founders/founder-kit",
+  "license": "MIT",
+  "keywords": ["agent-delivery", "cloud-sandbox", "supabase", "dispatch", "automation"],
+  "skills": ["./skills/"]
+}
