@@ -18,7 +18,7 @@ Read the config written in phase 2.
 | `SUPABASE_ACCESS_TOKEN` | `database.enabled` | Management token. Creates and deletes branches. **Account-wide and production-capable** — see §5 |
 | `SUPABASE_PROJECT_REF` | `database.enabled` | The production project's reference. Forbidden to the run except for branch create and delete |
 | `BRANCH_FUNCTION_SECRETS` | `database.enabled` and the project has deployed functions | The forwarded secret set, as plain `KEY=value` lines. **Step 2 decides its contents** |
-| A tracker credential | Always | Whatever the tracker adapter needs, at the scope phase 1 recorded. The GitHub adapter needs `project` scope, which is **not** in a default login |
+| A tracker credential | Always | Whatever the tracker adapter needs, at the scope phase 1 recorded. Some adapters need a scope that is not in a default login and fails with an unhelpful permissions error — the adapter file names it |
 
 If `database.enabled` is false, only the tracker credential applies and this phase is short.
 
@@ -141,8 +141,8 @@ until they confirm.
 3. Paste the setup script into the setup-script field.
 4. Record the environment's name and put it in `dispatch.environment` — the environment **is** the
    tier declaration, and dispatch needs its name.
-5. Grant the tracker credential its extra scope if phase 1 recorded one (`gh auth refresh -s
-   project` for the GitHub adapter).
+5. Grant the tracker credential any extra scope phase 1 recorded. The adapter file gives the
+   exact command; run it rather than reconstructing it here.
 
 ### What the management token can reach
 

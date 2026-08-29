@@ -34,10 +34,9 @@ Read the repository. Do not ask the human anything you can read.
 Then read [`../_shared/trackers/<kind>.md`](../_shared/trackers/) and fill in that adapter's
 config block. Two things it will tell you that detection cannot:
 
-- **The review marker.** For GitHub this is a board, a field, and an option; for Linear a workflow
-  state. You can list the candidates — `gh project list --owner <owner>`, or the team's workflow
-  states — but **which one means "ready for human review" is the human's answer**. Present the
-  candidates and ask.
+- **The review marker.** What it *is* differs per tracker, and the adapter file says both what to
+  configure and how to list the candidates. Do that, then ask: **which one means "ready for human
+  review" is the human's answer**, not something to infer from a name.
 - **Any extra credential scope.** Record it for phase 3; the GitHub adapter needs `project` scope,
   which is not in a default login and fails with an unhelpful permissions error.
 
