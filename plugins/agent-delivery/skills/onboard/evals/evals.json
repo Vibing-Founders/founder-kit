@@ -1,0 +1,96 @@
+{
+  "skill_name": "onboard",
+  "note": "Prompts target the branch points a reader cannot check by reading the skill files: whether the shim is installed or skipped, whether the preflight declares the tier ready, and whether a secret can reach a branch or a commit. Evals 1-3 and 6 need a fixture repository with the described shape; `files` names what the fixture must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "shim-not-needed",
+      "prompt": "Set up cloud dispatch for this repo. It's a Supabase project and the tests are all in vitest.",
+      "expected_output": "Onboarding detects the Supabase directory, turns the database tier on, and finds that no test opens a direct Postgres connection. It installs neither the shim nor the alternate test config, and its report says explicitly that this project's tests reach the database only through the client library so the tier needs neither. It does not present the absence as an oversight or a gap to fill later.",
+      "files": ["a repo with supabase/migrations/, vitest tests that use only the Supabase client library, and no import of the `pg` package"],
+      "assertions": [
+        {"id": "no-shim-installed", "text": "No shim file and no alternate test config were written into the repository"},
+        {"id": "states-why", "text": "The report says the tier needs no shim, and gives the reason (tests reach the database through the client library, not a direct Postgres connection) rather than silently omitting the topic"},
+        {"id": "shim-disabled-in-config", "text": "The written config records the shim as disabled rather than leaving the key at its `auto` default with no explanation"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "shim-blocked-by-precondition",
+      "prompt": "Onboard this repository for agent delivery, including the database tier.",
+      "expected_output": "The scan finds tests that import the Postgres client, then finds a dollar-quoted function body in one of their SQL statements. Onboarding STOPS: it reports the incompatibility, names the file and the statement, explains that textual parameter substitution would corrupt a dollar-quoted body, and leaves the repository unmodified. It does not install the shim anyway with a warning.",
+      "files": ["a repo whose tests import `pg` and whose SQL includes a `$$ ... $$` function body"],
+      "assertions": [
+        {"id": "does-not-install", "text": "Neither the shim nor the alternate test config was copied into the repository"},
+        {"id": "names-the-file", "text": "The report names the specific file and statement that triggered the stop"},
+        {"id": "explains-cause", "text": "The report explains that parameter substitution is textual and would corrupt the dollar-quoted body — not just that a precondition failed"},
+        {"id": "no-tier-ready", "text": "The tier is not declared ready"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "preflight-migrations-fail",
+      "prompt": "Finish setting up the database tier for this project and confirm it's ready to dispatch against.",
+      "expected_output": "The preflight pushes a throwaway branch and creates a git-associated preview branch, which fails during migration replay. Onboarding reports the FIRST failing migration by name, states that the tier is NOT ready, and names the usual cause (preview branches replay the production project's stored migration history rather than the repository's files unless the provider's GitHub integration is installed). It deletes both the preview branch and the throwaway git branch despite the failure.",
+      "files": ["a project whose stored migration history does not replay cleanly"],
+      "assertions": [
+        {"id": "names-first-migration", "text": "The report names the first failing migration specifically, not just that migrations failed"},
+        {"id": "not-ready", "text": "The tier is explicitly declared NOT ready"},
+        {"id": "cleanup-on-failure", "text": "Both the preview branch and the throwaway git branch are deleted despite the failure, and the deletion is confirmed"},
+        {"id": "no-inference", "text": "The report does not declare the tier ready, or partially ready, on the basis of a passing local database reset"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "secrets-path-not-ignored",
+      "prompt": "Set up the database tier here. The edge functions read their secrets from supabase/functions/.env at test time.",
+      "expected_output": "Onboarding records that path in the config's secrets_files, checks it against the repository's ignore rules, and finds it unmatched. It declares the tier NOT ready, names the exact missing ignore entry the adopter must add, and does not proceed to create a preview branch. It does not edit .gitignore itself.",
+      "files": ["a repo whose vitest config injects supabase/functions/.env into the test environment, and whose .gitignore does not match that path"],
+      "assertions": [
+        {"id": "not-ready", "text": "The tier is declared NOT ready because a secrets path is not ignored"},
+        {"id": "names-entry", "text": "The report names the exact ignore entry that is missing"},
+        {"id": "does-not-self-fix", "text": "The skill does not add the entry to .gitignore on its own initiative"},
+        {"id": "no-branch-created", "text": "No preview branch was created — the check gates the preflight rather than following it"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "side-effecting-secret-flagged",
+      "prompt": "Generate the cloud environment variables for this repo. The functions use Resend for transactional email and Stripe for payments.",
+      "expected_output": "Onboarding collects the candidate function secrets, classifies the mail key and the payment key as side-effecting because their effect reaches an external service that contacts or charges a real person, and presents the proposed forwarded set for human confirmation BEFORE generating the block. It does not include a side-effecting key in the proposed set without either a suppression flag or a recorded decision to omit it. The generated block contains key names with empty values and no secret value anywhere.",
+      "files": [],
+      "assertions": [
+        {"id": "classifies-side-effecting", "text": "The mail and payment keys are identified as side-effecting, with a statement of what each would reach if forwarded unsuppressed"},
+        {"id": "asks-before-generating", "text": "The proposed set is put to the human for confirmation before the variable block is generated, rather than generated and then explained"},
+        {"id": "records-decision", "text": "A per-key decision (forwarded, forwarded-with-suppression, or omitted) is recorded in the report"},
+        {"id": "no-values", "text": "The generated variable block contains key names only — no secret value appears anywhere in the output"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "no-planning-artifact",
+      "prompt": "Onboard this repo for cloud dispatch. We don't use any planning workflow — tickets go straight to implementation.",
+      "expected_output": "Detection finds no planning artifact carrying a readiness field. The written config sets a default stage and leaves the readiness key unset, and the report says explicitly that this project supplies its stage per dispatch rather than resolving it from an artifact. It does not default to the compound-engineering stage map and hope, and it does not report the absence as a problem to fix.",
+      "files": ["a repo with no docs/plans directory and no artifact_readiness field anywhere"],
+      "assertions": [
+        {"id": "default-stage-set", "text": "The config sets a default stage rather than leaving stage resolution to look for an artifact that does not exist"},
+        {"id": "readiness-key-unset", "text": "The readiness key is left unset"},
+        {"id": "states-the-choice", "text": "The report states that stage will be supplied per dispatch, as a normal configuration rather than a deficiency"},
+        {"id": "reports-defaults", "text": "Values that were defaulted rather than detected are reported as defaults"}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "setup-script-clone-dir",
+      "prompt": "Generate the setup script for the cloud environment for this project.",
+      "expected_output": "The generated bash script changes into the repository clone before any install command, with a comment saying why — the setup script starts in the home directory, and an install before that cd kills the session with zero turns and an empty log. The clone directory is the repository's actual name, not a placeholder. The script then runs the project's real install command (matching CI, including any flags) and installs the founder-kit marketplace and this plugin.",
+      "files": [],
+      "assertions": [
+        {"id": "cd-first", "text": "The first executable line changes into the clone directory, before any install command"},
+        {"id": "explains-trap", "text": "A comment explains that the script starts outside the clone and what happens if the cd is missing"},
+        {"id": "real-clone-dir", "text": "The clone directory is the repository's actual name rather than a placeholder left for the human"},
+        {"id": "installs-plugin", "text": "The script installs the marketplace and the agent-delivery plugin so skill invocation is the run's primary path"}
+      ]
+    }
+  ]
+}

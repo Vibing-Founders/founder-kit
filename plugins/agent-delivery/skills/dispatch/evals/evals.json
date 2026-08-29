@@ -1,0 +1,109 @@
+{
+  "skill_name": "dispatch",
+  "note": "Prompts target the branch points a reader cannot check by reading the skill files: whether a stage is resolved or refused, whether the prompt leaks a secret, whether a claim is relayed or verified, and whether a leaked preview branch is reconciled. Several need a fixture repo with .agent-delivery/config.yaml and a tracker double; `files` names what the fixture must provide. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "stage-resolved-and-stated",
+      "prompt": "Dispatch ABC-123 to the cloud.",
+      "expected_output": "The skill fetches the ticket and its comments, finds the plan, reads its readiness value as implementation-ready, maps it to the implement stage, and STATES the resolution — the ticket, the value, the file it was read from, the stage, and the skill the run will invoke — before creating or firing anything.",
+      "files": ["a repo with .agent-delivery/config.yaml and a plan for ABC-123 carrying artifact_readiness: implementation-ready"],
+      "assertions": [
+        {"id": "reads-comments", "text": "The brief includes the ticket's comments, not just its body"},
+        {"id": "states-before-firing", "text": "The resolved stage is stated before any run is created or fired, not afterwards"},
+        {"id": "cites-source", "text": "The statement names where the readiness value was read from — the file and the field"},
+        {"id": "names-skill", "text": "The statement names the skill the run will invoke for that stage"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "plan-on-a-feature-branch",
+      "prompt": "Run ABC-456 in a sandbox.",
+      "expected_output": "No plan for ABC-456 exists on the current branch, but one exists on a feature branch. The skill sweeps worktrees and branches before concluding anything, finds the plan there, and resolves the stage from it. It does NOT report 'no plan found' and downgrade the stage.",
+      "files": ["a repo whose current branch has no plan for ABC-456, and a feature branch that does"],
+      "assertions": [
+        {"id": "searches-branches", "text": "The search covers other branches and worktrees, not only the current checkout"},
+        {"id": "finds-the-plan", "text": "The plan on the feature branch is found and used to resolve the stage"},
+        {"id": "no-false-negative", "text": "The skill does not conclude that the ticket has no plan"},
+        {"id": "says-where-it-looked", "text": "The report says which locations were searched"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "interactive-stage-refused",
+      "prompt": "Dispatch ABC-789 — it needs brainstorming first.",
+      "expected_output": "The stage resolves to one listed as interactive in config. The skill REFUSES: it names the resolved stage, says it is configured as interactive, and gives the reason — it needs question-and-answer with a human, and a sandbox can only round-trip through ticket comments. No run is created or fired. The refusal is presented as a complete outcome, not an error, and without an offer to dispatch it anyway.",
+      "files": ["a repo whose config lists brainstorm in stages.interactive"],
+      "assertions": [
+        {"id": "no-run-fired", "text": "No run was created or fired"},
+        {"id": "gives-reason", "text": "The refusal explains why the stage cannot be dispatched, not merely that it is on a list"},
+        {"id": "not-an-error", "text": "The refusal is framed as a successful outcome rather than a failure"},
+        {"id": "no-override-offer", "text": "The skill does not offer to dispatch it anyway"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "prompt-carries-no-secret",
+      "prompt": "Show me the prompt you'd send for ABC-123 before you fire it. This is a database-tier project.",
+      "expected_output": "The composed prompt names the tier's environment variables by name — the management token, the production project reference, the forwarded secret set — and states that the runbook's choreography governs. It contains no token, key, password, or webhook secret. It also carries the ticket, its comments, the deliverable, the branch name, the risk brakes, and the runbook pointer with its fetch fallback.",
+      "files": ["a repo whose config has database.enabled: true"],
+      "assertions": [
+        {"id": "names-not-values", "text": "Environment variables appear as names only; no secret value appears anywhere in the prompt"},
+        {"id": "self-contained", "text": "The prompt carries the ticket, its comments, the deliverable, the branch name, and the risk brakes"},
+        {"id": "runbook-pointer", "text": "The prompt names the runbook and includes the fetch fallback for when skill invocation is unavailable"},
+        {"id": "no-false-absence", "text": "The prompt does not assert that any connector or tool is unavailable to the run"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "runbook-fetch-fallback-used",
+      "prompt": "The run for ABC-123 finished — what happened?",
+      "expected_output": "The run log shows that skill invocation failed and the run fetched the runbook from the public repository URL instead, then proceeded. The skill reports this as the fallback working as designed, and flags that the environment's plugin install is not taking so the setup script should be fixed — rather than treating the run as degraded or the fallback as a failure.",
+      "files": ["a run log in which the skill invocation failed and a raw-URL fetch of the runbook succeeded"],
+      "assertions": [
+        {"id": "identifies-fallback", "text": "The report identifies that the runbook was fetched from the public URL rather than invoked as a skill"},
+        {"id": "not-a-failure", "text": "The fallback is reported as designed behaviour, not as a run failure"},
+        {"id": "flags-root-cause", "text": "The report flags that the environment's plugin install needs fixing so invocation becomes the primary path again"},
+        {"id": "no-mid-run-install", "text": "The report does not suggest the run should have installed the plugin mid-session and retried"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "claims-verified-with-provenance",
+      "prompt": "Did the ABC-123 run work?",
+      "expected_output": "The run claims a passing test suite and an open pull request. The skill verifies what is cheap — the PR exists, is open, is not merged, CI state, the ticket's review marker — and reports claimed and confirmed as two DISTINCT things, naming what it could not verify rather than letting the gap read as verified.",
+      "files": ["a completed run log claiming a passing PR, and a real PR and ticket to check it against"],
+      "assertions": [
+        {"id": "separates-claim-and-check", "text": "The report distinguishes what the run claimed from what was independently confirmed"},
+        {"id": "names-verification", "text": "Each confirmed item names how it was confirmed"},
+        {"id": "names-unverified", "text": "Anything that could not be verified is named explicitly rather than omitted"},
+        {"id": "not-relayed-as-fact", "text": "The run's own claims are not relayed as established fact"}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "orphaned-branch-reconciled",
+      "prompt": "Check on the ABC-999 run.",
+      "expected_output": "The run died before its own cleanup and produced no report. The skill still lists the production project's preview branches, finds the branch that run created, deletes it, and reports the orphan including which run leaked it. It does not skip reconciliation because the run produced no claim to check, and it does not delete a branch named main.",
+      "files": ["a project with a leaked preview branch from a run that ended without a report"],
+      "assertions": [
+        {"id": "reconciles-anyway", "text": "Branch reconciliation runs even though the run made no cleanup claim"},
+        {"id": "deletes-orphan", "text": "The leaked branch is deleted and the deletion confirmed"},
+        {"id": "reports-orphan", "text": "The orphan is reported, naming the run that leaked it, rather than quietly cleaned up"},
+        {"id": "protects-main", "text": "A branch named main is never deleted"}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "close-out-step-disabled",
+      "prompt": "Dispatch ABC-321. Our config has the manual-test checklist turned off.",
+      "expected_output": "The composed prompt names only the enabled close-out steps, so the run sets the review marker and posts no checklist. The report says the checklist step was off, distinguishing a configured skip from a failed step.",
+      "files": ["a repo whose config sets close_out.manual_test_checklist: false"],
+      "assertions": [
+        {"id": "checklist-not-named", "text": "The prompt does not instruct the run to post a manual-test checklist"},
+        {"id": "marker-still-set", "text": "The review-marker step is still named and performed"},
+        {"id": "reports-the-skip", "text": "The report states that the checklist step was switched off, rather than silently omitting it"}
+      ]
+    }
+  ]
+}

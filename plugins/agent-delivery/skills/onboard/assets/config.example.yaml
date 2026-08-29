@@ -1,0 +1,169 @@
+# agent-delivery — project configuration
+#
+# Copy to .agent-delivery/config.yaml in your repository root, or let the `onboard`
+# skill write it for you from what it detects.
+#
+# Precedence: an explicit skill argument beats this file; this file beats the default.
+# Every key is optional except the four marked REQUIRED. Commented-out keys show the
+# default the plugin uses when you leave them out.
+#
+# Full reference: skills/_shared/config-schema.md in the agent-delivery plugin.
+# v1 note: this format is unstable and may change without a migration path.
+
+schema_version: 1
+
+# --- How the sandbox builds this project -------------------------------------
+
+repo:
+  # REQUIRED. The directory name of the clone inside the sandbox. There is no safe
+  # guess: the environment's setup script starts OUTSIDE the clone, and a wrong value
+  # kills the session before any agent runs, leaving nothing in the log to read.
+  clone_dir: my-project
+
+  # install: npm ci
+  # post_install: []                 # e.g. ["npm run routes:generate"]
+
+  # Must accept file paths appended to it — the run tests what the change touched,
+  # not the whole suite.
+  # test_command: npx vitest run
+
+  # Skipped entirely when unset.
+  # lint_command: npm run lint
+  # typecheck_command: npm run type-check
+
+# --- Where tickets live ------------------------------------------------------
+
+tracker:
+  # REQUIRED. github | linear
+  kind: github
+
+  # Where "ready for human review" lives. The run sets this on finishing.
+  review_marker:
+    # kind: github — a project board column
+    project: Delivery
+    field: Status
+    option: In review
+
+    # kind: linear — a workflow state
+    # state: In Review
+
+# --- Which skill runs for a ticket -------------------------------------------
+#
+# EVERY default in this block assumes compound-engineering is your planning
+# workflow. Using something else? Override these four and nothing else changes.
+# Using no planning workflow at all? Set default_stage and leave readiness_key
+# unset — stage resolution then never looks for a planning artifact.
+
+stages:
+  # artifact_glob: docs/plans/*.md
+  # readiness_key: artifact_readiness
+
+  # map:                             # readiness value -> stage
+  #   requirements-only: plan
+  #   implementation-ready: implement
+
+  # skills:                          # stage -> the skill the sandbox run invokes
+  #   plan: compound-engineering:ce-plan
+  #   implement: compound-engineering:ce-work
+
+  # Stages needing question-and-answer with a human. dispatch REFUSES these with
+  # the reason rather than firing a run that cannot finish.
+  # interactive: [brainstorm]
+
+  # Used when no readiness signal can be read. Left null, dispatch asks for an
+  # explicit --stage instead of guessing.
+  # default_stage: null
+
+# --- Where a run must halt ---------------------------------------------------
+#
+# Reaching a brake means: stop, open a DRAFT pull request, blocker stated first.
+
+risk_brakes:
+  # Globs for surfaces too consequential to change unattended.
+  paths: []
+  #  - "docs/tech/billing-reliability/**"
+  #  - "src/payments/**"
+
+  # migration | payments | auth
+  changes: [migration]
+
+# --- The disposable-database tier --------------------------------------------
+#
+# Leave enabled: false and every key below is ignored. When true, onboarding
+# checks the prerequisites (branching enabled, GitHub integration installed,
+# Supabase connector available, cloud environment created) rather than assuming
+# them, and proves the tier with a throwaway branch before you dispatch anything.
+
+database:
+  enabled: false
+
+  # provider: supabase               # the only provider in v1
+
+  # A correctness key, not a cost key. The Postgres-over-HTTPS shim opens one
+  # connection per query and the branch's own functions open their own; an
+  # undersized branch starves both under a parallel suite, and the symptom is
+  # misleading (functions returning 500, which reads as a missing secret).
+  # instance_size: small
+
+  region: eu-west-2                  # REQUIRED when enabled
+
+  # branch_name_prefix: run-
+  # function_secrets_var: BRANCH_FUNCTION_SECRETS
+
+  # Repo paths the run writes the forwarded secret set to, for tooling that reads
+  # a file rather than the environment. Every path here must be git-ignored;
+  # onboarding refuses to declare the tier ready otherwise.
+  # secrets_files: []
+
+  # branch_ref_var: SUPABASE_BRANCH_REF
+
+  # The environment variable NAMES your suite already reads to find its database.
+  # The run exports these pointing at its own preview branch. Names only — no
+  # value ever appears in this file, in a dispatched prompt, or in a report.
+  test_env:
+    url: [SUPABASE_URL, VITE_SUPABASE_URL]
+    anon_key: [SUPABASE_ANON_KEY, VITE_SUPABASE_ANON_KEY]
+    service_role_key: [SUPABASE_SERVICE_ROLE_KEY]
+
+  # The shim carries SQL over HTTPS for tests that open a direct Postgres
+  # connection, because a sandbox has no raw TCP route to the database.
+  # `auto` installs it only if such tests exist and the precondition scan passes.
+  # shim:
+  #   enabled: auto                  # auto | true | false
+  #   path: test/helpers/pg-http-shim.ts
+  #   test_config: vitest.config.pghttp.ts
+
+  # Applied only when the suite targets a branch. A remote branch is slower than a
+  # local database in ways that look like failures: hooks time out on latency, and
+  # a worker count tuned for a local stack oversubscribes a branch's connections.
+  # test_overrides:
+  #   max_workers: null
+  #   hook_timeout_ms: null
+
+# --- What a finished run does to the ticket ----------------------------------
+#
+# All three default on; each is independently switchable off. With all three off,
+# a run opens a pull request and touches the tracker not at all.
+
+close_out:
+  # review_marker: true
+  # manual_test_checklist: true
+
+  # Applies only to tickets the tracker reports as defects. Set false if your
+  # project has no defect-recording practice — the run then says it skipped the
+  # step rather than inventing a record format.
+  # defect_record: true
+
+# --- How a run is fired ------------------------------------------------------
+
+dispatch:
+  # THE ENVIRONMENT IS THE TIER DECLARATION. Selecting the cloud environment that
+  # carries the database credentials and setup script is what puts a run at the
+  # database tier; there is no separate switch. REQUIRED when database.enabled.
+  environment: ""
+
+  # model: claude-sonnet-5
+
+  # Fallback only. A run's first move is to invoke the plugin's skill; it fetches
+  # this URL only when that invocation is unavailable.
+  # runbook_url: https://raw.githubusercontent.com/Vibing-Founders/founder-kit/main/plugins/agent-delivery/skills/_shared/sandbox-runbook.md
