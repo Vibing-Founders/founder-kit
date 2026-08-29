@@ -101,6 +101,38 @@ Provides a starting point for exploring the regulations most relevant to platfor
 
 ---
 
+### `agent-delivery`
+
+Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests actually ran against a real database — without rebuilding the sandbox path for each project.
+
+Running a delivery stage in a cloud sandbox works, but the proof is expensive and most of what it teaches is invisible from the outside: a sandbox has no Docker daemon, so a local database stack is impossible there; raw TCP to Postgres does not route; tools with hand-rolled network dialers hang and fail while `curl` answers instantly; and a setup script starts outside the repository clone, which kills the session before any agent runs. None of that is discoverable by reasoning. This plugin carries that knowledge once, so a second project does not rediscover it at the same cost.
+
+Everything project-specific — tracker, stage map, risk paths, close-out steps, database tier — is declared in `.agent-delivery/config.yaml` in your own repository. The plugin names no planning workflow, tracker, or test runner as a hard dependency.
+
+> **v1 scope**: the disposable-database tier is Supabase only, and the config format may change without a migration path until a second external project adopts it.
+
+### Skills
+
+**`/agent-delivery:onboard`** — take a repository from unprepared to a verified first dispatch
+```
+/agent-delivery:onboard this repo for cloud dispatch
+/agent-delivery:onboard set up the database tier and prove it works
+/agent-delivery:onboard check my agent-delivery setup
+```
+
+Detects your stack, tracker and planning artifacts; writes the config; generates the cloud environment's variable block and setup script for you to paste; installs the Postgres-over-HTTPS shim only if your tests need it and the preconditions hold; and proves the database tier by building a throwaway preview branch green and deleting it. It never writes a secret value anywhere, and it reports which values were defaulted rather than detected.
+
+**`/agent-delivery:dispatch`** — run a stage on a ticket in a cloud sandbox
+```
+/agent-delivery:dispatch ABC-123 to the cloud
+/agent-delivery:dispatch run this ticket in a sandbox
+/agent-delivery:dispatch what happened to the run for ABC-123
+```
+
+Resolves the stage from the plan's readiness (sweeping branches and worktrees, not just your checkout), refuses a stage that needs a human in the loop, composes a self-contained prompt carrying no secrets, fires the run, then verifies its claims and reports them with provenance — separating what the run said from what was confirmed. After every database-tier run it reconciles preview branches and deletes any the run leaked.
+
+---
+
 ## Repository Structure
 
 ```
@@ -112,6 +144,12 @@ plugins/
       online-safety/    # UK OSA, EU DSA skills
       gdpr/             # UK/EU GDPR skills
       application-security/  # OWASP skills
+  agent-delivery/
+    .claude-plugin/plugin.json
+    skills/
+      _shared/          # Sandbox runbook, config contract, tracker adapters
+      onboard/          # Detection, environment artifacts, database preflight
+      dispatch/         # Stage resolution, prompt contract, close-out
 ```
 
 ---
