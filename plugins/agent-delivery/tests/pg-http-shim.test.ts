@@ -9,23 +9,23 @@
  * observed rather than argued about, and every test asserts that no query
  * reached the network.
  */
-import { test, expect, beforeEach, afterEach } from 'bun:test';
-import { Client, rewrites, cronParkRewrite, __resetBranchCheck }
+import { test, beforeEach, afterEach } from 'node:test';
+import assert from 'node:assert/strict';
+import { Client, Pool, rewrites, cronParkRewrite, __resetBranchCheck }
   from '../skills/onboard/assets/pg-http-shim.ts';
 
 const realFetch = globalThis.fetch;
 let calls: Array<{ url: string; body?: any }> = [];
 
 const stubFetch = (branches: any[], queryResult: any = []) => {
-  // @ts-ignore
-  globalThis.fetch = async (url: any, init: any = {}) => {
+  globalThis.fetch = (async (url: any, init: any = {}) => {
     const u = String(url);
     calls.push({ url: u, body: init.body ? JSON.parse(init.body) : undefined });
     if (u.endsWith('/branches')) {
       return new Response(JSON.stringify(branches), { status: 200 });
     }
     return new Response(JSON.stringify(queryResult), { status: 200 });
-  };
+  }) as typeof fetch;
 };
 
 beforeEach(() => {
@@ -44,78 +44,77 @@ test('R20: the production project ref is refused before any query is issued', as
   process.env.SUPABASE_BRANCH_REF = 'prodref';
   stubFetch([]);
   const c = new Client();
-  await expect(c.query('select 1')).rejects.toThrow(/is the production project/);
-  expect(queryUrls()).toHaveLength(0);
-  expect(calls).toHaveLength(0); // not even the branch listing
+  await assert.rejects(c.query('select 1'), /is the production project/);
+  assert.equal(queryUrls().length, 0);
+  assert.equal(calls.length, 0, 'not even the branch listing');
 });
 
 test('R20: a ref absent from the branch list is refused', async () => {
   stubFetch([{ name: 'other', project_ref: 'somethingelse' }]);
   const c = new Client();
-  await expect(c.connect()).rejects.toThrow(/is not a preview branch of prodref/);
-  expect(queryUrls()).toHaveLength(0);
+  await assert.rejects(c.connect(), /is not a preview branch of prodref/);
+  assert.equal(queryUrls().length, 0);
 });
 
 test('R20: the branch named `main` is refused', async () => {
   stubFetch([{ name: 'main', project_ref: 'branchref' }]);
   const c = new Client();
-  await expect(c.connect()).rejects.toThrow(/refusing to run against the branch named/);
-  expect(queryUrls()).toHaveLength(0);
+  await assert.rejects(c.connect(), /refusing to run against the branch named/);
+  assert.equal(queryUrls().length, 0);
 });
 
 test('R20: the guard needs a live listing — env vars alone do not satisfy it', async () => {
   // Everything set, but the listing call fails.
-  // @ts-ignore
-  globalThis.fetch = async (url: any) => {
+  globalThis.fetch = (async (url: any) => {
     calls.push({ url: String(url) });
     return new Response('nope', { status: 500 });
-  };
+  }) as typeof fetch;
   const c = new Client();
-  await expect(c.connect()).rejects.toThrow(/could not list branches .* Refusing to run/);
-  expect(queryUrls()).toHaveLength(0);
+  await assert.rejects(c.connect(), /could not list branches[\s\S]*Refusing to run/);
+  assert.equal(queryUrls().length, 0);
 });
 
 test('a caller that skips connect() and queries directly is still guarded', async () => {
   stubFetch([{ name: 'other', project_ref: 'nope' }]);
   const c = new Client();
-  await expect(c.query('select 1')).rejects.toThrow(/is not a preview branch/);
-  expect(queryUrls()).toHaveLength(0);
+  await assert.rejects(c.query('select 1'), /is not a preview branch/);
+  assert.equal(queryUrls().length, 0);
 });
 
 test('AE2: dollar-quoted SQL is rejected, not silently interpolated', async () => {
   stubFetch([{ name: 'run-x', project_ref: 'branchref' }]);
   const c = new Client();
   await c.connect();
-  await expect(
-    c.query("create function f() returns int as $$ select $1 $$ language sql", [1])
-  ).rejects.toThrow(/dollar-quoted body/);
-  expect(queryUrls()).toHaveLength(0);
+  await assert.rejects(
+    c.query('create function f() returns int as $$ select $1 $$ language sql', [1]),
+    /dollar-quoted body/
+  );
+  assert.equal(queryUrls().length, 0);
 });
 
 test('transaction control returns without reaching the network', async () => {
   stubFetch([{ name: 'run-x', project_ref: 'branchref' }]);
   const c = new Client();
   for (const sql of ['begin', 'COMMIT;', ' rollback ', 'start transaction', 'end;']) {
-    const r = await c.query(sql);
-    expect(r).toEqual({ rows: [], rowCount: 0 });
+    assert.deepEqual(await c.query(sql), { rows: [], rowCount: 0 });
   }
-  expect(calls).toHaveLength(0); // not even the guard: no network at all
+  assert.equal(calls.length, 0, 'not even the guard: no network at all');
 });
 
 test('divergence 2: a config naming another role is refused', () => {
-  expect(() => new Client({ user: 'some_admin' })).toThrow(/always runs as 'postgres'/);
-  expect(() => new Client({ user: 'postgres' })).not.toThrow();
-  expect(() => new Client()).not.toThrow();
+  assert.throws(() => new Client({ user: 'some_admin' }), /always runs as 'postgres'/);
+  assert.doesNotThrow(() => new Client({ user: 'postgres' }));
+  assert.doesNotThrow(() => new Client());
 });
 
 test('happy path: parameters are interpolated and rows are returned', async () => {
   stubFetch([{ name: 'run-x', project_ref: 'branchref' }], [{ id: 1 }, { id: 2 }]);
   const c = new Client();
   await c.connect();
-  const r = await c.query('select * from t where a = $1 and b = $2', ['o\'brien', null]);
-  expect(r.rows).toEqual([{ id: 1 }, { id: 2 }]);
-  expect(r.rowCount).toBe(2);
-  expect(queryUrls()[0].body.query).toBe("select * from t where a = 'o''brien' and b = NULL");
+  const r = await c.query('select * from t where a = $1 and b = $2', ["o'brien", null]);
+  assert.deepEqual(r.rows, [{ id: 1 }, { id: 2 }]);
+  assert.equal(r.rowCount, 2);
+  assert.equal(queryUrls()[0].body.query, "select * from t where a = 'o''brien' and b = NULL");
 });
 
 test('divergence 3: a non-returning write reports rowCount 0', async () => {
@@ -123,7 +122,8 @@ test('divergence 3: a non-returning write reports rowCount 0', async () => {
   const c = new Client();
   await c.connect();
   const r = await c.query('update t set a = 1');
-  expect(r.rowCount).toBe(0); // documented precondition, flagged by the install scan
+  // Documented precondition, flagged by the install scan.
+  assert.equal(r.rowCount, 0);
 });
 
 test('rewrites ship empty and are opt-in', async () => {
@@ -131,11 +131,12 @@ test('rewrites ship empty and are opt-in', async () => {
   const c = new Client();
   await c.connect();
   await c.query('update cron.job set active = $1 where jobname = $2', [false, 'j']);
-  expect(queryUrls()[0].body.query).toContain('update cron.job'); // unrewritten by default
+  assert.ok(queryUrls()[0].body.query.includes('update cron.job'), 'unrewritten by default');
 
   rewrites.push(cronParkRewrite);
   await c.query('update cron.job set active = $1 where jobname = $2', [false, 'j']);
-  expect(queryUrls()[1].body.query).toBe(
+  assert.equal(
+    queryUrls()[1].body.query,
     "select cron.alter_job(job_id := jobid, active := false) from cron.job where jobname = 'j'"
   );
 });
@@ -144,9 +145,10 @@ test('a dollar-quoted body with NO parameters is safe and passes through', async
   stubFetch([{ name: 'run-x', project_ref: 'branchref' }], []);
   const c = new Client();
   await c.connect();
-  const sql = "create function f() returns int as $$ select 1 $$ language sql";
-  await c.query(sql); // no params: substitution never runs, so nothing can be corrupted
-  expect(queryUrls()[0].body.query).toBe(sql);
+  const sql = 'create function f() returns int as $$ select 1 $$ language sql';
+  // No params: substitution never runs, so nothing can be corrupted.
+  await c.query(sql);
+  assert.equal(queryUrls()[0].body.query, sql);
 });
 
 test('SAFETY: a verified ref does not bless a later unverified ref', async () => {
@@ -158,25 +160,33 @@ test('SAFETY: a verified ref does not bless a later unverified ref', async () =>
   // The suite switches target (a helper, or the dotenv-outranks-exports case).
   process.env.SUPABASE_BRANCH_REF = 'prodref';
   const evil = new Client();
-  await expect(evil.query('alter table t disable trigger all'))
-    .rejects.toThrow(/production project|not a preview branch/);
-  expect(queryUrls()).toHaveLength(0);
+  await assert.rejects(
+    evil.query('alter table t disable trigger all'),
+    /production project|not a preview branch/
+  );
+  assert.equal(queryUrls().length, 0);
 });
 
 test('SAFETY: role guard catches a connection string naming another role', () => {
-  expect(() => new Client('postgres://supabase_admin:pw@host:5432/db'))
-    .toThrow(/always runs as 'postgres'/);
-  expect(() => new Client({ connectionString: 'postgres://supabase_admin:pw@h/db' }))
-    .toThrow(/always runs as 'postgres'/);
-  expect(() => new Client('postgres://postgres:pw@host:5432/db')).not.toThrow();
+  assert.throws(
+    () => new Client('postgres://supabase_admin:pw@host:5432/db'),
+    /always runs as 'postgres'/
+  );
+  assert.throws(
+    () => new Client({ connectionString: 'postgres://supabase_admin:pw@h/db' }),
+    /always runs as 'postgres'/
+  );
+  assert.doesNotThrow(() => new Client('postgres://postgres:pw@host:5432/db'));
 });
 
 test('dollar-quoted tag containing digits is rejected', async () => {
   stubFetch([{ name: 'run-x', project_ref: 'branchref' }]);
   const c = new Client();
   await c.connect();
-  await expect(c.query('create function f() as $fn2$ select $1 $fn2$ language sql', [1]))
-    .rejects.toThrow(/dollar-quoted body/);
+  await assert.rejects(
+    c.query('create function f() as $fn2$ select $1 $fn2$ language sql', [1]),
+    /dollar-quoted body/
+  );
 });
 
 test('extended transaction forms stay off the network', async () => {
@@ -185,14 +195,12 @@ test('extended transaction forms stay off the network', async () => {
   for (const sql of ['BEGIN TRANSACTION', 'begin isolation level serializable',
                      'COMMIT WORK', 'savepoint sp1', 'rollback to savepoint sp1',
                      'release savepoint sp1', 'end transaction']) {
-    const r = await c.query(sql);
-    expect(r).toEqual({ rows: [], rowCount: 0 });
+    assert.deepEqual(await c.query(sql), { rows: [], rowCount: 0 });
   }
-  expect(calls).toHaveLength(0);
+  assert.equal(calls.length, 0);
 });
 
-test('Pool refuses honestly instead of being undefined', async () => {
-  const mod = await import('../skills/onboard/assets/pg-http-shim.ts');
-  expect(mod.Pool).toBeDefined();
-  expect(() => new mod.Pool()).toThrow(/only the `Client` interface/);
+test('Pool refuses honestly instead of being undefined', () => {
+  assert.notEqual(Pool, undefined);
+  assert.throws(() => new Pool(), /only the `Client` interface/);
 });

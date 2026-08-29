@@ -98,11 +98,12 @@ If you use `/skill-creator` to build or iterate on a skill, keep the eval prompt
 ## Running tests
 
 ```
-bun test
+npm test
 ```
 
-Zero dependencies — bun's test runner is built in and runs TypeScript directly, so there is no
-install step and no `node_modules`.
+Zero dependencies — this runs `node --test`, Node's built-in runner, which strips TypeScript types
+natively. There is no install step, no lockfile, and no `node_modules`. Requires Node >= 22.18,
+where type stripping is enabled by default.
 
 Tests live in `plugins/<name>/tests/*.test.ts`, not in `skills/**/assets/` — files under `assets/`
 are copied verbatim into an adopting repository, and a test file has no business travelling with
@@ -130,4 +131,4 @@ After adding your plugin:
 - [ ] No personally identifiable information in any committed file
 - [ ] Eval prompts (if any) committed to `evals/evals.json`; workspace/run output left untracked
 - [ ] Latest `evals/benchmark.{json,md}` copied in if an eval iteration was run for this change
-- [ ] `bun test` passes, and any shipped executable asset has tests covering its guards
+- [ ] `npm test` passes, and any shipped executable asset has tests covering its guards

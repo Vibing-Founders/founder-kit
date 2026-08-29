@@ -6,6 +6,10 @@
   "license": "MIT",
   "repository": "https://github.com/Vibing-Founders/founder-kit",
   "scripts": {
-    "test": "bun test"
+    "test": "node --test"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
   }
 }
