@@ -44,11 +44,26 @@
  *    substituted as literals before the statement is sent.
  *    - Dollar-quoted bodies (`$$ ... $$`, `$tag$ ... $tag$`) would be corrupted
  *      by that substitution, so they are rejected outright rather than
- *      silently mangled.
+ *      silently mangled. Only when parameters are actually present: with none,
+ *      no substitution runs and the body passes through safely.
  *    - PRECONDITION: no statement contains a literal `$1`-shaped token outside
  *      a parameter position (inside a string literal, say). Substitution cannot
  *      tell it apart from a real placeholder and will corrupt it. The
  *      install-time scan flags these.
+ *
+ * 5. NON-FINITE NUMBERS BECOME NULL (precondition, not enforceable here). Real
+ *    `pg` sends `NaN`, which Postgres accepts for float and numeric columns.
+ *    Here `NaN` and `Infinity` render as NULL.
+ *    PRECONDITION: no test inserts a computed non-finite number and asserts on
+ *    the stored value. This one fails silently — a wrong answer, not an error.
+ *
+ * 6. ONLY `Client` IS IMPLEMENTED (enforced: every other export throws by
+ *    name). The alternate test config aliases the WHOLE `pg` package to this
+ *    file, so `Pool` and friends resolve here too. They refuse with a message
+ *    naming themselves rather than surfacing as `undefined is not a
+ *    constructor`.
+ *    PRECONDITION: the suite's Postgres access goes through `Client`. The
+ *    install-time scan checks which exports the tests actually import.
  * ---------------------------------------------------------------------------
  */
 
@@ -62,6 +77,9 @@ const quote = (s: string): string => `'${s.replace(/'/g, "''")}'`;
 /** Render a JS value as a Postgres literal. Casts in the SQL (`$1::uuid[]`) still apply. */
 const literal = (v: unknown): string => {
   if (v === null || v === undefined) return 'NULL';
+  // Divergence 5: a non-finite number becomes NULL. Real `pg` sends NaN, which
+  // Postgres accepts for float/numeric columns, so a test inserting a computed
+  // NaN and asserting on it reads NULL here instead of NaN.
   if (typeof v === 'number') return Number.isFinite(v) ? String(v) : 'NULL';
   if (typeof v === 'bigint') return v.toString();
   if (typeof v === 'boolean') return v ? 'true' : 'false';
@@ -76,8 +94,12 @@ const literal = (v: unknown): string => {
   return quote(String(v));
 };
 
-/** `$$ ... $$` or `$tag$ ... $tag$`. Substitution would corrupt these (divergence 4). */
-const DOLLAR_QUOTED = /\$[A-Za-z_]*\$/;
+/**
+ * `$$ ... $$` or `$tag$ ... $tag$`. Substitution would corrupt these (divergence 4).
+ * A tag may contain digits after its first character (`$fn2$`), so matching
+ * `[A-Za-z_]*` alone would let `$fn2$ ... $1 ... $fn2$` through to be rewritten.
+ */
+const DOLLAR_QUOTED = /\$\$|\$[A-Za-z_][A-Za-z0-9_]*\$/;
 
 /** Substitute $1..$N with literals. */
 const interpolate = (text: string, params?: unknown[]): string => {
@@ -99,7 +121,15 @@ const interpolate = (text: string, params?: unknown[]): string => {
   });
 };
 
-const TXN_NOOP = /^\s*(begin|commit|rollback|start\s+transaction|end)\s*;?\s*$/i;
+/**
+ * Transaction control, in every spelling that reaches a suite. The bare verbs are
+ * not enough: `BEGIN TRANSACTION`, `COMMIT WORK`, savepoints and `ROLLBACK TO
+ * SAVEPOINT` would otherwise travel to the endpoint, where each statement
+ * autocommits and the savepoint forms raise. Since transactions are no-ops here,
+ * savepoints are meaningless too, so they are neutralised alongside them.
+ */
+const TXN_NOOP =
+  /^\s*(?:(?:begin|start)(?:\s+(?:transaction|work))?(?:\s+.*)?|(?:commit|rollback|end)(?:\s+(?:transaction|work))?|rollback\s+to(?:\s+savepoint)?\s+\S+|savepoint\s+\S+|release(?:\s+savepoint)?\s+\S+)\s*;?\s*$/i;
 
 // ---------------------------------------------------------------------------
 // Statement rewrites — an extension point, not a universal translation layer.
@@ -178,19 +208,24 @@ const applyRewrites = (sql: string, params?: unknown[]): string | null => {
  * Note what this guard requires: a LIVE branch listing. It cannot be satisfied
  * by setting environment variables alone.
  *
- * Resolved once per process; every query awaits the same promise.
+ * Memoised PER REF, not per process. Keying on nothing would let a run that
+ * verified one branch then execute against a different `SUPABASE_BRANCH_REF`
+ * unverified — which is reachable in practice, because a dotenv file spread into
+ * the test environment outranks exported shell variables inside the workers.
+ * Every distinct ref pays for its own live listing.
  */
-let branchCheck: Promise<void> | null = null;
+const branchChecks = new Map<string, Promise<void>>();
 
 /** Exported for tests; resets the memoised guard between cases. */
 export const __resetBranchCheck = (): void => {
-  branchCheck = null;
+  branchChecks.clear();
 };
 
 const assertDisposableBranch = (ref: string, token: string): Promise<void> => {
-  if (branchCheck) return branchCheck;
+  const cached = branchChecks.get(ref);
+  if (cached) return cached;
 
-  branchCheck = (async () => {
+  const check = (async () => {
     const prodRef = process.env.SUPABASE_PROJECT_REF;
     if (!prodRef) {
       throw new Error(
@@ -225,19 +260,42 @@ const assertDisposableBranch = (ref: string, token: string): Promise<void> => {
     }
   })();
 
-  return branchCheck;
+  branchChecks.set(ref, check);
+  return check;
+};
+
+type ClientConfig = { user?: string; connectionString?: string } | string;
+
+/**
+ * The role a `pg` caller asked for, in any of the three forms it can arrive in:
+ * a connection string, `{ connectionString }`, or `{ user }`. Checking only the
+ * last would let the two most common forms past the guard below.
+ */
+const requestedRole = (config?: ClientConfig): string | undefined => {
+  if (!config) return undefined;
+  const conn = typeof config === 'string' ? config : config.connectionString;
+  if (conn) {
+    try {
+      const user = new URL(conn).username;
+      if (user) return decodeURIComponent(user);
+    } catch {
+      // Not a parseable URL; fall through to the object form.
+    }
+  }
+  return typeof config === 'object' ? config.user : undefined;
 };
 
 export class Client {
   private readonly ref: string;
   private readonly token: string;
 
-  constructor(config?: { user?: string } | string) {
+  constructor(config?: ClientConfig) {
     // Divergence 2: every statement runs as the endpoint's role. A config that
     // asks for a different one would be silently ignored, so refuse instead.
-    if (config && typeof config === 'object' && config.user && config.user !== ENDPOINT_ROLE) {
+    const role = requestedRole(config);
+    if (role && role !== ENDPOINT_ROLE) {
       throw new Error(
-        `pgHttpShim: this test connects as '${config.user}', but the HTTPS query endpoint ` +
+        `pgHttpShim: this test connects as '${role}', but the HTTPS query endpoint ` +
           `always runs as '${ENDPOINT_ROLE}'. Refusing to run rather than executing as the ` +
           'wrong role. Run this test against a real Postgres connection instead.'
       );
@@ -294,4 +352,26 @@ export class Client {
   }
 }
 
-export default { Client };
+/**
+ * The alternate test config aliases the WHOLE `pg` package to this file, so any
+ * export a test reaches for resolves here. Only `Client` is implemented, and an
+ * unimplemented export would otherwise surface as `undefined is not a
+ * constructor` — a failure that says nothing about the cause. These refuse by
+ * name instead. The install-time precondition scan checks for them too, so this
+ * is the second line of defence rather than the first.
+ */
+const unsupported = (name: string) => {
+  throw new Error(
+    `pgHttpShim: this suite uses \`pg.${name}\`, but the shim implements only the ` +
+      '`Client` interface. Rewrite the test to use `Client`, or run it against a real ' +
+      'Postgres connection instead of the HTTPS shim.'
+  );
+};
+
+export class Pool {
+  constructor(_config?: ClientConfig) {
+    unsupported('Pool');
+  }
+}
+
+export default { Client, Pool };

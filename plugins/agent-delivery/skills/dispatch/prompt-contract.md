@@ -44,19 +44,27 @@ live primary path. Write the instruction so a registry failure degrades instead 
 
 ## The runbook pointer
 
-Same shape, and it matters more, because the runbook carries the knowledge the prompt is too small
-to hold:
+This one matters more than the rest, because the runbook carries the knowledge the prompt is too
+small to hold.
 
-> Follow the `agent-delivery` plugin's sandbox runbook. Invoke the `agent-delivery:dispatch`
-> skill's runbook, or read
-> `plugins/agent-delivery/skills/_shared/sandbox-runbook.md` from the installed plugin. **If skill
-> invocation is unavailable**, fetch it and follow it:
+**The runbook is a file, not a skill.** The plugin registers `onboard` and `dispatch`; the runbook
+is shared knowledge under `_shared/`. The environment's setup script installs the plugin before
+the agent starts, so the file is on disk — reading it there is the primary path, and the public
+fetch is the fallback. Write it as:
+
+> Follow the `agent-delivery` plugin's sandbox runbook. It is on disk from the environment's setup
+> script — locate it under the installed plugins directory:
+> `find "$HOME" /opt -path '*agent-delivery/skills/_shared/sandbox-runbook.md' 2>/dev/null | head -1`
+> **If it is not there**, fetch it and follow it:
 > `curl -sSL https://raw.githubusercontent.com/Vibing-Founders/founder-kit/main/plugins/agent-delivery/skills/_shared/sandbox-runbook.md`
-> **Do not install the plugin mid-run and retry the invocation.**
+> **Do not install the plugin mid-run and retry.**
 
-That last sentence is load-bearing. Whether a mid-session plugin install becomes invocable in the
-same session is unverified, and a failed retry leaves the run with nowhere to go — where the fetch
+That last sentence is load-bearing. Whether a mid-session plugin install becomes usable in the same
+session is unverified, and a failed retry leaves the run with nowhere to go — where the fetch
 always has somewhere to go.
+
+Note the path is inside the *installed plugin*, not inside the repository under test. A run that
+searches its own checkout for it finds nothing.
 
 ## Size
 

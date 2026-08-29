@@ -32,20 +32,26 @@ shim and no alternate test config."* Skip to step 4. A silent skip reads like an
 
 ## 2. Precondition scan — run it before copying anything
 
-The shim diverges from a real Postgres client in five ways, documented in its header. Three of
-them are enforced at runtime; two can only be caught by reading the tests. **Scan for all five
-before installing**, because a shim installed into a suite that violates one produces a confusing
-failure rather than an honest one.
+The shim diverges from a real Postgres client in six ways, numbered in its header. Those six
+produce the **seven** checks below — divergence 4 (textual parameter substitution) is the source of
+two distinct ones. Four divergences are enforced at runtime; the rest can only be caught by reading
+the tests.
+
+**Scan for all seven before installing**, because a shim installed into a suite that violates one
+produces a confusing failure rather than an honest one. Each row names the divergence it comes
+from, so a stop reported as "blocked by precondition 5" can be traced back to the header.
 
 Scan the files found in step 1.
 
 | # | Precondition | How to scan | On a hit |
 |---|---|---|---|
-| 1 | **No dollar-quoted SQL.** Parameter substitution is textual, so `$$ … $$` or `$tag$ … $tag$` would be corrupted | Search the SQL strings for `$$` or `$<word>$` | **Stop. Do not install.** Report the file and the statement |
-| 2 | **No literal `$N`-shaped token outside a parameter position.** Substitution cannot tell a placeholder from a `$1` inside a string literal | For each `query()` call, count the distinct `$N` tokens and compare with the length of the params array. A `$N` where `N` exceeds the params length, or any `$N` in a call passing no params, is a literal | **Stop. Do not install.** Report the file and the statement |
-| 3 | **No affected-row assertion on a non-returning write.** The endpoint returns rows, not a command tag, so `rowCount` is the returned-row count and a write without `RETURNING` reports 0 | Find `insert`/`update`/`delete` statements with no `returning`, then check whether the call's result has `rowCount` or `rowsAffected` asserted | **Stop. Do not install.** Report the file and the assertion |
-| 4 | **No connection as another database role.** Every statement runs as the endpoint's own role | Search for a client constructed with a `user` option, or a connection string carrying one, that is not the endpoint role | **Stop. Do not install.** Report the file. (The shim also throws at runtime, but an install-time report is the useful one) |
-| 5 | **Transactions are used for grouping, not isolation.** `begin`/`commit`/`rollback` are no-ops, so a suite that rolls back to undo its fixtures leaves its writes behind | Search for `rollback`, then read each hit. The question is whether the suite **depends** on it to undo writes. A rollback whose failure is swallowed — `catch (…) {}` around it, or a chained `.catch(() => undefined)` — is best-effort recovery and fine. A rollback the fixtures rely on, typically unguarded in a `finally` or teardown hook with no other cleanup, is not | **Stop. Do not install.** Report the hook |
+| 1 | **No dollar-quoted SQL passed alongside parameters.** *(divergence 4)* Substitution is textual, so `$$ … $$` or `$tag$ … $tag$` would be corrupted. (With no parameters nothing is substituted, so it is safe) | Search the SQL for `$$` or `$<tag>$` — a tag may contain digits after its first character, so `$fn2$` counts | **Stop. Do not install.** Report the file and the statement |
+| 2 | **No literal `$N`-shaped token outside a parameter position.** *(divergence 4)* Substitution cannot tell a placeholder from a `$1` inside a string literal | For each `query()` call, count the distinct `$N` tokens and compare with the length of the params array. A `$N` where `N` exceeds the params length, or any `$N` in a call passing no params, is a literal | **Stop. Do not install.** Report the file and the statement |
+| 3 | **No affected-row assertion on a non-returning write.** *(divergence 3)* The endpoint returns rows, not a command tag, so `rowCount` is the returned-row count and a write without `RETURNING` reports 0 | Find `insert`/`update`/`delete` statements with no `returning`, then check whether the call's result has `rowCount` or `rowsAffected` asserted | **Stop. Do not install.** Report the file and the assertion |
+| 4 | **The suite's Postgres access goes through `Client`.** *(divergence 6)* The alternate config aliases the *whole* `pg` package, and only `Client` is implemented | Check which exports the files import — `Pool`, `Cursor` and friends are not supported (the shim refuses them by name at runtime, but an install-time report is the useful one) | **Stop. Do not install.** Report the file and the export |
+| 5 | **No connection as another database role.** *(divergence 2)* Every statement runs as the endpoint's own role | Search for a client constructed with a `user` option, or a connection string carrying one, that is not the endpoint role | **Stop. Do not install.** Report the file. (The shim also throws at runtime, but an install-time report is the useful one) |
+| 6 | **No test asserts on a stored non-finite number.** *(divergence 5)* `NaN` and `Infinity` render as NULL, where real `pg` sends `NaN` | Search for computed numeric inserts whose value can be non-finite and is then asserted on | **Stop. Do not install.** This one fails silently — a wrong answer, not an error |
+| 7 | **Transactions are used for grouping, not isolation.** *(divergence 1)* `begin`/`commit`/`rollback` are no-ops, so a suite that rolls back to undo its fixtures leaves its writes behind | Search for `rollback`, then read each hit. The question is whether the suite **depends** on it to undo writes. A rollback whose failure is swallowed — `catch (…) {}` around it, or a chained `.catch(() => undefined)` — is best-effort recovery and fine. A rollback the fixtures rely on, typically unguarded in a `finally` or teardown hook with no other cleanup, is not | **Stop. Do not install.** Report the hook |
 
 **A hit is a stop, not a warning.** Report the incompatibility and what it would cause, and leave
 the repository unmodified. The adopter's options are to change the test or to run that file

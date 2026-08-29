@@ -152,7 +152,7 @@ database:
   branch_name_prefix: run-       # default: run-
   function_secrets_var: BRANCH_FUNCTION_SECRETS   # default
   secrets_files: []              # default: [] — repo paths the run writes the forwarded set to
-  branch_ref_var: SUPABASE_BRANCH_REF             # default
+  branch_ref_var: SUPABASE_BRANCH_REF             # default — see the note below
   test_env:                      # variable NAMES the suite reads. Never values.
     url: []
     anon_key: []
@@ -173,6 +173,13 @@ which reads as a missing secret rather than exhausted connection slots. Match th
 suite's concurrency; `small` is the smallest size proven to survive a parallel run alongside the
 shim.
 
+**`branch_ref_var` names what your *suite* reads.** Rename it freely for your own code. The
+shipped shim, however, reads `SUPABASE_BRANCH_REF` and `SUPABASE_PROJECT_REF` by those fixed
+names, because it is a file copied into your repository rather than something that can read this
+config at runtime. So the run exports **both**: the name you set here, and `SUPABASE_BRANCH_REF`.
+If you install the shim and set a different `branch_ref_var`, nothing breaks — the two simply
+carry the same value.
+
 **`test_env` carries names only.** These are the environment variables your suite already reads to
 find its database. The run exports them pointing at its own preview branch. No value ever appears
 in this file, in a dispatched prompt, or in a report.
@@ -184,6 +191,18 @@ repo's ignore rules; `onboard` refuses to declare the tier ready otherwise.
 **`test_overrides`** exist because a remote branch is slower than a local database in ways that
 look like failures: hooks time out on latency, and a worker count tuned for a local stack
 oversubscribes a branch's connection slots. They apply only when the suite targets a branch.
+
+The run carries them to the suite as two environment variables, which the shipped alternate test
+config reads:
+
+| Key | Variable the run exports |
+|---|---|
+| `max_workers` | `AGENT_DELIVERY_MAX_WORKERS` |
+| `hook_timeout_ms` | `AGENT_DELIVERY_HOOK_TIMEOUT_MS` |
+
+A project running **without** the shim never loads that config, so its run passes the same values
+on the test command line instead (`--maxWorkers=N` and the runner's timeout flag). Either way the
+values come from these two keys.
 
 ### Prerequisites when `database.enabled: true`
 

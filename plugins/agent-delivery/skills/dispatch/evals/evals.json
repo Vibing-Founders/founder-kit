@@ -1,6 +1,6 @@
 {
   "skill_name": "dispatch",
-  "note": "Prompts target the branch points a reader cannot check by reading the skill files: whether a stage is resolved or refused, whether the prompt leaks a secret, whether a claim is relayed or verified, and whether a leaked preview branch is reconciled. Several need a fixture repo with .agent-delivery/config.yaml and a tracker double; `files` names what the fixture must provide. NOT YET RUN — no eval iteration has been executed against this skill, so there is no benchmark.json/benchmark.md snapshot in this directory yet.",
+  "note": "Prompts target the branch points a reader cannot check by reading the skill files: whether a stage is resolved or refused, whether the prompt leaks a secret, whether a claim is relayed or verified, and whether a leaked preview branch is reconciled. Several need a fixture repo with .agent-delivery/config.yaml and a tracker double; `files` names what the fixture must provide. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
   "evals": [
     {
       "id": 1,

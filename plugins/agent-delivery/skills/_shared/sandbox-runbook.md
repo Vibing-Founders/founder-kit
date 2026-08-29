@@ -154,9 +154,15 @@ never invent a value.
 ### 3.6 Point the suite at the branch
 
 Export the variables your config's `test_env` names, pointing at the branch: the branch's API URL,
-its publishable key, and its service key. Also export the branch-reference variable your config
-names — some suites read it to decide concurrency, and unset it can silently serialise a run that
-should parallelise.
+its publishable key, and its service key. Also export the branch-reference variable your config's
+`branch_ref_var` names — some suites read it to decide concurrency, and unset it can silently
+serialise a run that should parallelise.
+
+**Export `SUPABASE_BRANCH_REF` and `SUPABASE_PROJECT_REF` under those exact names too**, whatever
+`branch_ref_var` is set to. The shim is a file copied into the repository and cannot read the
+config at runtime, so it looks for those two fixed names — and `SUPABASE_PROJECT_REF` is what its
+safety guard checks the branch against. When `branch_ref_var` is already `SUPABASE_BRANCH_REF`,
+that is one export, not two.
 
 **Obtain the URL and keys through the provider's MCP connector** — its project-URL and
 publishable-key operations — rather than the branch-detail endpoint. This is the whole reason the
@@ -178,8 +184,19 @@ restrict its permissions (§4.3).
 
 Not the whole suite — the repository's own testing rules apply. Expect roughly double the local
 runtime from network latency, and worse than that for tests that exercise deployed functions.
-Apply the timeout and worker-count overrides your config names; they exist because latency and
-connection limits on a remote branch produce failures that look like broken tests.
+
+**Apply the overrides your config's `database.test_overrides` names.** They exist because latency
+and connection limits on a remote branch produce failures that look like broken tests. Export them
+under these two names, which the shipped alternate test config reads:
+
+```
+export AGENT_DELIVERY_MAX_WORKERS=<database.test_overrides.max_workers>
+export AGENT_DELIVERY_HOOK_TIMEOUT_MS=<database.test_overrides.hook_timeout_ms>
+```
+
+Skip either export when its config value is unset — the project's own setting then stands. If this
+project runs **without** the shim, that config is never loaded, so pass the same values on the test
+command line instead (`--maxWorkers=N` and the runner's hook-timeout flag).
 
 **Tests that open a direct Postgres connection** need the alternate test configuration your config
 names, which aliases the Postgres client to the HTTPS shim. They exist because a REST interface
@@ -297,17 +314,28 @@ retrying silently. A half-completed close-out that nobody knows about is worse t
 
 ## Appendix: getting this file
 
-You reached it one of two ways. Both are expected:
+You reached it one of two ways. Both are expected.
 
-1. **The plugin's skill** — the environment's setup script installs this plugin before you start,
-   so invoking the skill is the live primary path.
-2. **A direct fetch** — if invocation is unavailable, fetch the raw file from the public
-   repository:
+**This file is knowledge, not a skill.** The plugin registers `onboard` and `dispatch` only, so
+there is nothing to invoke to get here — you either read the file or you fetch it.
+
+1. **From the installed plugin on disk** — the environment's setup script installs this plugin
+   before you start, so the file is already present. This is the primary path:
+
+   ```
+   find "$HOME" /opt -path '*agent-delivery/skills/_shared/sandbox-runbook.md' 2>/dev/null | head -1
+   ```
+
+   Note that path is inside the installed plugin, not inside the repository you are working on.
+
+2. **A direct fetch** — if it is not on disk, the install did not take. Fetch the raw file from
+   the public repository:
 
    ```
    curl -sSL https://raw.githubusercontent.com/Vibing-Founders/founder-kit/main/plugins/agent-delivery/skills/_shared/sandbox-runbook.md
    ```
 
-   Then follow it. **Do not install the plugin mid-run and retry the invocation** — whether a
-   mid-session install becomes invocable in that same session is unverified, and a failed retry
+   Then follow it, and **say in your report that the install had not taken** — that is a
+   dispatcher-side problem worth fixing. **Do not install the plugin mid-run and retry** — whether
+   a mid-session install becomes usable in that same session is unverified, and a failed retry
    leaves you with nowhere to go.

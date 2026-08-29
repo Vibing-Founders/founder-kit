@@ -18,9 +18,10 @@
  *
  * ---------------------------------------------------------------------------
  * ADJUST TWO THINGS after copying this file into your repository:
- *   1. `BASE_CONFIG` below, if your project's Vitest config is not at
- *      `./vitest.config.ts`.
- *   2. `SHIM` below, if you changed `database.shim.path` in
+ *   1. The `import baseConfig from './vitest.config'` line below, if your
+ *      project's Vitest config is not at `./vitest.config.ts` (a `.mts` or
+ *      differently-named config needs the specifier changed here).
+ *   2. The `SHIM` constant below, if you changed `database.shim.path` in
  *      `.agent-delivery/config.yaml` from its default.
  * ---------------------------------------------------------------------------
  */
@@ -34,13 +35,21 @@ const SHIM = fileURLToPath(new URL('./test/helpers/pg-http-shim.ts', import.meta
 
 /**
  * Overrides a run applies when the suite targets a remote branch rather than a
- * local database. Both are set by the dispatched run from
- * `database.test_overrides` in `.agent-delivery/config.yaml`; unset, the
- * project's own settings are left alone.
+ * local database. They exist because a remote branch fails in ways that look
+ * like broken tests: setup and teardown make many round trips and time out on
+ * latency, and a worker count tuned for a local stack oversubscribes the
+ * branch's connection slots.
  *
- * They exist because a remote branch fails in ways that look like broken tests:
- * setup and teardown make many round trips and time out on latency, and a worker
- * count tuned for a local stack oversubscribes the branch's connection slots.
+ * THESE TWO VARIABLE NAMES ARE THE CONTRACT between the run and this file. The
+ * dispatched run exports them from `database.test_overrides` in
+ * `.agent-delivery/config.yaml`; unset, the project's own settings are left
+ * alone. They are documented in `_shared/config-schema.md` under
+ * `database.test_overrides` and in the runbook's step 3.7 — if you rename them
+ * here, rename them there too or the overrides silently stop applying.
+ *
+ * Note this file is only loaded for shim-backed runs. A project that needs the
+ * overrides without the shim passes them on the test command line instead; the
+ * runbook says how.
  */
 const num = (v: string | undefined): number | undefined => {
   const n = Number(v);
