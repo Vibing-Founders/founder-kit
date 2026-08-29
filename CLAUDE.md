@@ -12,6 +12,21 @@ When using `/skill-creator` on a skill in this repo:
 - Raw run output (`iteration-N/`, transcripts, timing/grading): `<skill-name>-workspace/` as a sibling of the skill directory. Matched by `.gitignore` (`*-workspace`) — never commit this, it's large and reproducible.
 - Latest benchmark summary: after an iteration finishes, copy `benchmark.json`/`benchmark.md` from the workspace into `skills/<skill>/evals/`, overwriting the previous snapshot, so `git log` on that file shows how the skill's scores changed over time.
 
+## Tests
+
+Most of this repo is Markdown that Claude reads, and evals are how that gets checked. A few plugins
+also ship **executable assets** — code copied into an adopting repository — and those get real unit
+tests, because a reader cannot verify a safety guard by looking at it.
+
+- Runner: **`bun test`** (`npm test` runs the same thing). Zero dependencies, no lockfile, no
+  `node_modules` — bun's runner is built in and executes TypeScript directly.
+- Location: `plugins/<name>/tests/*.test.ts`. Deliberately **not** inside `skills/**/assets/`,
+  since files there are copied verbatim into adopting repos.
+- What earns a test: shipped executable assets, especially anything that refuses, guards, or
+  validates. Skill instructions and knowledge files are covered by evals instead.
+
+Run the full suite from the repo root before opening a PR.
+
 ## Legal content
 
 Everything the `compliance` plugin's skills produce (assessments, checklists, DPIAs, LIAs, CRAs) is informational only, not legal advice — see the disclaimer in README.md. Don't soften or remove that disclaimer when editing skill output templates.

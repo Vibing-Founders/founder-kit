@@ -1,0 +1,11 @@
+{
+  "name": "founder-kit",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Claude Code plugin marketplace for founders building websites, platforms, and apps.",
+  "license": "MIT",
+  "repository": "https://github.com/Vibing-Founders/founder-kit",
+  "scripts": {
+    "test": "bun test"
+  }
+}
