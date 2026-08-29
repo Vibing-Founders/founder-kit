@@ -81,6 +81,11 @@ const DOLLAR_QUOTED = /\$[A-Za-z_]*\$/;
 
 /** Substitute $1..$N with literals. */
 const interpolate = (text: string, params?: unknown[]): string => {
+  // No parameters means no substitution, so a dollar-quoted body passes through
+  // untouched and is safe. The guard below belongs after this return, not before
+  // it: rejecting a statement substitution never rewrites would refuse SQL the
+  // shim can run correctly.
+  if (!params || params.length === 0) return text;
   if (DOLLAR_QUOTED.test(text)) {
     throw new Error(
       'pgHttpShim: this statement contains a dollar-quoted body ($$ or $tag$), which ' +
@@ -88,7 +93,6 @@ const interpolate = (text: string, params?: unknown[]): string => {
         'against a real Postgres connection instead.'
     );
   }
-  if (!params || params.length === 0) return text;
   return text.replace(/\$(\d+)/g, (whole, n: string) => {
     const idx = Number(n) - 1;
     return idx < params.length ? literal(params[idx]) : whole;
