@@ -40,6 +40,7 @@ Once added, you can install any plugin from this marketplace:
 |--------|-------------|--------|
 | `compliance` | Online safety, GDPR, and application security compliance for platform builders | `online-safety`, `gdpr`, `application-security`, `dpia`, `lia`, `cra` |
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `onboard`, `dispatch` |
+| `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `onboard`, `orchestrate` |
 
 ---
 
@@ -133,6 +134,36 @@ Resolves the stage from the plan's readiness (sweeping branches and worktrees, n
 
 ---
 
+### `site-delivery`
+
+Free TOFU module for smart non-coding founders. Give Claude a brief in plain language and get back a pull request — no GitHub Project or Linear setup required. Optional tracker integration and compound-engineering stages for teams who want fuller planning workflows.
+
+Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Human always reviews, merges, runs publish, and confirms live — Claude never auto-merges or triggers deploys.
+
+> **v0.0.1 scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages) scaffold complete. No live tracker API calls or publish flow execution in this release. Human runs the locked publish path. Optional future integration with `agent-delivery:dispatch` for sandbox execution of implementation slices.
+
+### Skills
+
+**`/site-delivery:onboard`** — configure a site repository for delivery
+```
+/site-delivery:onboard my site for delivery
+/site-delivery:onboard set up site-delivery
+/site-delivery:onboard check my site-delivery config
+```
+
+A plain-language wizard that writes `.site-delivery/config.yaml` through conversation. Asks for your site repository, publish platform (Lovable/SST/Supabase+Lovable), and whether you want the thin path (no tracker) or fuller path (GitHub Project or Linear integration with compound-engineering stages). Defaults to thin path for non-coders. Reports every defaulted value explicitly.
+
+**`/site-delivery:orchestrate`** — run a site delivery from brief to PR
+```
+/site-delivery:orchestrate add a testimonials section to the homepage
+/site-delivery:orchestrate SITE-123
+/site-delivery:orchestrate deliver this brief
+```
+
+Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path: reads tracker state and runs the compound-engineering stage), makes the changes, opens a PR, and reports the human gates (review, merge, publish, confirm live). Posts PR link to the tracker when configured. Enforces hard delivery rules: never auto-merge, never trigger publish, refuse experimental changes not in the brief.
+
+---
+
 ## Repository Structure
 
 ```
@@ -150,6 +181,12 @@ plugins/
       _shared/          # Sandbox runbook, config contract, tracker adapters
       onboard/          # Detection, environment artifacts, database preflight
       dispatch/         # Stage resolution, prompt contract, close-out
+  site-delivery/
+    .claude-plugin/plugin.json
+    skills/
+      _shared/          # Config schema, examples
+      onboard/          # Plain-language wizard for .site-delivery/config.yaml
+      orchestrate/      # Brief-to-PR thin path or fuller CE stages
 ```
 
 ---
