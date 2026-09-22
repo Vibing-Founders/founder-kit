@@ -1,0 +1,14 @@
+{
+  "name": "site-delivery",
+  "version": "0.0.1",
+  "description": "Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration and compound-engineering stages.",
+  "author": {
+    "name": "Vibing Founders",
+    "url": "https://github.com/Vibing-Founders"
+  },
+  "homepage": "https://github.com/Vibing-Founders/founder-kit",
+  "repository": "https://github.com/Vibing-Founders/founder-kit",
+  "license": "MIT",
+  "keywords": ["site-delivery", "founder-toolkit", "lovable", "sst", "supabase", "website-delivery", "automation"],
+  "skills": ["./skills/"]
+}
