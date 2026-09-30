@@ -1,0 +1,83 @@
+{
+  "skill_name": "fk-fact-check",
+  "note": "All businesses, products, people and claims are invented. Prompts need web search; `files` describes any fixture the project folder must contain. Evals that stop at the claim list test the pause before research; the rest assume the founder replies 'go ahead' when shown the list. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "landing-page-mixed-claims",
+      "prompt": "Can you check the claims on my landing page before I launch? It's for Shutterbooks, a bookkeeping app for freelance photographers in the UK.\n\n\"Shutterbooks saves you 5 hours a week on admin. Self-employed people in the UK must file their Self Assessment tax return online by 31 January. Over 90% of UK freelancers are photographers. Join 500 photographers already using Shutterbooks. Beautifully simple bookkeeping.\"",
+      "expected_output": "Extracts the checkable claims and leaves out 'beautifully simple' as puffery. Tags '5 hours a week' and '500 photographers' as the founder's own claims that need their own data. Shows the numbered list and waits; after the founder says go ahead, researches with the bundled evidence-researcher prompt and judges with the bundled analyst prompt. The 31 January online filing deadline comes back Supported with an official source. 'Over 90% of UK freelancers are photographers' comes back Contradicted with a source. '5 hours a week' and '500 photographers' come back Unsubstantiated: needs your own evidence (not Contradicted), each saying what would substantiate it. Every problem claim has a suggested rewrite. The report includes a plain not-legal-advice line about backing up advertising claims, and is saved to docs/customer-research/fact-checks/<date>-<topic>.md with the path stated.",
+      "files": ["an empty project folder with no existing research"],
+      "assertions": [
+        {"id": "puffery-skipped", "text": "'Beautifully simple bookkeeping' is not treated as a claim to check"},
+        {"id": "waits-for-founder", "text": "The claim list is shown to the founder before any research is done"},
+        {"id": "deadline-supported", "text": "The 31 January online filing deadline is marked Supported, with an official or regulator source link and date"},
+        {"id": "false-stat-contradicted", "text": "'Over 90% of UK freelancers are photographers' is marked Contradicted with a one-sentence reason and a source"},
+        {"id": "own-data-not-contradicted", "text": "'Saves you 5 hours a week' and '500 photographers' are marked Unsubstantiated with 'needs your own evidence', not Contradicted, and each says what would substantiate it"},
+        {"id": "rewrites", "text": "Every Contradicted or Unsubstantiated claim has a suggested rewrite that says only what the evidence supports"},
+        {"id": "not-legal-advice", "text": "The report says advertising claims should be ones you can back up, and that it is not legal advice"},
+        {"id": "report-structure", "text": "The report has a summary with counts by status, then per claim: status, reason, evidence, sources with link, date and reliability, and confidence"},
+        {"id": "saved-in-research-folder", "text": "The report is saved under docs/customer-research/fact-checks/ with a dated, hyphenated filename and the path is stated"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "competitor-marketing-claims",
+      "prompt": "Are my competitor's claims true? This is from the homepage of PlateShift, a meal-planning app for shift workers. I'm building something similar.\n\n\"PlateShift is the #1 meal planner for NHS staff. Rated 4.9 stars by 10,000 nurses. Winner of the 2025 Healthy Workplace App Award. Plans that fit any rota.\"",
+      "expected_output": "Treats the content as third-party. Extracts the ranking, the rating and review count, and the award as claims; flags '#1 meal planner for NHS staff' as a superlative needing evidence. After confirmation, researches and judges each claim. Claims the evidence cannot confirm (for example an award that cannot be found in any list from the awarding body) are Unsubstantiated or Contradicted with one-sentence reasons; 'no reliable evidence found' is reported with what was searched for. No rewrites are offered; instead the summary says which unsupported claims matter for how the founder positions against PlateShift. Saves the report under docs/customer-research/fact-checks/.",
+      "files": ["an empty project folder with no existing research"],
+      "assertions": [
+        {"id": "third-party-treated", "text": "The skill treats the content as a competitor's, not the founder's own, and does not mark claims 'needs your own evidence'"},
+        {"id": "superlative-flagged", "text": "'#1 meal planner for NHS staff' is flagged as a superlative needing evidence"},
+        {"id": "award-needs-named-evidence", "text": "The award claim is Supported only if a source names that exact award and PlateShift as winner; otherwise it is Unsubstantiated or Contradicted with a reason"},
+        {"id": "searched-noted", "text": "Where no reliable evidence was found, the report says what was searched for"},
+        {"id": "positioning-not-rewrites", "text": "The report points out which unsupported competitor claims matter for positioning rather than suggesting rewrites of the competitor's copy"},
+        {"id": "reliability-labelled", "text": "Every source carries a reliability note (official, regulator, established publication, review site or self-published)"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "superlatives-flagged",
+      "prompt": "Can I say this in my pitch deck? \"Shutterbooks is the only bookkeeping app built for photographers. It's the fastest way to do your tax return, and your books are guaranteed 100% accurate.\"",
+      "expected_output": "Lists 'the only bookkeeping app built for photographers', 'the fastest way to do your tax return' and 'guaranteed 100% accurate' as claims and marks each as a superlative or absolute that needs evidence. After confirmation, researches: looks for other photographer bookkeeping apps as counter-examples to 'the only'. Any superlative that is not Supported gets a reason saying what evidence it would need and a softer rewrite (for example 'bookkeeping built for photographers'). Includes the not-legal-advice line.",
+      "files": ["an empty project folder with no existing research"],
+      "assertions": [
+        {"id": "all-three-flagged", "text": "'the only', 'the fastest' and 'guaranteed 100% accurate' are each listed and marked as superlatives or absolutes needing evidence"},
+        {"id": "counter-examples-searched", "text": "The research looks for other bookkeeping apps aimed at photographers as possible counter-examples to 'the only'"},
+        {"id": "needs-evidence-stated", "text": "Each superlative that is not Supported says what evidence would be needed to make it"},
+        {"id": "softer-rewrites", "text": "Each unsupported superlative gets a rewrite that drops or qualifies the absolute wording"},
+        {"id": "not-legal-advice", "text": "The output says advertising claims should be ones you can back up, and that it is not legal advice"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "icp-quote-substantiates-claim",
+      "prompt": "Fact-check this sales email before I send it to a list of photographers: \"Most freelance photographers leave their books until the tax deadline, then spend a weekend matching payments to shoots. Shutterbooks does it as you go.\"",
+      "expected_output": "Finds the research folder and reads the existing ideal customer profile and interviews, and tells the founder it is using them. After confirmation, adds the matching interview quotes to the evidence, labelled as the founder's customer interviews, before the analyst judges. The claim about leaving books until the deadline and spending a weekend matching payments is backed by the quotes, which are cited with who said them and which file; because three conversations cannot show 'most', the verdict is at best partly supported for 'some' photographers, and a rewrite such as 'Many photographers we spoke to…' is suggested. 'Shutterbooks does it as you go' is treated as a product description or marked needs your own evidence, not Contradicted.",
+      "files": ["a project folder containing docs/customer-research/ideal-customer-profile.md for Shutterbooks, a bookkeeping tool for freelance photographers, based on 3 conversations, with a pain point 'last-minute tax-return reconciliation' carrying the quote \"I'd left it all to the last week. I had to go back through eight months of bank statements to work out which lens hire was for which client\" (Marcus, 2026-04-14), and docs/customer-research/interviews/marcus-2026-04-14/ with raw.md and analysis.md"],
+      "assertions": [
+        {"id": "reads-icp", "text": "The output says it is using the existing ideal customer profile or interviews"},
+        {"id": "quote-cited", "text": "The report cites Marcus's quote, with who said it and when or which file, as evidence for the claim about leaving books until the deadline"},
+        {"id": "some-not-most", "text": "The verdict notes that a handful of interviews supports 'some' or 'many photographers we spoke to', not 'most', and does not mark the claim Supported as written"},
+        {"id": "rewrite-to-evidence", "text": "A rewrite is suggested that matches what the interviews show"},
+        {"id": "own-claim-not-contradicted", "text": "'Shutterbooks does it as you go' is not marked Contradicted"},
+        {"id": "saved-alongside-icp", "text": "The report is saved under docs/customer-research/fact-checks/ and the path is stated"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "founder-narrows-list",
+      "prompt": "Verify these stats from my blog post draft for a meal-planning app for shift workers. Show me the claims first, I'll probably want to drop some.\n\n\"Night-shift workers make up about 1 in 10 UK employees. Studies show shift workers are more likely to skip breakfast. Our app has helped 3,000 nurses eat better. Batch cooking takes just 2 hours on a Sunday. The UK's first meal planner designed around rotas.\"\n\nDrop the batch-cooking one, and for the 1 in 10 stat only check night shifts in England, not the whole UK.",
+      "expected_output": "Extracts the claims into a numbered list, applying the founder's edits: the batch-cooking claim is dropped (and noted as dropped at their request), and the 1 in 10 claim is narrowed to night-shift workers in England, with the original wording kept alongside. Tags '3,000 nurses' as needing the founder's own data and 'the UK's first meal planner designed around rotas' as a superlative, then shows the edited list and asks whether anything else should change before research. Does not search, dispatch the evidence researcher or produce verdicts in this turn.",
+      "files": ["an empty project folder with no existing research"],
+      "assertions": [
+        {"id": "numbered-list", "text": "The claims are shown as a numbered list with their original wording"},
+        {"id": "tags-shown", "text": "'3,000 nurses' is tagged as needing the founder's own data and 'the UK's first' as a superlative"},
+        {"id": "dropped-claim-absent", "text": "The batch-cooking claim is not in the list of claims to check"},
+        {"id": "narrowed-claim", "text": "The 1 in 10 claim is listed in its narrowed form (night-shift workers in England) with the original wording alongside"},
+        {"id": "asks-to-edit", "text": "The founder is asked whether to add, drop or narrow anything else before research"},
+        {"id": "no-research-yet", "text": "No web research, research agent or verdicts appear before the founder replies"}
+      ]
+    }
+  ]
+}
