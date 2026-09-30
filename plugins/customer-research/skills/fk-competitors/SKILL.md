@@ -102,6 +102,13 @@ points to, for example:
 And list any research gaps: things the web could not answer that customer
 conversations could (the `fk-icp` skill in this plugin can analyse those conversations).
 
+If the founder is already on sales calls and hearing objections ("you're more expensive than
+X"), suggest the `competitive-battlecard` skill from the free
+[pm-skills](https://github.com/phuryn/pm-skills) marketplace
+(`/plugin install pm-go-to-market@pm-skills`) to turn this research into responses to
+objections. Tell them to skip that plugin's market-sizing and market-share advice, which
+does not fit a bootstrapped business.
+
 ## Plain language
 
 Assume the founder is not technical. No jargon without a short explanation. Say where

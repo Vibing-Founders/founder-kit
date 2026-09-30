@@ -196,6 +196,23 @@ Turns interview transcripts and feedback into an ideal customer profile, buyer p
 
 Scopes the question with you (using your ideal customer profile if one exists), then runs web research in a separate research agent where your tool supports it. Covers direct and indirect competitors and the "do nothing / spreadsheet" alternative, each competitor's positioning, pricing, target customer and what their own customers complain about, and ends with where a small team can win. Every claim is cited, facts are separated from inference, and stale information is flagged.
 
+### Works well with
+
+These free skills from [pm-skills](https://github.com/phuryn/pm-skills) by Paweł Huryn fill gaps
+this plugin leaves on purpose:
+
+- **`interview-script`**: a full guide to prepare a customer interview. Give it the research
+  gaps from `fk-icp`, then bring the transcript back to `fk-icp`. Drop its hypothetical
+  questions ("If you could wave a magic wand…"); `fk-icp` treats the answers as weak evidence.
+- **`competitive-battlecard`**: responses to objections once you are on sales calls, built on
+  the `fk-competitors` research.
+
+```
+/plugin marketplace add phuryn/pm-skills
+/plugin install pm-product-discovery@pm-skills   # interview-script
+/plugin install pm-go-to-market@pm-skills        # competitive-battlecard
+```
+
 ---
 
 ## Repository Structure

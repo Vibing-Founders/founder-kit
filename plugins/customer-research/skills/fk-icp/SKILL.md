@@ -145,6 +145,25 @@ example:
 - A negative persona keeps showing up in sign-ups: what will you change in your
   marketing or pricing so they self-select out?
 
+## Preparing the next interview
+
+When the founder asks what to ask next, or how to run their next customer conversation,
+list the research gaps from the ICP as the questions that matter most. This skill does not
+write full interview scripts. For a complete guide (opening, warm-up, questions about past
+behaviour, probing, wrap-up), suggest the `interview-script` skill from the free
+[pm-skills](https://github.com/phuryn/pm-skills) marketplace, and give the founder the
+research gaps to feed into it:
+
+```
+/plugin marketplace add phuryn/pm-skills
+/plugin install pm-product-discovery@pm-skills
+```
+
+Warn them that some of its suggested questions are hypothetical ("If you could wave a magic
+wand…", "What would you give up…"). Answers to those are weak evidence, and this skill will
+flag them when the transcript comes back. Suggest dropping them, or replacing them with "Tell
+me about the last time…" questions.
+
 ## Plain language
 
 Founders using this may not be technical. Explain what you are doing in everyday words,

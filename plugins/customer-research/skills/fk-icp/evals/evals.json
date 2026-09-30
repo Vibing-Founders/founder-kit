@@ -107,6 +107,19 @@
         {"id": "missing-negatives-and-log", "text": "Flags the absence of negative personas and of a version log"},
         {"id": "ranked-with-next-questions", "text": "Gaps are ranked and paired with questions to ask in the next customer conversations"}
       ]
+    },
+    {
+      "id": 8,
+      "name": "next-interview-points-to-interview-script",
+      "prompt": "What should I ask in my next customer interview?",
+      "expected_output": "Reads the existing ICP and lists its research gaps as the questions that matter most. Does not write a full interview script itself. Suggests the interview-script skill from pm-skills with the install commands, and warns that its hypothetical questions (e.g. 'magic wand') produce weak evidence and should be dropped or rephrased as 'tell me about the last time…'.",
+      "files": ["a project folder containing customer-research/ideal-customer-profile.md for a bookkeeping tool for freelance photographers, with a research gaps section listing: how often invoices are paid late, and whether they have ever paid for bookkeeping software"],
+      "assertions": [
+        {"id": "lists-gaps", "text": "The output lists the ICP's research gaps as the priority questions"},
+        {"id": "no-full-script", "text": "The skill does not produce a full interview script itself"},
+        {"id": "points-to-interview-script", "text": "The output suggests pm-skills' interview-script and gives the install commands"},
+        {"id": "warns-hypotheticals", "text": "The output warns that hypothetical questions give weak evidence and suggests past-behaviour questions instead"}
+      ]
     }
   ]
 }
