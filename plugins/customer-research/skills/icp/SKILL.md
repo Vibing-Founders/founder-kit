@@ -83,7 +83,8 @@ For an interview or piece of feedback:
 
 1. **Identify the conversation.** Get the customer's name (ask if missing; a first name
    or a pseudonym is fine) and date (use today's date if none is given). Save the raw
-   input exactly as provided.
+   input exactly as provided, after offering to replace surnames and contact details
+   with placeholders (see `references/file-conventions.md`).
 2. **Check the business shape.** On the first analysis, or if the ICP does not say yet,
    decide B2B or B2C and whether it is a marketplace. State the decision and why.
 3. **Flag interviewer bias.** Before extracting anything, list leading questions,

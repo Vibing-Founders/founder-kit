@@ -29,7 +29,8 @@ Before researching, make sure you know:
 - **Where they sell**: country or region, if it matters for pricing or availability.
 
 First, look for an ideal customer profile in the project: `ideal-customer-profile.md`
-(usually in `customer-research/`). If it exists, read it and use it for "who it is for":
+(usually in `customer-research/`), plus any `ideal-customer-profile-<segment>.md` files
+beside it for a marketplace. If it exists, read it and use it for "who it is for":
 the target customer, their top pain points, the tools and workarounds they mentioned,
 and the negative personas. Tell the founder you are using it. Tools customers named in
 interviews are competitors, including spreadsheets and paper.
