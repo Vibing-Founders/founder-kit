@@ -174,7 +174,15 @@ Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path
 
 ### `customer-research`
 
-For bootstrapping founders (solo or two-person teams, coders or not) who need to understand their customers well enough to validate an idea and sell it. Works in a code repository or a plain folder. Files go in `customer-research/` in your project, or next to your existing ideal customer profile if you already have one, and the skills always tell you where they wrote.
+For bootstrapping founders (solo or two-person teams, coders or not) who need to understand their customers well enough to validate an idea and sell it. Works in a code repository or a plain folder. Files go in `docs/customer-research/` in your project by default, and the skills always tell you where they wrote. To use a different folder, ask ("keep my research in docs/my-idea from now on") or set it in `.founder-kit/config.yaml`:
+
+```yaml
+docs_root: docs                      # where all Founder Kit plugins keep their docs
+customer-research:
+  root: docs/some-other/folder       # optional: just this plugin
+```
+
+Upgrading from 0.1.0, which wrote to `customer-research/` in the project root? The skills find that research and offer to move it or keep it where it is.
 
 ```
 /plugin marketplace add Vibing-Founders/founder-kit
@@ -249,6 +257,7 @@ plugins/
   customer-research/
     .claude-plugin/plugin.json
     skills/
+      _shared/          # Where research lives (docs-location rules)
       fk-icp/           # Ideal customer profile, personas, qualifying questions
       fk-competitors/   # Competitor research with a bundled research agent
 ```

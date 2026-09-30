@@ -57,11 +57,12 @@ something a real customer said or did.
 
 ## Where files live
 
-Before writing anything, look for an existing ICP file in the current project (a file
-named `ideal-customer-profile.md`, or a file whose title is an ideal customer profile).
-If one exists, keep using its folder. Otherwise use `customer-research/` in the project
-root. Paths are always relative to the project, never absolute. Full layout, naming and
-the file header format are in `references/file-conventions.md`.
+Before reading or writing anything, work out the **research folder** by following
+`../_shared/docs-location.md`. By default it is `docs/customer-research/`; founders can
+change it in `.founder-kit/config.yaml`, and that file also covers research that already
+lives somewhere else. Paths are always relative to the project, never absolute. The
+layout inside the folder, naming and the file header format are in
+`references/file-conventions.md`.
 
 ## Pick the mode
 

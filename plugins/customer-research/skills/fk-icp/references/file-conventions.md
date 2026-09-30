@@ -3,22 +3,24 @@
 Founders may be working in a code repository or a plain folder. All paths are relative
 to the current project folder. Never write to an absolute path.
 
-## Finding the ICP
+## The research folder
 
-1. Look for `ideal-customer-profile.md` anywhere in the project (skip dependency and build
-   folders such as `node_modules`). Also check for files whose top heading is an ideal
-   customer profile, in case it was named differently.
-2. If you find one, its folder is the **research folder**. Keep everything there, even if
-   it is not `customer-research/`.
-3. If you find more than one and it is not a marketplace set (see `marketplace.md`), ask
+Which folder to use (default `docs/customer-research/`, configurable in
+`.founder-kit/config.yaml`) is decided by `../../_shared/docs-location.md`. Follow it
+first. Then, inside the research folder:
+
+1. Use `ideal-customer-profile.md` if it exists. Also check for files whose top heading is
+   an ideal customer profile, in case it was named differently.
+2. If there is more than one and it is not a marketplace set (see `marketplace.md`), ask
    the founder which is current.
-4. If there is none, the research folder is `customer-research/` in the project root.
-   Create it when you first write.
+3. If there is none, create the folder when you first write.
 
 ## Layout
 
+Inside the research folder (shown here at the default location):
+
 ```
-customer-research/
+docs/customer-research/
   ideal-customer-profile.md                 # the ICP (master file for a marketplace)
   ideal-customer-profile-<segment>.md       # marketplace only, one per side
   interviews/
@@ -86,8 +88,8 @@ relative to the project, for example:
 
 ```
 Files written:
-- customer-research/interviews/imogen-2026-05-12/raw.md
-- customer-research/interviews/imogen-2026-05-12/analysis.md
-- customer-research/interviews/imogen-2026-05-12/insights.md
-- customer-research/ideal-customer-profile.md (updated to v0.3)
+- docs/customer-research/interviews/imogen-2026-05-12/raw.md
+- docs/customer-research/interviews/imogen-2026-05-12/analysis.md
+- docs/customer-research/interviews/imogen-2026-05-12/insights.md
+- docs/customer-research/ideal-customer-profile.md (updated to v0.3)
 ```

@@ -6,7 +6,7 @@
       "id": 1,
       "name": "leading-questions-flagged",
       "prompt": "Can you analyse this customer interview? I'm building a bookkeeping tool for freelance photographers.\n\nInterview with Marcus, 2026-04-14\n\nMe: Thanks for doing this. So, isn't it a real pain keeping track of receipts for every shoot?\nMarcus: Yeah, I suppose.\nMe: And you'd want it all to sort itself automatically, right? Like snap a photo and it's categorised?\nMarcus: Sure, that sounds good.\nMe: I always found spreadsheets awful for this stuff. Would you pay about £12 a month for something that did it for you?\nMarcus: Probably, yeah.\nMe: Tell me about the last time you did your tax return.\nMarcus: Oh god. January. I'd left it all to the last week. I had to go back through eight months of bank statements to work out which lens hire was for which client, because two clients paid late and I couldn't match the payments. I ended up paying my sister-in-law, she's a bookkeeper, £200 to sort it out over a weekend. I swore I'd do it monthly this year. I haven't.\nMe: What do you use now?\nMarcus: A Google Sheet my mate made. It's fine for mileage. Invoices I do in Word and I lose track of who's paid.",
-      "expected_output": "An analysis that opens with an interviewer-bias section quoting the leading question about receipts, the suggested 'sort itself automatically' answer, the interviewer's opinion about spreadsheets and the hypothetical pricing question. Receipts-tracking, auto-categorisation and the £12 willingness to pay are labelled prompted and down-weighted. The tax-return story yields spontaneous, strongly weighted pain points (last-minute reconciliation, matching late client payments, losing track of who has paid) each with word-for-word quotes and a Possible Solutions section. Detects B2B (sole trader paying from business income). Suggests better open questions, lists research gaps, writes interview files and an ICP under customer-research/ and says where.",
+      "expected_output": "An analysis that opens with an interviewer-bias section quoting the leading question about receipts, the suggested 'sort itself automatically' answer, the interviewer's opinion about spreadsheets and the hypothetical pricing question. Receipts-tracking, auto-categorisation and the £12 willingness to pay are labelled prompted and down-weighted. The tax-return story yields spontaneous, strongly weighted pain points (last-minute reconciliation, matching late client payments, losing track of who has paid) each with word-for-word quotes and a Possible Solutions section. Detects B2B (sole trader paying from business income). Suggests better open questions, lists research gaps, writes interview files and an ICP under docs/customer-research/ and says where.",
       "files": ["an empty project folder with no existing ICP"],
       "assertions": [
         {"id": "flags-leading-question", "text": "The analysis explicitly flags 'isn't it a real pain keeping track of receipts' as a leading question, quoting it"},
@@ -16,7 +16,7 @@
         {"id": "spontaneous-pains-quoted", "text": "At least two pain points from the tax-return story carry word-for-word quotes from Marcus"},
         {"id": "possible-solutions-sections", "text": "Each pain point has a section headed 'Possible Solutions'"},
         {"id": "better-questions", "text": "The output suggests at least one open, story-based question to replace a flagged question"},
-        {"id": "research-gaps-last", "text": "The response ends with research gaps (what to ask next) and lists the files written with relative paths under customer-research/"}
+        {"id": "research-gaps-last", "text": "The response ends with research gaps (what to ask next) and lists the files written with relative paths under docs/customer-research/"}
       ]
     },
     {
@@ -55,12 +55,12 @@
       "name": "b2b-detected",
       "prompt": "Can you analyse this call? Same bookkeeping-for-photographers idea.\n\nCall with Lena, runs Harbour Lane Studio, 2026-06-09\n\"There's three of us, me and two associate shooters, plus a part-time assistant, Jo, who does the admin two days a week. We do about sixty weddings a year. Jo does the invoicing in our accounting software but the associates submit their expenses on WhatsApp photos and she has to key them in. Our accountant charges us extra at year end because the categories are a mess. Anything new, I decide, but if Jo hates it, it's dead.\"",
       "expected_output": "Identifies B2B and uses a company-profile structure: small photography studio, three shooters plus a part-time admin, about sixty weddings a year, uses accounting software. Decision-making captured: owner pays and decides, admin has an effective veto. Buyer personas are roles (owner, admin). Pain points with quotes (expenses via WhatsApp photos rekeyed, accountant extra charges for messy categories). Notes the structure differs from the earlier sole-trader interviews and flags this as a possible second persona or ICP question.",
-      "files": ["a project folder containing customer-research/ideal-customer-profile.md for the photographer bookkeeping idea, built from one sole-trader interview"],
+      "files": ["a project folder containing docs/customer-research/ideal-customer-profile.md for the photographer bookkeeping idea, built from one sole-trader interview"],
       "assertions": [
         {"id": "b2b-stated", "text": "The output states this conversation is B2B and uses a company profile (studio size, headcount, volume of work, tools)"},
         {"id": "decision-process", "text": "The decision-making process is captured: Lena decides and pays, Jo can block adoption"},
         {"id": "role-personas", "text": "Buyer personas are framed as roles within the company (owner, admin), with memorable names"},
-        {"id": "existing-icp-location-used", "text": "Updates go to the existing customer-research/ideal-customer-profile.md, with a new version-log entry citing this conversation"},
+        {"id": "existing-icp-location-used", "text": "Updates go to the existing docs/customer-research/ideal-customer-profile.md, with a new version-log entry citing this conversation"},
         {"id": "contrast-with-sole-trader", "text": "The output notes this studio differs from the earlier sole-trader evidence and turns it into a decision or research gap rather than silently merging"}
       ]
     },
@@ -69,7 +69,7 @@
       "name": "update-named-persona",
       "prompt": "Please update the 'Night-Shift Nadia' persona. Two more nurses said they plan food on their phone during breaks, not at home, so she should be mobile-first. Oh and also make her more budget-conscious, I just have a feeling about that.",
       "expected_output": "Changes only the Night-Shift Nadia persona. Shows before and after for the mobile-first change and cites the evidence (asks for or references the two nurse conversations; if no quotes are available, asks for them or marks the change as reported by the founder). Treats 'more budget-conscious' as unsupported: asks the founder to confirm, and if confirmed marks it as a founder assumption not yet evidenced, and adds a research gap to test it. Adds a version-log entry. Leaves other personas and the pain point section untouched.",
-      "files": ["a project folder containing customer-research/ideal-customer-profile.md with a version log at v0.2, personas 'Night-Shift Nadia' and 'The Rota-Juggling Parent', and a negative persona 'The Macro Counter'"],
+      "files": ["a project folder containing docs/customer-research/ideal-customer-profile.md with a version log at v0.2, personas 'Night-Shift Nadia' and 'The Rota-Juggling Parent', and a negative persona 'The Macro Counter'"],
       "assertions": [
         {"id": "only-named-persona", "text": "Only the Night-Shift Nadia persona is changed; other personas and sections are left as they were"},
         {"id": "before-after", "text": "The output shows the persona text before and after the change"},
@@ -84,7 +84,7 @@
       "name": "answer-from-icp",
       "prompt": "What are our customers' top three pains, and how sure are we?",
       "expected_output": "Reads the existing ICP and answers from it: names the top pains, quotes the customers behind each, says how many conversations support each and whether the evidence was spontaneous or prompted, and gives a confidence level. Does not add new pains that are not in the file. Ends with research gaps.",
-      "files": ["a project folder containing customer-research/ideal-customer-profile.md with five pain points, each with quotes from between one and four conversations, one marked prompted"],
+      "files": ["a project folder containing docs/customer-research/ideal-customer-profile.md with five pain points, each with quotes from between one and four conversations, one marked prompted"],
       "assertions": [
         {"id": "reads-icp", "text": "The answer is drawn from the existing ICP file and cites its quotes or conversations"},
         {"id": "confidence-stated", "text": "The answer states how many conversations support each pain and a confidence level"},
@@ -98,7 +98,7 @@
       "name": "review-weak-icp",
       "prompt": "Can you review our ICP and tell me what's missing?",
       "expected_output": "Reviews the ICP against the principles and names concrete gaps: generic persona names, pain points inside persona sections, pain points without quotes, no Possible Solutions sections, an invented TAM figure, no negative personas, no version log. Ranks the gaps by how much they could mislead the founder, and suggests what to ask customers to close them.",
-      "files": ["a project folder containing customer-research/ideal-customer-profile.md with personas named 'Primary Persona' and 'Secondary Persona', pain points listed inside each persona without quotes, a line estimating a £40m addressable market, no negative personas, no Possible Solutions sections and no version log"],
+      "files": ["a project folder containing docs/customer-research/ideal-customer-profile.md with personas named 'Primary Persona' and 'Secondary Persona', pain points listed inside each persona without quotes, a line estimating a £40m addressable market, no negative personas, no Possible Solutions sections and no version log"],
       "assertions": [
         {"id": "generic-names", "text": "Flags the generic persona names and suggests replacing them with descriptive ones"},
         {"id": "scattered-pains", "text": "Flags pain points living inside personas instead of the ICP pain point section"},
@@ -113,12 +113,37 @@
       "name": "next-interview-points-to-interview-script",
       "prompt": "What should I ask in my next customer interview?",
       "expected_output": "Reads the existing ICP and lists its research gaps as the questions that matter most. Does not write a full interview script itself. Suggests the interview-script skill from pm-skills with the install commands, and warns that its hypothetical questions (e.g. 'magic wand') produce weak evidence and should be dropped or rephrased as 'tell me about the last time…'.",
-      "files": ["a project folder containing customer-research/ideal-customer-profile.md for a bookkeeping tool for freelance photographers, with a research gaps section listing: how often invoices are paid late, and whether they have ever paid for bookkeeping software"],
+      "files": ["a project folder containing docs/customer-research/ideal-customer-profile.md for a bookkeeping tool for freelance photographers, with a research gaps section listing: how often invoices are paid late, and whether they have ever paid for bookkeeping software"],
       "assertions": [
         {"id": "lists-gaps", "text": "The output lists the ICP's research gaps as the priority questions"},
         {"id": "no-full-script", "text": "The skill does not produce a full interview script itself"},
         {"id": "points-to-interview-script", "text": "The output suggests pm-skills' interview-script and gives the install commands"},
         {"id": "warns-hypotheticals", "text": "The output warns that hypothetical questions give weak evidence and suggests past-behaviour questions instead"}
+      ]
+    },
+    {
+      "id": 9,
+      "name": "config-override-root",
+      "prompt": "Analyse this interview for my photographer bookkeeping idea. Interview with Sam, 2026-06-20. Me: Tell me about the last time you sent an invoice. Sam: Last week. I made it in Word, then realised I'd forgotten the VAT number and had to send it again.",
+      "expected_output": "Reads .founder-kit/config.yaml, which sets customer-research.root to research/customers, and writes every file there (interviews/sam-2026-06-20/..., ideal-customer-profile.md). Writes nothing to docs/customer-research. Lists the files written under research/customers.",
+      "files": [".founder-kit/config.yaml containing: docs_root: docs, and customer-research: root: research/customers. No other research files."],
+      "assertions": [
+        {"id": "uses-configured-root", "text": "All files are written under research/customers/"},
+        {"id": "not-default", "text": "Nothing is written under docs/customer-research/"},
+        {"id": "paths-reported", "text": "The response lists the written paths relative to the project, under research/customers/"}
+      ]
+    },
+    {
+      "id": 10,
+      "name": "legacy-folder-offers-move-or-record",
+      "prompt": "Here's another interview to add. Interview with Jo, 2026-07-01. Me: How do you track expenses today? Jo: A notes app. Then I type them into a spreadsheet at the end of the quarter, which takes a whole Sunday.",
+      "expected_output": "No config file exists, so the research folder is docs/customer-research/, which is empty. Finds the existing customer-research/ideal-customer-profile.md in the project root (from an older version of the plugin) and does not start a second profile. Tells the founder where the existing research is and offers to move it into docs/customer-research/ or to keep it there by recording customer-research.root in .founder-kit/config.yaml. Writes nothing until the founder answers.",
+      "files": ["customer-research/ideal-customer-profile.md at the project root (v0.2, two interviews), no .founder-kit/config.yaml, no docs/ folder"],
+      "assertions": [
+        {"id": "finds-legacy", "text": "The response names the existing customer-research/ideal-customer-profile.md"},
+        {"id": "no-second-profile", "text": "No new ideal-customer-profile.md is created under docs/customer-research/"},
+        {"id": "offers-both-choices", "text": "The founder is offered both moving the research and recording its current location in .founder-kit/config.yaml"},
+        {"id": "waits", "text": "No files are written or moved before the founder chooses"}
       ]
     }
   ]
