@@ -1,0 +1,50 @@
+{
+  "skill_name": "competitors",
+  "note": "All businesses and ideas are invented. Prompts need web search; `files` describes any fixture the project folder must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "uses-existing-icp",
+      "prompt": "Who are my competitors for a bookkeeping tool for freelance photographers?",
+      "expected_output": "Finds and reads customer-research/ideal-customer-profile.md, tells the founder it is using it, and frames the research around its target customer and pain points (late client payments, last-minute tax reconciliation, expenses in a spreadsheet). Treats the Google Sheet and hiring a bookkeeper, both named in interviews, as competitors. Dispatches the bundled research prompt as a subagent if available, otherwise runs it inline. Output has summary, landscape, profiles with customer complaints, comparison built on the ICP's pains, where a bootstrapper can win tied to ICP pains or personas, and sources. Saves to customer-research/competitors/<date>-<topic>.md and says where.",
+      "files": ["a project folder containing customer-research/ideal-customer-profile.md for a bookkeeping tool for freelance photographers, with pain points about chasing late client payments and last-minute tax-return reconciliation, customers who use a shared Google Sheet or pay a relative who is a bookkeeper, and a negative persona 'The Hobby Shooter'"],
+      "assertions": [
+        {"id": "reads-icp", "text": "The output says it is using the existing ICP and reflects its target customer and pain points"},
+        {"id": "do-nothing-covered", "text": "The landscape includes do-nothing / by-hand alternatives, including spreadsheets and paying a bookkeeper"},
+        {"id": "complaints-with-sources", "text": "At least two competitor profiles include customer complaints quoted from reviews, forums or social posts, with links"},
+        {"id": "comparison-on-icp-pains", "text": "The comparison table's rows reflect the ICP's pain points rather than a generic feature list"},
+        {"id": "win-tied-to-icp", "text": "Each 'where a bootstrapper can win' point is tied to evidence and to a named ICP pain point or persona"},
+        {"id": "fact-vs-inference", "text": "Claims are labelled as verified or inference, and older information is flagged as possibly stale"},
+        {"id": "saved-in-icp-folder", "text": "The report is saved under customer-research/competitors/ with a dated, hyphenated filename and the path is stated"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "scopes-before-research",
+      "prompt": "who are my competitors for a meal planning app?",
+      "expected_output": "No ICP exists. Before researching, asks one short message for the missing scope: who the app is for, what the founder already knows about competitors, and region. Does not launch into a generic list of meal-planning apps.",
+      "files": ["an empty project folder with no existing ICP"],
+      "assertions": [
+        {"id": "looks-for-icp", "text": "The skill checks for an existing ICP before asking questions"},
+        {"id": "asks-target-customer", "text": "The skill asks who the app is for before doing the research"},
+        {"id": "single-message", "text": "Missing scope questions are asked together in one short message"},
+        {"id": "no-premature-list", "text": "The skill does not produce a competitor list before the target customer is known"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "full-report-no-icp",
+      "prompt": "Can you research the competition for a meal-planning app for shift workers, nurses, paramedics, warehouse night staff, in the UK? I know about the big recipe apps and meal kit boxes. I want to know where I could actually win.",
+      "expected_output": "Scope is sufficient, so it restates it briefly and researches. Covers direct (meal planners), indirect (recipe apps, meal kits, supermarket apps, fitness trackers with meal plans) and do-nothing alternatives (cereal, takeaways, canteen food, batch cooking by hand). Profiles include UK pricing with check dates and customer complaints with links. Where a bootstrapper can win is tied to evidence such as complaints about rigid weekly schedules. No market sizing. Saves to customer-research/competitors/<date>-<topic>.md and ends with decisions for the founder and research gaps.",
+      "files": ["an empty project folder with no existing ICP"],
+      "assertions": [
+        {"id": "three-kinds", "text": "Direct, indirect and do-nothing alternatives are each covered"},
+        {"id": "pricing-dated", "text": "Pricing is given with the date it was checked or flagged as possibly stale"},
+        {"id": "every-claim-cited", "text": "Every competitor claim has a source link, and there is a sources section"},
+        {"id": "no-market-sizing", "text": "The output contains no market-size, revenue, valuation or funding speculation"},
+        {"id": "decisions-not-strategy", "text": "The output ends by naming decisions for the founder and research gaps, rather than referring them to another tool or agent"},
+        {"id": "default-location", "text": "The report is saved to customer-research/competitors/ in the project root and the path is stated"}
+      ]
+    }
+  ]
+}
