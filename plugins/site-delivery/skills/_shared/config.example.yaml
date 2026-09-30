@@ -1,7 +1,11 @@
 # Site delivery configuration examples
 #
-# Copy this file to your repository as .site-delivery/config.yaml
-# and customize for your project.
+# This plugin's settings live in the `site-delivery` section of
+# .vf-founder-kit/config.yaml in your repository root. Pick ONE example below,
+# copy its `site-delivery` section into that file, and customize it for your
+# project. The file is shared by every Founder Kit plugin, so other plugins'
+# sections (agent-delivery, customer-research, ...) may sit in the same file —
+# leave them as they are.
 
 # ============================================================================
 # EXAMPLE 1: Thin path (default) — no tracker, no stages
@@ -9,31 +13,32 @@
 # For smart non-coding founders who want to hand Claude a brief
 # and get back a PR, without setting up GitHub Projects or Linear.
 
-schema_version: 1
+site-delivery:
+  schema_version: 1
 
-repo:
-  url: https://github.com/Vibing-Founders/my-marketing-site
-  main_branch: main
-  branch_prefix: feature/
+  repo:
+    url: https://github.com/Vibing-Founders/my-marketing-site
+    main_branch: main
+    branch_prefix: feature/
 
-tracker:
-  kind: none  # No tracker integration — brief comes from user input
+  tracker:
+    kind: none  # No tracker integration — brief comes from user input
 
-publish:
-  kind: lovable
-  project_id: ""  # Your Lovable project ID here
+  publish:
+    kind: lovable
+    project_id: ""  # Your Lovable project ID here
 
-stages:
-  enabled: false  # Thin path — no compound-engineering stages
+  stages:
+    enabled: false  # Thin path — no compound-engineering stages
 
-delivery_rules:
-  human_merge_gate: true
-  human_publish_gate: true
-  confirm_live: true
-  experimental_changes: false
+  delivery_rules:
+    human_merge_gate: true
+    human_publish_gate: true
+    confirm_live: true
+    experimental_changes: false
 
-agent_delivery_integration:
-  enabled: false  # Not wired in v0.0.1
+  agent_delivery_integration:
+    enabled: false  # Not wired in v0.0.1
 
 ---
 
@@ -43,49 +48,50 @@ agent_delivery_integration:
 # For teams using GitHub Projects to track site work and wanting
 # compound-engineering brainstorm/plan/work/review stages.
 
-schema_version: 1
+site-delivery:
+  schema_version: 1
 
-repo:
-  url: https://github.com/Widget-Co/company-site  # Anonymized example
-  main_branch: main
-  branch_prefix: feature/
+  repo:
+    url: https://github.com/Widget-Co/company-site  # Anonymized example
+    main_branch: main
+    branch_prefix: feature/
 
-tracker:
-  kind: github-project
-  project: Widget Co Site Delivery  # Anonymized project name
-  field: Status
-  stage_map:
-    Brainstorm: brainstorm
-    Plan: plan
-    Implement: work
-    Review: review
+  tracker:
+    kind: github-project
+    project: Widget Co Site Delivery  # Anonymized project name
+    field: Status
+    stage_map:
+      Brainstorm: brainstorm
+      Plan: plan
+      Implement: work
+      Review: review
 
-publish:
-  kind: sst-web
-  stage: production
-  aws_profile: ""  # Your AWS profile name
+  publish:
+    kind: sst-web
+    stage: production
+    aws_profile: ""  # Your AWS profile name
 
-stages:
-  enabled: true  # Enable compound-engineering stages
-  artifact_glob: docs/plans/*.md
-  readiness_key: artifact_readiness
-  map:
-    requirements-only: plan
-    implementation-ready: work
-  skills:
-    brainstorm: compound-engineering:ce-brainstorm
-    plan: compound-engineering:ce-plan
-    work: compound-engineering:ce-work
-    review: compound-engineering:ce-review
+  stages:
+    enabled: true  # Enable compound-engineering stages
+    artifact_glob: docs/plans/*.md
+    readiness_key: artifact_readiness
+    map:
+      requirements-only: plan
+      implementation-ready: work
+    skills:
+      brainstorm: compound-engineering:ce-brainstorm
+      plan: compound-engineering:ce-plan
+      work: compound-engineering:ce-work
+      review: compound-engineering:ce-review
 
-delivery_rules:
-  human_merge_gate: true
-  human_publish_gate: true
-  confirm_live: true
-  experimental_changes: false
+  delivery_rules:
+    human_merge_gate: true
+    human_publish_gate: true
+    confirm_live: true
+    experimental_changes: false
 
-agent_delivery_integration:
-  enabled: false
+  agent_delivery_integration:
+    enabled: false
 
 ---
 
@@ -94,48 +100,49 @@ agent_delivery_integration:
 # ============================================================================
 # For teams using Linear to track site delivery work.
 
-schema_version: 1
+site-delivery:
+  schema_version: 1
 
-repo:
-  url: https://github.com/Acme/acme-site  # Anonymized example
-  main_branch: main
-  branch_prefix: feature/
+  repo:
+    url: https://github.com/Acme/acme-site  # Anonymized example
+    main_branch: main
+    branch_prefix: feature/
 
-tracker:
-  kind: linear
-  team_key: SITE  # Anonymized team key (e.g. SITE-123)
-  stage_map:
-    Brainstorm: brainstorm
-    Plan: plan
-    In Progress: work
-    In Review: review
+  tracker:
+    kind: linear
+    team_key: SITE  # Anonymized team key (e.g. SITE-123)
+    stage_map:
+      Brainstorm: brainstorm
+      Plan: plan
+      In Progress: work
+      In Review: review
 
-publish:
-  kind: supabase+lovable
-  supabase_project_ref: ""  # Your Supabase project reference
-  lovable_project_id: ""    # Your Lovable project ID
+  publish:
+    kind: supabase+lovable
+    supabase_project_ref: ""  # Your Supabase project reference
+    lovable_project_id: ""    # Your Lovable project ID
 
-stages:
-  enabled: true
-  artifact_glob: docs/plans/*.md
-  readiness_key: artifact_readiness
-  map:
-    requirements-only: plan
-    implementation-ready: work
-  skills:
-    brainstorm: compound-engineering:ce-brainstorm
-    plan: compound-engineering:ce-plan
-    work: compound-engineering:ce-work
-    review: compound-engineering:ce-review
+  stages:
+    enabled: true
+    artifact_glob: docs/plans/*.md
+    readiness_key: artifact_readiness
+    map:
+      requirements-only: plan
+      implementation-ready: work
+    skills:
+      brainstorm: compound-engineering:ce-brainstorm
+      plan: compound-engineering:ce-plan
+      work: compound-engineering:ce-work
+      review: compound-engineering:ce-review
 
-delivery_rules:
-  human_merge_gate: true
-  human_publish_gate: true
-  confirm_live: true
-  experimental_changes: false
+  delivery_rules:
+    human_merge_gate: true
+    human_publish_gate: true
+    confirm_live: true
+    experimental_changes: false
 
-agent_delivery_integration:
-  enabled: false
+  agent_delivery_integration:
+    enabled: false
 
 ---
 

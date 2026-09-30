@@ -2,8 +2,9 @@
 name: fk-onboard
 description: >
   Guide a smart non-coding founder through configuring site delivery: a plain-language wizard
-  that writes .site-delivery/config.yaml with their site repo, publish platform, and optional
-  tracker integration. Defaults to the thin brief-to-PR path that requires no GitHub Project or
+  that writes the site-delivery section of .vf-founder-kit/config.yaml with their site repo,
+  publish platform, and optional tracker integration, and migrates an older standalone config
+  file on request. Defaults to the thin brief-to-PR path that requires no GitHub Project or
   Linear setup. Use this skill when someone wants to set up, configure, or get started with
   site delivery. Triggers on: "onboard my site for delivery", "set up site-delivery",
   "/site-delivery:fk-onboard", "configure site delivery for my project", "prepare my site repo
@@ -12,13 +13,13 @@ description: >
 
 # fk-onboard — configure a site repository for delivery
 
-A plain-language wizard that writes `.site-delivery/config.yaml` through conversation, not forms. This skill's job is to make the thin path the natural default and the fuller path an opt-in choice.
+A plain-language wizard that writes the `site-delivery` section of `.vf-founder-kit/config.yaml` through conversation, not forms. This skill's job is to make the thin path the natural default and the fuller path an opt-in choice.
 
 ## What "done" means
 
 Onboarding is complete when:
 
-1. `.site-delivery/config.yaml` exists with all required values (`repo.url`, `publish.kind`, and `tracker.kind`).
+1. The `site-delivery` section of `.vf-founder-kit/config.yaml` exists with all required values (`repo.url`, `publish.kind`, and `tracker.kind`).
 2. Every value was either provided by the user or is a documented default that was **reported as a default**.
 3. The user knows which path they chose: thin (no tracker) or fuller (tracker + compound-engineering stages).
 4. Re-running on an already-configured repository detects the existing config, reports what would change, and asks before overwriting.
@@ -28,6 +29,22 @@ Never declare the configuration ready without showing the user what was written 
 ## The wizard conversation
 
 Work through these steps in order. This is a conversation, not a form dump.
+
+### 0. Check for an old config file
+
+Earlier versions of this plugin kept the config in its own file, `.site-delivery/config.yaml`. If it exists, offer to migrate it before asking anything else:
+
+> I found your site-delivery settings in `.site-delivery/config.yaml`, the old location. Founder Kit plugins now share one file, `.vf-founder-kit/config.yaml`. Shall I copy your settings into it, unchanged?
+
+If they agree:
+
+1. Copy the old file's content into the `site-delivery` section **unchanged**. Do not rewrite, default, or merge in any values while migrating.
+2. Show them exactly what you wrote.
+3. Ask whether to delete the old `.site-delivery/config.yaml`. Delete it **only after they confirm**. If they say no, leave it, and tell them it is now ignored because the new section wins.
+
+If the `site-delivery` section already exists as well, do not overwrite it from the old file: say the old file is ignored, show any differences between the two, and offer only to delete it.
+
+After migrating, carry on with the steps below only if they want to change something; otherwise go to step 6.
 
 ### 1. Detect or ask for the site repository
 
@@ -123,7 +140,7 @@ If they want to change any, note it. Otherwise, use the defaults.
 
 ### 5. Write the config file
 
-Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the reference and [`../_shared/config.example.yaml`](../_shared/config.example.yaml) as the template, write `.site-delivery/config.yaml` with:
+Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the reference and [`../_shared/config.example.yaml`](../_shared/config.example.yaml) as the template, write the `site-delivery` section of `.vf-founder-kit/config.yaml` with:
 
 - The repository URL, main branch, and branch prefix
 - The tracker kind and configuration (or `none` for thin path)
@@ -132,9 +149,11 @@ Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the refere
 - Delivery rules (defaults unless user changed them)
 - `agent_delivery_integration.enabled: false` (stub for future)
 
+**The file is shared by every Founder Kit plugin. Write only the `site-delivery` section.** Keep every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was. If the file does not exist, create it (and the `.vf-founder-kit/` folder) with just this section.
+
 **Report every defaulted value explicitly:**
 
-> I wrote `.site-delivery/config.yaml` with:
+> I wrote the `site-delivery` section of `.vf-founder-kit/config.yaml` with:
 > - Repository: `https://github.com/username/my-site` (detected)
 > - Main branch: `main` (default)
 > - Branch prefix: `feature/` (default)
@@ -183,6 +202,7 @@ Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the refere
 4. **Stop and ask rather than guessing.** If a value is ambiguous (e.g. which GitHub Project board name), ask. Do not invent a plausible-sounding name.
 5. **Re-running is safe.** Detect an existing config, report what would change, and ask before overwriting. Someone may have hand-edited it since the last onboard.
 6. **No tracker means no compound-engineering stages.** When `tracker.kind: none`, `stages.enabled` must be `false`. The fuller path requires a tracker to read stage state from.
+7. **Touch only your own section.** `.vf-founder-kit/config.yaml` is shared. Never change another key or section, and never delete an old config file without the founder's confirmation.
 
 ## Out of scope
 
