@@ -1,6 +1,6 @@
 # founder-kit
 
-A Claude Code plugin marketplace (`.claude-plugin/marketplace.json`). Each plugin under `plugins/<name>/` bundles skills for a specific problem area — `compliance` (GDPR, UK Online Safety Act, OWASP, DPIA/LIA/CRA assessments for platform builders) `agent-delivery` (dispatching planned tickets into Claude cloud sandboxes with a disposable database), `site-delivery` (brief-to-PR website delivery for non-coding founders) and `customer-research` (ideal customer profile, personas, competitor research and fact-checking).
+A Claude Code plugin marketplace (`.claude-plugin/marketplace.json`). Each plugin under `plugins/<name>/` bundles skills for a specific problem area — `compliance` (GDPR, UK Online Safety Act, OWASP, DPIA/LIA/CRA assessments for platform builders) `agent-delivery` (dispatching planned tickets into Claude cloud sandboxes with a disposable database), `site-delivery` (brief-to-PR website delivery for non-coding founders), `customer-research` (ideal customer profile, personas, competitor research and fact-checking) and `founder-coach` (the front door: where a founder is on the journey to first revenue, what to do next and which tool helps, with a founder profile other skills may read).
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for the required plugin/skill directory structure and PR checklist. See [plugins/compliance/LEGISLATION.md](./plugins/compliance/LEGISLATION.md) for how to add or update legislation reference files.
 

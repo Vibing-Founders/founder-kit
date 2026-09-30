@@ -49,6 +49,7 @@ Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-d
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `fk-onboard`, `fk-dispatch` |
 | `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `fk-onboard`, `fk-orchestrate` |
 | `customer-research` | Understand your customers well enough to validate an idea and sell it: an evidence-based ideal customer profile from real conversations, competitor research you can act on, and a fact-check of the claims you make and meet | `fk-icp`, `fk-competitors`, `fk-fact-check` |
+| `founder-coach` | Start here: a coach that works out where you are on the journey to first revenue, what done looks like for that stage, what to do next and which tool helps, and remembers your progress between sessions | `fk-coach` |
 
 ---
 
@@ -241,6 +242,58 @@ this plugin leaves on purpose:
 
 ---
 
+### `founder-coach`
+
+The front door to Founder Kit. For bootstrapping founders (solo or two-person teams, coders or not) aiming for first revenue without raising money. Tell it where you are, or just say "coach me", and it works out which stage of the journey you are at, shows which of that stage's goals you have met and on what evidence, agrees up to three next actions with you, and points you to the tool that helps, with the install command in case you do not have it yet. It asks one question at a time, pushes for evidence from real people over desk research, and warns kindly when something looks like a distraction. It never decides for you.
+
+```
+/plugin marketplace add Vibing-Founders/founder-kit
+/plugin install founder-coach@founder-kit
+```
+
+You do not need the slash command: plain requests such as "coach me", "where am I?", "what should I do next?" or "should I be building this?" trigger it.
+
+### Skills
+
+**`/founder-coach:fk-coach`** — where you are, what done looks like, what to do next
+```
+/founder-coach:fk-coach I've got an idea for a bookkeeping tool for freelance photographers
+/founder-coach:fk-coach where am I, and what should I do this week?
+/founder-coach:fk-coach check-in: the pre-order page got 31 sign-ups and no payments
+/founder-coach:fk-coach should I redo my logo?
+/founder-coach:fk-coach update my profile: I've gone part-time
+```
+
+Four modes: **where am I / what next** (the default), **update my profile**, **check-in** (what happened, what you learned, and whether to persevere, pivot, stop or move on) and **sanity check** (is this the right thing to spend time on at this stage?). It knows five common founder types (engineer, designer, hustler, domain expert, operator) and the time sinks each tends to fall into.
+
+**The two files.** The coach keeps these in `docs/founder-coach/` by default, creates them the first time, and updates them at the end of every conversation, always telling you which changed:
+
+- `founder-profile.md`: one section per founder (background, skills, audiences you can reach, hours, runway, what you want the business to be, founder type and time sinks to watch) and a short team section. Other Founder Kit skills may read it to tailor their advice.
+- `journey.md`: your current stage, each goal for that stage marked met or not yet with the evidence, your current bet and what result would make you stop, up to three next actions, and a log of decisions.
+
+To keep them somewhere else, ask ("keep my coaching notes in docs/my-idea from now on") or set it in `.vf-founder-kit/config.yaml`:
+
+```yaml
+docs_root: docs                      # where all Founder Kit plugins keep their docs
+founder-coach:
+  root: docs/some-other/folder       # optional: just this plugin
+```
+
+**The journey in brief.** Eight stages, defined by evidence and revenue rather than funding:
+
+1. Find a problem worth *you* solving
+2. Validate the problem
+3. Validate the offer (someone pays before it is built)
+4. Build the smallest thing
+5. First revenue (10 paying customers, and you know why they bought)
+6. Repeatable revenue (ramen profitable, growth without selling every deal by hand)
+7. Grow and systemise
+8. Choose your future (keep it, grow it or sell it)
+
+Every stage runs the same loop: learn, make a bet with kill criteria, test it, sell or measure, decide. Moving back a stage is normal. Alongside the stages run two tracks: building an audience, and founder operations (money, legal, time and energy).
+
+---
+
 ## Repository Structure
 
 ```
@@ -272,6 +325,11 @@ plugins/
       fk-icp/           # Ideal customer profile, personas, qualifying questions
       fk-competitors/   # Competitor research with a bundled research agent
       fk-fact-check/    # Claim checking with bundled research and analyst agents
+  founder-coach/
+    .claude-plugin/plugin.json
+    skills/
+      _shared/          # Where the coaching files live (docs-location rules)
+      fk-coach/         # Journey stages, founder types, failure modes, toolkit
 ```
 
 ---
