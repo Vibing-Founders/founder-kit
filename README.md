@@ -29,7 +29,7 @@ A Claude plugin marketplace hosting bootstrapping founder focused plugins for we
 Once added, you can install any plugin from this marketplace:
 
 ```
-/plugin add compliance@founder-kit
+/plugin install compliance@founder-kit
 ```
 
 ---
@@ -137,7 +137,7 @@ Resolves the stage from the plan's readiness (sweeping branches and worktrees, n
 
 ### `site-delivery`
 
-Free TOFU module for smart non-coding founders. Give Claude a brief in plain language and get back a pull request — no GitHub Project or Linear setup required. Optional tracker integration and compound-engineering stages for teams who want fuller planning workflows.
+For smart non-coding founders. Give Claude a brief in plain language and get back a pull request — no GitHub Project or Linear setup required. Optional tracker integration and compound-engineering stages for teams who want fuller planning workflows.
 
 Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Human always reviews, merges, runs publish, and confirms live — Claude never auto-merges or triggers deploys.
 

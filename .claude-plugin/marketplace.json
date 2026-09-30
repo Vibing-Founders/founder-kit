@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "founder-kit",
-  "description": "Plugins for platform builders — compliance, agent delivery into cloud sandboxes, and smart site delivery for non-coding founders.",
+  "description": "Plugins for bootstrapping founders — customer research, compliance, agent delivery into cloud sandboxes, and smart site delivery for non-coding founders.",
   "owner": {
     "name": "Vibing Founders",
     "url": "https://github.com/Vibing-Founders"
