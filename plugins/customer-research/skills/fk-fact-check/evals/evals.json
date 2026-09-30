@@ -67,13 +67,15 @@
     {
       "id": 5,
       "name": "founder-narrows-list",
-      "prompt": "Verify these stats from my blog post draft for a meal-planning app for shift workers. Show me the claims first, I'll probably want to drop some.\n\n\"Night-shift workers make up about 1 in 10 UK employees. Studies show shift workers are more likely to skip breakfast. Our app has helped 3,000 nurses eat better. Batch cooking takes just 2 hours on a Sunday. The UK's first meal planner designed around rotas.\"",
-      "expected_output": "Extracts the claims into a numbered list, tags '3,000 nurses' as needing the founder's own data and 'the UK's first meal planner designed around rotas' as a superlative, and stops to ask the founder which to add, drop or narrow. Does not search, dispatch the evidence researcher or produce verdicts in this turn.",
+      "prompt": "Verify these stats from my blog post draft for a meal-planning app for shift workers. Show me the claims first, I'll probably want to drop some.\n\n\"Night-shift workers make up about 1 in 10 UK employees. Studies show shift workers are more likely to skip breakfast. Our app has helped 3,000 nurses eat better. Batch cooking takes just 2 hours on a Sunday. The UK's first meal planner designed around rotas.\"\n\nDrop the batch-cooking one, and for the 1 in 10 stat only check night shifts in England, not the whole UK.",
+      "expected_output": "Extracts the claims into a numbered list, applying the founder's edits: the batch-cooking claim is dropped (and noted as dropped at their request), and the 1 in 10 claim is narrowed to night-shift workers in England, with the original wording kept alongside. Tags '3,000 nurses' as needing the founder's own data and 'the UK's first meal planner designed around rotas' as a superlative, then shows the edited list and asks whether anything else should change before research. Does not search, dispatch the evidence researcher or produce verdicts in this turn.",
       "files": ["an empty project folder with no existing research"],
       "assertions": [
         {"id": "numbered-list", "text": "The claims are shown as a numbered list with their original wording"},
         {"id": "tags-shown", "text": "'3,000 nurses' is tagged as needing the founder's own data and 'the UK's first' as a superlative"},
-        {"id": "asks-to-edit", "text": "The founder is asked to add, drop or narrow claims before research"},
+        {"id": "dropped-claim-absent", "text": "The batch-cooking claim is not in the list of claims to check"},
+        {"id": "narrowed-claim", "text": "The 1 in 10 claim is listed in its narrowed form (night-shift workers in England) with the original wording alongside"},
+        {"id": "asks-to-edit", "text": "The founder is asked whether to add, drop or narrow anything else before research"},
         {"id": "no-research-yet", "text": "No web research, research agent or verdicts appear before the founder replies"}
       ]
     }
