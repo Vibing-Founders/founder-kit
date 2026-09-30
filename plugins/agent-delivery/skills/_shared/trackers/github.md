@@ -27,7 +27,7 @@ than an obviously-missing-scope one:
 gh auth refresh -s project
 ```
 
-A dispatched run needs the same scope on whatever credential it carries. `onboard` records this as
+A dispatched run needs the same scope on whatever credential it carries. `fk-onboard` records this as
 a required entry in the environment block.
 
 ---
@@ -100,4 +100,4 @@ it as a shell argument mangles it.
 
 Copy this file's shape: state the config block it reads, then the three operations, then the
 missing-target behaviour. Register the new `kind` in `../config-schema.md`. No file under
-`skills/dispatch/` changes.
+`skills/fk-dispatch/` changes.

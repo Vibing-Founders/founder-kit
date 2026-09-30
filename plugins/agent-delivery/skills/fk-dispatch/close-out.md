@@ -84,10 +84,10 @@ avoiding; a half-completed one that is clearly reported is a minor inconvenience
 
 ## What the dispatcher does with this
 
-Two things, and both live in the dispatch skill rather than here:
+Two things, and both live in the fk-dispatch skill rather than here:
 
 - **Composing the prompt:** name the enabled steps and their targets. A step not named is off, so
   the run needs no config access to know what to do.
 - **Verifying:** read the ticket back through the adapter and confirm the marker and the comments.
-  Report what the run claimed and what was confirmed separately — see the dispatch skill's
+  Report what the run claimed and what was confirmed separately — see the fk-dispatch skill's
   verification duty.

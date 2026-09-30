@@ -32,15 +32,22 @@ Once added, you can install any plugin from this marketplace:
 /plugin install compliance@founder-kit
 ```
 
+Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-delivery:fk-dispatch`). If you installed a plugin when its commands had no prefix (`/compliance:gdpr`, `/agent-delivery:dispatch` and so on), update or reinstall it to get the new names:
+
+```
+/plugin marketplace update founder-kit
+/plugin install compliance@founder-kit
+```
+
 ---
 
 ## Available Plugins
 
 | Plugin | Description | Skills |
 |--------|-------------|--------|
-| `compliance` | Online safety, GDPR, and application security compliance for platform builders | `online-safety`, `gdpr`, `application-security`, `dpia`, `lia`, `cra` |
-| `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `onboard`, `dispatch` |
-| `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `onboard`, `orchestrate` |
+| `compliance` | Online safety, GDPR, and application security compliance for platform builders | `fk-online-safety` (+ `cra` mode), `fk-gdpr` (+ `lia` mode), `fk-application-security`, `fk-dpia` |
+| `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `fk-onboard`, `fk-dispatch` |
+| `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `fk-onboard`, `fk-orchestrate` |
 | `customer-research` | Understand your customers well enough to validate an idea and sell it: an evidence-based ideal customer profile from real conversations, and competitor research you can act on | `fk-icp`, `fk-competitors` |
 
 ---
@@ -60,45 +67,45 @@ Provides a starting point for exploring the regulations most relevant to platfor
 
 ### Skills
 
-**`/online-safety`** — Assess your platform against UK OSA and EU DSA obligations
+**`/compliance:fk-online-safety`** — Assess your platform against UK OSA and EU DSA obligations (modes: `assess`, `checklist`, `strategy-check`, `cra`)
 ```
-/online-safety assess my video-sharing platform
-/online-safety checklist for a forum with user-generated content
-/online-safety strategy-check for a consumer app that might have teen users
-```
-
-**`/gdpr`** — GDPR compliance for UK and EU data processing
-```
-/gdpr assess my user data handling
-/gdpr checklist for a SaaS product collecting EU user data
-/gdpr lawful-basis for sending marketing emails
+/compliance:fk-online-safety assess my video-sharing platform
+/compliance:fk-online-safety checklist for a forum with user-generated content
+/compliance:fk-online-safety strategy-check for a consumer app that might have teen users
 ```
 
-**`/application-security`** — OWASP-based security assessment and checklists
+**`/compliance:fk-gdpr`** — GDPR compliance for UK and EU data processing (modes: `assess`, `checklist`, `lia`)
 ```
-/application-security assess my API
-/application-security checklist for a new feature handling payments
-```
-
-**`/dpia`** — Full Data Protection Impact Assessment under Article 35 UK/EU GDPR
-```
-/dpia do we need a DPIA for our recommendation engine?
-/dpia run a DPIA on our codebase
-/dpia for our new user profiling feature
+/compliance:fk-gdpr assess my user data handling
+/compliance:fk-gdpr checklist for a SaaS product collecting EU user data
+/compliance:fk-gdpr assess the lawful basis for sending marketing emails
 ```
 
-**`/lia`** — Legitimate Interests Assessment for Article 6(1)(f) lawful basis
+**`/compliance:fk-application-security`** — OWASP-based security assessment and checklists (modes: `assess`, `checklist`)
 ```
-/lia for sending marketing emails to existing customers
-/lia assess our behavioural analytics processing
-/lia for sharing user data with third-party ad partners
+/compliance:fk-application-security assess my API
+/compliance:fk-application-security checklist for a new feature handling payments
 ```
 
-**`/cra`** — Children's Risk Assessment under the UK Online Safety Act 2023
+**`/compliance:fk-dpia`** — Full Data Protection Impact Assessment under Article 35 UK/EU GDPR
 ```
-/cra for my social platform
-/cra children's risk assessment for a forum with user-generated content
-/cra assess a consumer app that might have teen users
+/compliance:fk-dpia do we need a DPIA for our recommendation engine?
+/compliance:fk-dpia run a DPIA on our codebase
+/compliance:fk-dpia for our new user profiling feature
+```
+
+**Legitimate Interests Assessment** — the `lia` mode of `fk-gdpr`, for the Article 6(1)(f) lawful basis
+```
+/compliance:fk-gdpr lia for sending marketing emails to existing customers
+/compliance:fk-gdpr lia for our behavioural analytics processing
+/compliance:fk-gdpr lia for sharing user data with third-party ad partners
+```
+
+**Children's Risk Assessment** — the `cra` mode of `fk-online-safety`, under the UK Online Safety Act 2023
+```
+/compliance:fk-online-safety cra for my social platform
+/compliance:fk-online-safety cra for a forum with user-generated content
+/compliance:fk-online-safety cra for a consumer app that might have teen users
 ```
 
 ---
@@ -115,20 +122,20 @@ Everything project-specific — tracker, stage map, risk paths, close-out steps,
 
 ### Skills
 
-**`/agent-delivery:onboard`** — take a repository from unprepared to a verified first dispatch
+**`/agent-delivery:fk-onboard`** — take a repository from unprepared to a verified first dispatch
 ```
-/agent-delivery:onboard this repo for cloud dispatch
-/agent-delivery:onboard set up the database tier and prove it works
-/agent-delivery:onboard check my agent-delivery setup
+/agent-delivery:fk-onboard this repo for cloud dispatch
+/agent-delivery:fk-onboard set up the database tier and prove it works
+/agent-delivery:fk-onboard check my agent-delivery setup
 ```
 
 Detects your stack, tracker and planning artifacts; writes the config; generates the cloud environment's variable block and setup script for you to paste; installs the Postgres-over-HTTPS shim only if your tests need it and the preconditions hold; and proves the database tier by building a throwaway preview branch green and deleting it. It never writes a secret value anywhere, and it reports which values were defaulted rather than detected.
 
-**`/agent-delivery:dispatch`** — run a stage on a ticket in a cloud sandbox
+**`/agent-delivery:fk-dispatch`** — run a stage on a ticket in a cloud sandbox
 ```
-/agent-delivery:dispatch ABC-123 to the cloud
-/agent-delivery:dispatch run this ticket in a sandbox
-/agent-delivery:dispatch what happened to the run for ABC-123
+/agent-delivery:fk-dispatch ABC-123 to the cloud
+/agent-delivery:fk-dispatch run this ticket in a sandbox
+/agent-delivery:fk-dispatch what happened to the run for ABC-123
 ```
 
 Resolves the stage from the plan's readiness (sweeping branches and worktrees, not just your checkout), refuses a stage that needs a human in the loop, composes a self-contained prompt carrying no secrets, fires the run, then verifies its claims and reports them with provenance — separating what the run said from what was confirmed. After every database-tier run it reconciles preview branches and deletes any the run leaked.
@@ -141,24 +148,24 @@ For smart non-coding founders. Give Claude a brief in plain language and get bac
 
 Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Human always reviews, merges, runs publish, and confirms live — Claude never auto-merges or triggers deploys.
 
-> **v0.0.1 scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages) scaffold complete. No live tracker API calls or publish flow execution in this release. Human runs the locked publish path. Optional future integration with `agent-delivery:dispatch` for sandbox execution of implementation slices.
+> **v0.0.1 scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages) scaffold complete. No live tracker API calls or publish flow execution in this release. Human runs the locked publish path. Optional future integration with `agent-delivery:fk-dispatch` for sandbox execution of implementation slices.
 
 ### Skills
 
-**`/site-delivery:onboard`** — configure a site repository for delivery
+**`/site-delivery:fk-onboard`** — configure a site repository for delivery
 ```
-/site-delivery:onboard my site for delivery
-/site-delivery:onboard set up site-delivery
-/site-delivery:onboard check my site-delivery config
+/site-delivery:fk-onboard my site for delivery
+/site-delivery:fk-onboard set up site-delivery
+/site-delivery:fk-onboard check my site-delivery config
 ```
 
 A plain-language wizard that writes `.site-delivery/config.yaml` through conversation. Asks for your site repository, publish platform (Lovable/SST/Supabase+Lovable), and whether you want the thin path (no tracker) or fuller path (GitHub Project or Linear integration with compound-engineering stages). Defaults to thin path for non-coders. Reports every defaulted value explicitly.
 
-**`/site-delivery:orchestrate`** — run a site delivery from brief to PR
+**`/site-delivery:fk-orchestrate`** — run a site delivery from brief to PR
 ```
-/site-delivery:orchestrate add a testimonials section to the homepage
-/site-delivery:orchestrate SITE-123
-/site-delivery:orchestrate deliver this brief
+/site-delivery:fk-orchestrate add a testimonials section to the homepage
+/site-delivery:fk-orchestrate SITE-123
+/site-delivery:fk-orchestrate deliver this brief
 ```
 
 Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path: reads tracker state and runs the compound-engineering stage), makes the changes, opens a PR, and reports the human gates (review, merge, publish, confirm live). Posts PR link to the tracker when configured. Enforces hard delivery rules: never auto-merge, never trigger publish, refuse experimental changes not in the brief.
@@ -223,21 +230,22 @@ plugins/
     .claude-plugin/plugin.json
     skills/
       _shared/          # Legislation and cross-cutting knowledge
-      online-safety/    # UK OSA, EU DSA skills
-      gdpr/             # UK/EU GDPR skills
-      application-security/  # OWASP skills
+      fk-online-safety/ # UK OSA, EU DSA (includes the cra mode)
+      fk-gdpr/          # UK/EU GDPR (includes the lia mode)
+      fk-application-security/  # OWASP
+      fk-dpia/          # Article 35 Data Protection Impact Assessment
   agent-delivery/
     .claude-plugin/plugin.json
     skills/
       _shared/          # Sandbox runbook, config contract, tracker adapters
-      onboard/          # Detection, environment artifacts, database preflight
-      dispatch/         # Stage resolution, prompt contract, close-out
+      fk-onboard/       # Detection, environment artifacts, database preflight
+      fk-dispatch/      # Stage resolution, prompt contract, close-out
   site-delivery/
     .claude-plugin/plugin.json
     skills/
       _shared/          # Config schema, examples
-      onboard/          # Plain-language wizard for .site-delivery/config.yaml
-      orchestrate/      # Brief-to-PR thin path or fuller CE stages
+      fk-onboard/       # Plain-language wizard for .site-delivery/config.yaml
+      fk-orchestrate/   # Brief-to-PR thin path or fuller CE stages
   customer-research/
     .claude-plugin/plugin.json
     skills/

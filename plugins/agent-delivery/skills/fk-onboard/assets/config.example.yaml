@@ -1,6 +1,6 @@
 # agent-delivery — project configuration
 #
-# Copy to .agent-delivery/config.yaml in your repository root, or let the `onboard`
+# Copy to .agent-delivery/config.yaml in your repository root, or let the `fk-onboard`
 # skill write it for you from what it detects.
 #
 # Precedence: an explicit skill argument beats this file; this file beats the default.
@@ -66,11 +66,11 @@ stages:
   #   plan: compound-engineering:ce-plan
   #   implement: compound-engineering:ce-work
 
-  # Stages needing question-and-answer with a human. dispatch REFUSES these with
+  # Stages needing question-and-answer with a human. fk-dispatch REFUSES these with
   # the reason rather than firing a run that cannot finish.
   # interactive: [brainstorm]
 
-  # Used when no readiness signal can be read. Left null, dispatch asks for an
+  # Used when no readiness signal can be read. Left null, fk-dispatch asks for an
   # explicit --stage instead of guessing.
   # default_stage: null
 

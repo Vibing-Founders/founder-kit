@@ -88,7 +88,7 @@ After updating the legislation file, check whether the change cascades to other 
 1. `plugins/compliance/skills/_shared/jurisdiction-map.md`
    — Does the jurisdiction map still accurately describe this act's scope?
 
-2. `plugins/compliance/skills/online-safety/knowledge/regulatory-map.md` (if online-safety-relevant)
+2. `plugins/compliance/skills/fk-online-safety/knowledge/regulatory-map.md` (if online-safety-relevant)
    — Does the regulatory map still accurately reflect applicability thresholds and enforcement dates?
 
 3. Relevant `SKILL.md` files

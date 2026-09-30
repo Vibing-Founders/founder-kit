@@ -8,7 +8,7 @@ Every project-specific fact this plugin needs lives in one file in the adopting 
 
 Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow stage. If a skill needs to know something about *your* project, it is a key below.
 
-`onboard` writes this file. `orchestrate` reads it. A human can edit it at any time; it is plain YAML and every key has a default.
+`fk-onboard` writes this file. `fk-orchestrate` reads it. A human can edit it at any time; it is plain YAML and every key has a default.
 
 > **v1 stability.** This format is unstable and may change without a migration path until the plugin is used by multiple external projects. Pin the plugin version if that matters to you.
 
@@ -16,7 +16,7 @@ Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow sta
 
 Three layers, highest first:
 
-1. **An explicit argument to a skill** — `orchestrate <brief> --stage brainstorm` beats everything.
+1. **An explicit argument to a skill** — `fk-orchestrate <brief> --stage brainstorm` beats everything.
 2. **This config file.**
 3. **The documented default** below.
 
@@ -160,7 +160,7 @@ All default to their safe values. These are the hard delivery constraints:
 3. **`confirm_live: true`** — After publish, human confirms the change is live.
 4. **`experimental_changes: false`** — The agent refuses to invent features or experiments not described in the brief.
 
-These rules are documented in the orchestrate skill and enforced there.
+These rules are documented in the fk-orchestrate skill and enforced there.
 
 ---
 
@@ -172,7 +172,7 @@ agent_delivery_integration:
   environment: ""                # cloud environment name for agent-delivery
 ```
 
-**Out of scope for v0.0.1.** This block is a stub for future integration where implementers may invoke `agent-delivery:dispatch` for sandbox execution of implementation slices. Not wired in this release.
+**Out of scope for v0.0.1.** This block is a stub for future integration where implementers may invoke `agent-delivery:fk-dispatch` for sandbox execution of implementation slices. Not wired in this release.
 
 When `enabled: false`, this block is ignored.
 

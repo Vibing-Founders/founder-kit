@@ -1,16 +1,16 @@
 ---
-name: onboard
+name: fk-onboard
 description: >
   Guide a smart non-coding founder through configuring site delivery: a plain-language wizard
   that writes .site-delivery/config.yaml with their site repo, publish platform, and optional
   tracker integration. Defaults to the thin brief-to-PR path that requires no GitHub Project or
   Linear setup. Use this skill when someone wants to set up, configure, or get started with
   site delivery. Triggers on: "onboard my site for delivery", "set up site-delivery",
-  "/site-delivery:onboard", "configure site delivery for my project", "prepare my site repo
+  "/site-delivery:fk-onboard", "configure site delivery for my project", "prepare my site repo
   for Claude PRs", "how do I set up site-delivery", "check my site-delivery config".
 ---
 
-# onboard — configure a site repository for delivery
+# fk-onboard — configure a site repository for delivery
 
 A plain-language wizard that writes `.site-delivery/config.yaml` through conversation, not forms. This skill's job is to make the thin path the natural default and the fuller path an opt-in choice.
 
@@ -153,7 +153,7 @@ Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the refere
 > 3. You review, merge, and run your publish flow
 > 4. You confirm it's live
 >
-> Run `/site-delivery:orchestrate <brief>` to start a delivery.
+> Run `/site-delivery:fk-orchestrate <brief>` to start a delivery.
 
 **For fuller path:**
 
@@ -161,7 +161,7 @@ Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the refere
 > 1. Create a ticket in your tracker (GitHub Project or Linear)
 > 2. Write the brief in the ticket body or comments
 > 3. Move the ticket to the right stage (Brainstorm, Plan, Implement, or Review)
-> 4. Run `/site-delivery:orchestrate <ticket-id>`
+> 4. Run `/site-delivery:fk-orchestrate <ticket-id>`
 > 5. Claude reads the ticket, runs the compound-engineering stage, and opens a PR
 > 6. You review, merge, and run your publish flow
 > 7. You confirm it's live
@@ -186,7 +186,7 @@ Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the refere
 
 ## Out of scope
 
-- **No live GraphQL or API calls** to GitHub Projects or Linear during onboarding. The tracker configuration is written to the file; the orchestrate skill reads it at runtime.
+- **No live GraphQL or API calls** to GitHub Projects or Linear during onboarding. The tracker configuration is written to the file; the fk-orchestrate skill reads it at runtime.
 - **No cloud environment setup** (that's agent-delivery's job, not site-delivery's).
 - **No auto-launching cloud agents** (future integration, not wired in v0.0.1).
 - **No publish flow execution** (always human-run, never agent-triggered).

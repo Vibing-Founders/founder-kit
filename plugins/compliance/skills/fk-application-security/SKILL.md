@@ -1,12 +1,12 @@
 ---
-name: application-security
+name: fk-application-security
 description: >
   Assess features and code changes for security risks, generate secure development checklists,
   and advise on authentication patterns, secrets management, encryption, and OWASP compliance.
   Use this skill whenever someone asks about application security, security risks in a feature,
   secure coding practices, authentication/session management, secrets handling, dependency security,
   or wants a security checklist. Triggers on: "assess this for security", "security checklist for X",
-  "what are the security risks in X", "secure development checklist", "/compliance:application-security",
+  "what are the security risks in X", "secure development checklist", "/compliance:fk-application-security",
   "OWASP risks for X", "is this secure", "security review of X", "how do I handle secrets",
   "secure auth pattern", "is this vulnerable to X", "SQL injection risk", "XSS risk".
 ---

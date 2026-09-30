@@ -9,7 +9,7 @@ Every project-specific fact this plugin needs lives in one file in the adopting 
 Nothing in the plugin hardcodes a tracker, a test runner, a planning workflow, a file path, or
 a credential. If a skill needs to know something about *your* project, it is a key below.
 
-`onboard` writes this file. `dispatch` and the sandbox runbook read it. A human can edit it at
+`fk-onboard` writes this file. `fk-dispatch` and the sandbox runbook read it. A human can edit it at
 any time; it is plain YAML and every key has a default.
 
 > **v1 stability.** This format is unstable and may change without a migration path until a
@@ -19,7 +19,7 @@ any time; it is plain YAML and every key has a default.
 
 Three layers, highest first:
 
-1. **An explicit argument to a skill** — `dispatch <ticket> --stage implement` beats everything.
+1. **An explicit argument to a skill** — `fk-dispatch <ticket> --stage implement` beats everything.
 2. **This config file.**
 3. **The documented default** below.
 
@@ -54,7 +54,7 @@ repo:
 
 `clone_dir` has no default and no safe guess. The sandbox's setup script starts **outside** the
 clone, so a wrong or missing value kills the session before any agent runs, with nothing in the
-log to read. `onboard` detects it from the repository name and writes it explicitly.
+log to read. `fk-onboard` detects it from the repository name and writes it explicitly.
 
 `test_command` must accept file paths appended to it, because the runbook runs the tests a change
 touches rather than the whole suite.
@@ -119,11 +119,11 @@ depends on none of it: with `default_stage` set and `readiness_key` unset, stage
 looks for a planning artifact at all.
 
 `interactive` names stages that need question-and-answer with a human. A sandbox can only
-round-trip through comments, so `dispatch` **refuses** these with the reason rather than firing
+round-trip through comments, so `fk-dispatch` **refuses** these with the reason rather than firing
 something structurally unable to finish.
 
 `default_stage` is what a project with no machine-readable readiness signal supplies. When it is
-`null` and no readiness value can be read, `dispatch` asks for an explicit `--stage` instead of
+`null` and no readiness value can be read, `fk-dispatch` asks for an explicit `--stage` instead of
 guessing.
 
 ## `risk_brakes` — where a run must halt
@@ -186,7 +186,7 @@ in this file, in a dispatched prompt, or in a report.
 
 **`secrets_files`** are repository paths the run writes the forwarded secret set to, for tooling
 that reads a file rather than the environment. Every path listed here must be matched by the
-repo's ignore rules; `onboard` refuses to declare the tier ready otherwise.
+repo's ignore rules; `fk-onboard` refuses to declare the tier ready otherwise.
 
 **`test_overrides`** exist because a remote branch is slower than a local database in ways that
 look like failures: hooks time out on latency, and a worker count tuned for a local stack
@@ -216,7 +216,7 @@ The plugin checks these during onboarding rather than assuming them:
   publishable keys through the connector's project-URL and publishable-key operations,
   specifically to avoid the branch-detail endpoint, which returns credentials it has no use for.
 - **A cloud environment exists** carrying the management token, the production project reference,
-  and the forwarded function-secret set. `onboard` generates its contents; a human pastes them.
+  and the forwarded function-secret set. `fk-onboard` generates its contents; a human pastes them.
 
 ## `close_out` — what a finished run does to the ticket
 

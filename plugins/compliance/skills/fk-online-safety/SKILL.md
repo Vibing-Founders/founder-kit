@@ -1,5 +1,5 @@
 ---
-name: online-safety
+name: fk-online-safety
 description: >
   Assess features for online safety regulatory risk (UK OSA, EU DSA, UK Children's Code, COPPA),
   generate implementation checklists, conduct Ofcom Children's Risk Assessments (CRA), and check
@@ -8,7 +8,7 @@ description: >
   know whether a feature is compliant with the Online Safety Act, Digital Services Act, Children's
   Code, or COPPA. Also triggers on: "assess this feature for online safety", "online safety checklist
   for X", "check this against our online safety strategy", "does this comply with the Children's Code",
-  "/compliance:online-safety", "OSA risk for X", "DSA obligations for X", "is this safe for minors",
+  "/compliance:fk-online-safety", "OSA risk for X", "DSA obligations for X", "is this safe for minors",
   "child safety requirements for X", "do a children's risk assessment", "run a CRA", "Ofcom CRA",
   "OSA children's risk assessment", "draft my CRA".
 ---

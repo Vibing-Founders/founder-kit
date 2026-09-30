@@ -40,12 +40,12 @@ Fetch the official source using WebFetch. Read the full act or at minimum: the p
 Decide where the file should live:
 
 **Shared** (`plugins/compliance/skills/_shared/legislation/`):
-- The act affects obligations in **more than one skill area** (online-safety, gdpr, application-security)
-- Examples: GDPR (affects gdpr + online-safety), UK Online Safety Act (affects online-safety + gdpr)
+- The act affects obligations in **more than one skill area** (fk-online-safety, fk-gdpr, fk-application-security)
+- Examples: GDPR (affects fk-gdpr + fk-online-safety), UK Online Safety Act (affects fk-online-safety + fk-gdpr)
 
 **Skill-specific** (`plugins/compliance/skills/<skill>/knowledge/legislation/`):
 - The act has narrow scope relevant to only one skill area
-- Examples: OWASP Top 10 (application-security only)
+- Examples: OWASP Top 10 (fk-application-security only)
 
 Ask the maintainer to confirm placement, explaining your reasoning.
 
@@ -61,7 +61,7 @@ Transform the act text into a structured markdown file using this template:
 **Jurisdiction:** [UK / EU / US / etc.]
 **Official source:** [URL]
 **Status:** [In force / Partially in force / Pending commencement]
-**Relevant to:** [online-safety, gdpr, application-security — list which apply]
+**Relevant to:** [fk-online-safety, fk-gdpr, fk-application-security — list which apply]
 
 ## Overview
 
@@ -120,11 +120,11 @@ After writing the file, update these files as needed:
    — Add the new act and which skill areas it affects
 
 **If online-safety-relevant:**
-2. `plugins/compliance/skills/online-safety/knowledge/regulatory-map.md`
+2. `plugins/compliance/skills/fk-online-safety/knowledge/regulatory-map.md`
    — Add the act with applicability thresholds and enforcement body
 
 **If the act is significant coverage (major new jurisdiction or regulatory regime):**
-3. `plugins/compliance/skills/online-safety/SKILL.md` or `gdpr/SKILL.md` or `application-security/SKILL.md`
+3. `plugins/compliance/skills/fk-online-safety/SKILL.md` or `plugins/compliance/skills/fk-gdpr/SKILL.md` or `plugins/compliance/skills/fk-application-security/SKILL.md`
    — Add the act to the skill's context/coverage description
 4. `README.md`
    — Add to the compliance plugin's coverage list

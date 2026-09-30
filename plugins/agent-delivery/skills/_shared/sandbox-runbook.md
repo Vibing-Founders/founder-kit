@@ -316,7 +316,7 @@ retrying silently. A half-completed close-out that nobody knows about is worse t
 
 You reached it one of two ways. Both are expected.
 
-**This file is knowledge, not a skill.** The plugin registers `onboard` and `dispatch` only, so
+**This file is knowledge, not a skill.** The plugin registers `fk-onboard` and `fk-dispatch` only, so
 there is nothing to invoke to get here — you either read the file or you fetch it.
 
 1. **From the installed plugin on disk** — the environment's setup script installs this plugin

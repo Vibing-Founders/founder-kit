@@ -89,7 +89,7 @@ If you use `/skill-creator` to build or iterate on a skill, keep the eval prompt
         evals.json
   ```
 
-  For a subcommand that doesn't have its own directory (e.g. `cra` lives in `online-safety/cra.md`), namespace the file instead: `online-safety/evals/cra-evals.json`.
+  For a subcommand that doesn't have its own directory (e.g. `cra` lives in `fk-online-safety/cra.md`), namespace the file instead: `fk-online-safety/evals/cra-evals.json`.
 
 - **Run outputs** (`iteration-N/`, per-run outputs, transcripts, timing/grading data) go in `<skill-name>-workspace/` as a sibling of the skill directory, e.g. `skills/my-skill-workspace/`. This is matched by the top-level `.gitignore` (`*-workspace`) and should stay untracked — it's large, reproducible, and churns every run.
 - **Latest benchmark summary**: once an iteration finishes, copy that iteration's `benchmark.json` and `benchmark.md` (produced by `skill-creator`'s `aggregate_benchmark.py`) from the workspace into the skill's own `evals/` folder, overwriting the previous snapshot:

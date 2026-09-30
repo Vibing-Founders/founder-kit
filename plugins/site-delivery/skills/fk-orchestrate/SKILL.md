@@ -1,15 +1,15 @@
 ---
-name: orchestrate
+name: fk-orchestrate
 description: >
   Orchestrate a site delivery from brief to pull request: read the config, resolve the stage,
   execute the thin brief-to-PR path or the fuller compound-engineering stages (when configured),
   open a PR, and report the human gates (merge, publish, confirm live). Use this skill when
   someone wants to deliver a site change. Triggers on: "orchestrate this site change",
-  "deliver this brief", "/site-delivery:orchestrate", "run site delivery for this ticket",
+  "deliver this brief", "/site-delivery:fk-orchestrate", "run site delivery for this ticket",
   "open a PR for this change", "take this brief and make a PR".
 ---
 
-# orchestrate — run a site delivery from brief to PR
+# fk-orchestrate — run a site delivery from brief to PR
 
 One skill, two paths: thin (brief-to-PR with no tracker) or fuller (tracker + compound-engineering stages). The path is determined by `.site-delivery/config.yaml`, not by guessing.
 
@@ -17,9 +17,9 @@ One skill, two paths: thin (brief-to-PR with no tracker) or fuller (tracker + co
 
 ### 1. Read the config
 
-Read `.site-delivery/config.yaml`. If it is missing, **refuse and point to the `onboard` skill** rather than improvising defaults:
+Read `.site-delivery/config.yaml`. If it is missing, **refuse and point to the `fk-onboard` skill** rather than improvising defaults:
 
-> This repository is not configured for site delivery. Run `/site-delivery:onboard` first to create `.site-delivery/config.yaml`.
+> This repository is not configured for site delivery. Run `/site-delivery:fk-onboard` first to create `.site-delivery/config.yaml`.
 
 Validate `schema_version`. If it is not `1`, warn and continue — but name both the version found and the version supported so a later key-level error is diagnosable.
 
@@ -172,7 +172,7 @@ When `tracker.kind` is `github-project` or `linear`, interact with the tracker t
 
 If the configured project, field, state, or option does not exist, **refuse and report it clearly:**
 
-> The config names a GitHub Project called "Widget Co Site Delivery", but I cannot find it. Check the project name in `.site-delivery/config.yaml` and run onboard again if it is wrong.
+> The config names a GitHub Project called "Widget Co Site Delivery", but I cannot find it. Check the project name in `.site-delivery/config.yaml` and run `/site-delivery:fk-onboard` again if it is wrong.
 
 Never guess a substitute. A ticket parked in the wrong column is worse than a ticket left alone with a clear error message.
 

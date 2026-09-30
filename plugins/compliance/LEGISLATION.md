@@ -13,7 +13,7 @@ This guide explains how to manually add a new act or law — or update existing 
 
 **Path:** `plugins/compliance/skills/_shared/legislation/`
 
-Use shared placement when the act applies across **multiple skill areas** (e.g. GDPR affects both the `gdpr` and `online-safety` skills).
+Use shared placement when the act applies across **multiple skill areas** (e.g. GDPR affects both the `fk-gdpr` and `fk-online-safety` skills).
 
 Existing shared files:
 - `eu-digital-services-act-2022.md`
@@ -29,7 +29,7 @@ Existing shared files:
 
 Use skill-specific placement when the act has **narrow scope** relevant to only one skill area.
 
-Example: `plugins/compliance/skills/application-security/knowledge/legislation/owasp-top10-2021.md`
+Example: `plugins/compliance/skills/fk-application-security/knowledge/legislation/owasp-top10-2021.md`
 
 ### Decision guide
 
@@ -50,7 +50,7 @@ Use existing files as templates. The structure is:
 **Jurisdiction:** [UK / EU / US / etc.]
 **Official source:** [URL to official text]
 **Status:** [In force / Partially in force / Pending commencement]
-**Relevant to:** [List of skill areas: online-safety, gdpr, application-security]
+**Relevant to:** [List of skill areas: fk-online-safety, fk-gdpr, fk-application-security]
 
 ## Overview
 
@@ -115,7 +115,7 @@ When you add or significantly update a legislation file, check whether these fil
    - Add the jurisdiction and act to the map if not already present
    - Update which skill areas it affects
 
-2. **`plugins/compliance/skills/online-safety/knowledge/regulatory-map.md`** (if online-safety-relevant)
+2. **`plugins/compliance/skills/fk-online-safety/knowledge/regulatory-map.md`** (if online-safety-relevant)
    - Add the act to the regulatory map with applicability thresholds
 
 3. **Relevant `SKILL.md` context sections**

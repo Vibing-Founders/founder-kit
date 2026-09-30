@@ -86,4 +86,4 @@ Generate a concrete, tickable GDPR implementation checklist for a given feature 
 - Always include a "Lawful Basis & Documentation" section — it's the most commonly missed item.
 - If the feature involves any third-party services (analytics, auth, payment, age verification), always include the Art. 28 processor section.
 - If children are involved, the Children's Data section is mandatory, not optional.
-- Cross-reference with the online-safety checklist skill if the feature also involves child safety concerns — GDPR and online safety obligations often overlap.
+- Cross-reference with the `fk-online-safety` checklist if the feature also involves child safety concerns — GDPR and online safety obligations often overlap.
