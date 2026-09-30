@@ -67,4 +67,4 @@ manual-test checklist posts as checkboxes without conversion.
 
 Copy this file's shape: state the config block it reads, then the three operations, then the
 missing-target behaviour. Register the new `kind` in `../config-schema.md`. No file under
-`skills/dispatch/` changes.
+`skills/fk-dispatch/` changes.

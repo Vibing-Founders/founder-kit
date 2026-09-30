@@ -47,7 +47,7 @@ live primary path. Write the instruction so a registry failure degrades instead 
 This one matters more than the rest, because the runbook carries the knowledge the prompt is too
 small to hold.
 
-**The runbook is a file, not a skill.** The plugin registers `onboard` and `dispatch`; the runbook
+**The runbook is a file, not a skill.** The plugin registers `fk-onboard` and `fk-dispatch`; the runbook
 is shared knowledge under `_shared/`. The environment's setup script installs the plugin before
 the agent starts, so the file is on disk — reading it there is the primary path, and the public
 fetch is the fallback. Write it as:

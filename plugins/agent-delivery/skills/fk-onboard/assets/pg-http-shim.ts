@@ -14,7 +14,7 @@
  * ---------------------------------------------------------------------------
  * WHERE THIS DIVERGES FROM A REAL CLIENT. Read this before trusting a result.
  * Each item is either enforced at runtime (throws) or listed as a precondition
- * the `onboard` skill's scan checks before installing this file.
+ * the `fk-onboard` skill's scan checks before installing this file.
  *
  * 1. TRANSACTIONS ARE NO-OPS (enforced: `begin`/`commit`/`rollback` return
  *    without reaching the network). The endpoint is stateless, so a transaction

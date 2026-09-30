@@ -1,6 +1,6 @@
 {
   "name": "site-delivery",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration and compound-engineering stages.",
   "author": {
     "name": "Vibing Founders",

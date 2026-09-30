@@ -1,6 +1,6 @@
 /**
  * Tests for the Postgres-over-HTTPS shim shipped in
- * `skills/onboard/assets/pg-http-shim.ts`.
+ * `skills/fk-onboard/assets/pg-http-shim.ts`.
  *
  * The shim is copied into an adopting repository and aliased over the whole `pg`
  * package, where it executes arbitrary DDL against a disposable database branch.
@@ -12,7 +12,7 @@
 import { test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { Client, Pool, rewrites, cronParkRewrite, __resetBranchCheck }
-  from '../skills/onboard/assets/pg-http-shim.ts';
+  from '../skills/fk-onboard/assets/pg-http-shim.ts';
 
 const realFetch = globalThis.fetch;
 let calls: Array<{ url: string; body?: any }> = [];

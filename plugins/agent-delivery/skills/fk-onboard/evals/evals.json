@@ -1,5 +1,5 @@
 {
-  "skill_name": "onboard",
+  "skill_name": "fk-onboard",
   "note": "Prompts target the branch points a reader cannot check by reading the skill files: whether the shim is installed or skipped, whether the preflight declares the tier ready, and whether a secret can reach a branch or a commit. Evals 1-3 and 6 need a fixture repository with the described shape; `files` names what the fixture must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
   "evals": [
     {

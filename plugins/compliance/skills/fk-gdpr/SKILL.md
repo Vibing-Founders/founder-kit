@@ -1,5 +1,5 @@
 ---
-name: gdpr
+name: fk-gdpr
 description: >
   Assess features for GDPR compliance (UK GDPR and EU GDPR), identify the correct lawful basis
   for data processing activities, run or document a Legitimate Interests Assessment (LIA), generate
@@ -9,7 +9,7 @@ description: >
   Triggers on: "assess this for GDPR", "what's the lawful basis for X", "GDPR checklist for X",
   "do we need a DPIA for this", "is this GDPR compliant", "data subject rights for X", "can we
   rely on legitimate interests for X", "help me do an LIA", "legitimate interests assessment for X",
-  "GDPR obligations for X", "/compliance:gdpr", "UK GDPR", "EU GDPR", "ICO obligations".
+  "GDPR obligations for X", "/compliance:fk-gdpr", "UK GDPR", "EU GDPR", "ICO obligations".
 ---
 
 # GDPR Skill

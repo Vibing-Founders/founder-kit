@@ -149,6 +149,6 @@ agent_delivery_integration:
 # - sst-web: Set stage (e.g. production, staging) and aws_profile
 # - supabase+lovable: Set both supabase_project_ref and lovable_project_id
 #
-# The orchestrate skill will report which publish kind is configured
+# The fk-orchestrate skill will report which publish kind is configured
 # and state that the human runs the locked publish path. No deployments
 # are triggered by the plugin in v0.0.1.

@@ -1,21 +1,21 @@
 ---
-name: dispatch
+name: fk-dispatch
 description: >
   Dispatch a planned ticket into a Claude cloud sandbox and report back: resolve the stage from
   the planning artifact's readiness, compose a self-contained prompt, fire a one-shot run, then
   verify what came back and reconcile any leaked preview branch. Use this skill when someone
   wants to run a ticket's delivery stage in the cloud rather than locally. Triggers on:
   "dispatch ABC-123 to the cloud", "run this ticket in a sandbox", "cloud-run the implement
-  stage", "send this issue to a cloud agent", "/agent-delivery:dispatch", "what happened to the
+  stage", "send this issue to a cloud agent", "/agent-delivery:fk-dispatch", "what happened to the
   run for ABC-123", "check on my dispatched run". NOT for running a stage locally, NOT for
-  setting a project up (that is the `onboard` skill), and NOT for recurring schedules — this
+  setting a project up (that is the `fk-onboard` skill), and NOT for recurring schedules — this
   fires once.
 ---
 
-# dispatch — run a stage on a ticket in a cloud sandbox
+# fk-dispatch — run a stage on a ticket in a cloud sandbox
 
 One primitive, two callers: a human in a session now, a scheduler later, both composing the same
-run. Requires `.agent-delivery/config.yaml`; if it is missing, say so and point at the `onboard`
+run. Requires `.agent-delivery/config.yaml`; if it is missing, say so and point at the `fk-onboard`
 skill rather than improvising defaults.
 
 ## Procedure

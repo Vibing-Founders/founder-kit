@@ -1,5 +1,5 @@
 ---
-name: dpia
+name: fk-dpia
 description: >
   Conducts a Data Protection Impact Assessment (DPIA) under Article 35 of EU/UK GDPR.
   Scans the codebase and project documentation to identify personal data processing
@@ -20,7 +20,7 @@ description: >
 Conducts a complete Data Protection Impact Assessment grounded in the actual codebase and
 project context — not a generic template fill-in.
 
-Read `../gdpr/knowledge/dpia.md` before starting. That file contains the nine WP29
+Read `../fk-gdpr/knowledge/dpia.md` before starting. That file contains the nine WP29
 high-risk criteria, what a DPIA must legally cover (Article 35(7)), the Annex 2
 acceptability criteria, and the prior consultation rules. It is the regulatory backbone
 of this skill.
@@ -98,7 +98,7 @@ If the codebase is sparse or primarily infrastructure, say so and explain what y
 
 ### Phase 2: Scope analysis
 
-Apply the nine WP29 criteria to each processing activity. Load `../gdpr/knowledge/dpia.md`
+Apply the nine WP29 criteria to each processing activity. Load `../fk-gdpr/knowledge/dpia.md`
 for the full criteria if you haven't already — do not rely on memory here.
 
 The rule: **two or more criteria → DPIA required. One criterion may be enough** depending
@@ -175,5 +175,5 @@ each (required / not required / borderline) in a brief closing message.
 
 | File | When to read |
 |---|---|
-| `../gdpr/knowledge/dpia.md` | Before starting — contains the nine criteria, Article 35(7) content requirements, Annex 2 acceptability checklist, and prior consultation rules |
+| `../fk-gdpr/knowledge/dpia.md` | Before starting — contains the nine criteria, Article 35(7) content requirements, Annex 2 acceptability checklist, and prior consultation rules |
 | `references/dpia-template.md` | When producing the DPIA document — use this template exactly |

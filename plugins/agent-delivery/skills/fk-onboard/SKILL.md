@@ -1,5 +1,5 @@
 ---
-name: onboard
+name: fk-onboard
 description: >
   Prepare a repository to dispatch tickets into a Claude cloud sandbox: detect the stack,
   tracker and planning artifacts, write .agent-delivery/config.yaml, generate the cloud
@@ -7,13 +7,13 @@ description: >
   the Postgres-over-HTTPS shim, and prove the disposable-database tier with a throwaway
   preview branch before any real work is dispatched. Use this skill when someone wants to set
   up, configure, or verify cloud dispatch for a repository. Triggers on: "onboard this repo
-  for agent delivery", "set up cloud dispatch", "/agent-delivery:onboard", "configure the
+  for agent delivery", "set up cloud dispatch", "/agent-delivery:fk-onboard", "configure the
   sandbox for this project", "prepare this repo for cloud runs", "why isn't dispatch working
   here", "check my agent-delivery setup", "set up the database tier", "verify preview branches
-  work for this project". NOT for firing a run on a ticket — that is the `dispatch` skill.
+  work for this project". NOT for firing a run on a ticket — that is the `fk-dispatch` skill.
 ---
 
-# onboard — take a repository from unprepared to a verified first dispatch
+# fk-onboard — take a repository from unprepared to a verified first dispatch
 
 This skill does what it can and instructs the human through what it cannot. Roughly an hour of
 the setup is genuinely manual — a form on a hosted service that no skill can fill in. **The
