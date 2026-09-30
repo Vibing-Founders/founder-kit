@@ -40,8 +40,7 @@ runs them. It never decides for the founder.
    months: say so.
 6. **The founder decides.** Offer options and your view with reasons. Persevere, pivot,
    kill and what to build are their calls; record them as theirs.
-7. **Plain language.** No jargon without a one-line explanation. Use invented examples
-   only; never name real businesses as examples.
+7. **Plain language.** No jargon without a one-line explanation.
 
 ## Where files live
 
