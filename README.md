@@ -29,7 +29,7 @@ A Claude plugin marketplace hosting bootstrapping founder focused plugins for we
 Once added, you can install any plugin from this marketplace:
 
 ```
-/plugin add compliance@founder-kit
+/plugin install compliance@founder-kit
 ```
 
 ---
@@ -41,6 +41,7 @@ Once added, you can install any plugin from this marketplace:
 | `compliance` | Online safety, GDPR, and application security compliance for platform builders | `online-safety`, `gdpr`, `application-security`, `dpia`, `lia`, `cra` |
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `onboard`, `dispatch` |
 | `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `onboard`, `orchestrate` |
+| `customer-research` | Understand your customers well enough to validate an idea and sell it: an evidence-based ideal customer profile from real conversations, and competitor research you can act on | `fk-icp`, `fk-competitors` |
 
 ---
 
@@ -136,7 +137,7 @@ Resolves the stage from the plan's readiness (sweeping branches and worktrees, n
 
 ### `site-delivery`
 
-Free TOFU module for smart non-coding founders. Give Claude a brief in plain language and get back a pull request — no GitHub Project or Linear setup required. Optional tracker integration and compound-engineering stages for teams who want fuller planning workflows.
+For smart non-coding founders. Give Claude a brief in plain language and get back a pull request — no GitHub Project or Linear setup required. Optional tracker integration and compound-engineering stages for teams who want fuller planning workflows.
 
 Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Human always reviews, merges, runs publish, and confirms live — Claude never auto-merges or triggers deploys.
 
@@ -164,6 +165,56 @@ Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path
 
 ---
 
+### `customer-research`
+
+For bootstrapping founders (solo or two-person teams, coders or not) who need to understand their customers well enough to validate an idea and sell it. Works in a code repository or a plain folder. Files go in `customer-research/` in your project, or next to your existing ideal customer profile if you already have one, and the skills always tell you where they wrote.
+
+```
+/plugin marketplace add Vibing-Founders/founder-kit
+/plugin install customer-research@founder-kit
+```
+
+You do not need the slash commands: plain requests such as "analyse this customer interview" or "who are my competitors for …" trigger the right skill.
+
+### Skills
+
+**`/customer-research:fk-icp`** — ideal customer profile and personas from real conversations
+```
+/customer-research:fk-icp analyse this customer interview: <paste transcript>
+/customer-research:fk-icp what are our customers' top pains?
+/customer-research:fk-icp update the Night-Shift Nadia persona with these notes
+/customer-research:fk-icp review our ICP and tell me what's missing
+```
+
+Turns interview transcripts and feedback into an ideal customer profile, buyer personas, negative personas (who not to sell to) and qualifying questions, kept as a living document with a version log. Every pain point carries the customer's own words and a Possible Solutions section. It flags leading questions and weighs prompted answers less, never invents characteristics or estimates market size, detects B2B versus B2C, and splits two-sided marketplaces into a master profile plus one file per side. Every answer ends with what to ask in your next conversations.
+
+**`/customer-research:fk-competitors`** — competitor research a bootstrapper can act on
+```
+/customer-research:fk-competitors who are my competitors for a bookkeeping tool for freelance photographers?
+/customer-research:fk-competitors where could a meal-planning app for shift workers win?
+```
+
+Scopes the question with you (using your ideal customer profile if one exists), then runs web research in a separate research agent where your tool supports it. Covers direct and indirect competitors and the "do nothing / spreadsheet" alternative, each competitor's positioning, pricing, target customer and what their own customers complain about, and ends with where a small team can win. Every claim is cited, facts are separated from inference, and stale information is flagged.
+
+### Works well with
+
+These free skills from [pm-skills](https://github.com/phuryn/pm-skills) by Paweł Huryn fill gaps
+this plugin leaves on purpose:
+
+- **`interview-script`**: a full guide to prepare a customer interview. Give it the research
+  gaps from `fk-icp`, then bring the transcript back to `fk-icp`. Drop its hypothetical
+  questions ("If you could wave a magic wand…"); `fk-icp` treats the answers as weak evidence.
+- **`competitive-battlecard`**: responses to objections once you are on sales calls, built on
+  the `fk-competitors` research.
+
+```
+/plugin marketplace add phuryn/pm-skills
+/plugin install pm-product-discovery@pm-skills   # interview-script
+/plugin install pm-go-to-market@pm-skills        # competitive-battlecard
+```
+
+---
+
 ## Repository Structure
 
 ```
@@ -187,6 +238,11 @@ plugins/
       _shared/          # Config schema, examples
       onboard/          # Plain-language wizard for .site-delivery/config.yaml
       orchestrate/      # Brief-to-PR thin path or fuller CE stages
+  customer-research/
+    .claude-plugin/plugin.json
+    skills/
+      fk-icp/           # Ideal customer profile, personas, qualifying questions
+      fk-competitors/   # Competitor research with a bundled research agent
 ```
 
 ---

@@ -1,0 +1,125 @@
+{
+  "skill_name": "fk-icp",
+  "note": "All businesses, people and transcripts are invented. Transcripts are embedded in the prompt; where a prompt depends on an existing ICP, `files` describes the fixture the project folder must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "leading-questions-flagged",
+      "prompt": "Can you analyse this customer interview? I'm building a bookkeeping tool for freelance photographers.\n\nInterview with Marcus, 2026-04-14\n\nMe: Thanks for doing this. So, isn't it a real pain keeping track of receipts for every shoot?\nMarcus: Yeah, I suppose.\nMe: And you'd want it all to sort itself automatically, right? Like snap a photo and it's categorised?\nMarcus: Sure, that sounds good.\nMe: I always found spreadsheets awful for this stuff. Would you pay about £12 a month for something that did it for you?\nMarcus: Probably, yeah.\nMe: Tell me about the last time you did your tax return.\nMarcus: Oh god. January. I'd left it all to the last week. I had to go back through eight months of bank statements to work out which lens hire was for which client, because two clients paid late and I couldn't match the payments. I ended up paying my sister-in-law, she's a bookkeeper, £200 to sort it out over a weekend. I swore I'd do it monthly this year. I haven't.\nMe: What do you use now?\nMarcus: A Google Sheet my mate made. It's fine for mileage. Invoices I do in Word and I lose track of who's paid.",
+      "expected_output": "An analysis that opens with an interviewer-bias section quoting the leading question about receipts, the suggested 'sort itself automatically' answer, the interviewer's opinion about spreadsheets and the hypothetical pricing question. Receipts-tracking, auto-categorisation and the £12 willingness to pay are labelled prompted and down-weighted. The tax-return story yields spontaneous, strongly weighted pain points (last-minute reconciliation, matching late client payments, losing track of who has paid) each with word-for-word quotes and a Possible Solutions section. Detects B2B (sole trader paying from business income). Suggests better open questions, lists research gaps, writes interview files and an ICP under customer-research/ and says where.",
+      "files": ["an empty project folder with no existing ICP"],
+      "assertions": [
+        {"id": "flags-leading-question", "text": "The analysis explicitly flags 'isn't it a real pain keeping track of receipts' as a leading question, quoting it"},
+        {"id": "flags-suggested-answer-and-opinion", "text": "The analysis flags the suggested answer about automatic categorisation and the interviewer's own opinion about spreadsheets"},
+        {"id": "prompted-down-weighted", "text": "Receipts-tracking, auto-categorisation and willingness to pay £12 are labelled prompted (or equivalent) and given less weight than the tax-return story"},
+        {"id": "no-price-evidence-claimed", "text": "The output does not present '£12 a month' as validated willingness to pay"},
+        {"id": "spontaneous-pains-quoted", "text": "At least two pain points from the tax-return story carry word-for-word quotes from Marcus"},
+        {"id": "possible-solutions-sections", "text": "Each pain point has a section headed 'Possible Solutions'"},
+        {"id": "better-questions", "text": "The output suggests at least one open, story-based question to replace a flagged question"},
+        {"id": "research-gaps-last", "text": "The response ends with research gaps (what to ask next) and lists the files written with relative paths under customer-research/"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "marketplace-two-segments",
+      "prompt": "Here are notes from two conversations for my idea: a local marketplace that matches dog owners with vetted dog walkers. Please analyse them and set up our ICP.\n\nConversation 1: Aisha, dog owner, 2026-05-03\n\"I work hospital shifts, twelve hours, and Biscuit can't hold it that long. Last month the walker I found on a noticeboard just didn't show up, twice. I came home to a mess and a really stressed dog. I've tried the big apps but the walkers change every week and Biscuit's nervous with strangers. I'd honestly pay more for the same person every time.\"\n\nConversation 2: Tom, dog walker, 2026-05-05\n\"I walk about nine dogs a week, mostly word of mouth. The worst bit is chasing payment, people forget to transfer and I feel awkward asking. And I lose hours to messages about rescheduling. The apps take a massive cut, like a quarter, so I only use them when I'm quiet. What I want is regulars near me, not one-off walks across town.\"",
+      "expected_output": "Detects a two-sided marketplace (dog owners and dog walkers) and says why. Creates a master ideal-customer-profile.md plus two segment files named after the sides (e.g. ideal-customer-profile-dog-owners.md and ideal-customer-profile-dog-walkers.md), cross-referenced. Aisha's no-show and changing-walkers pains go to the owners file; Tom's payment-chasing and platform-fee pains go to the walkers file; the shared desire for regular, repeat pairings (trust and consistency) goes in the master as a cross-side pain. Owners likely B2C, walkers B2B (sole trader). Notes one conversation per side is thin evidence.",
+      "files": ["an empty project folder with no existing ICP"],
+      "assertions": [
+        {"id": "detects-marketplace", "text": "The output states this is a two-sided marketplace and names both sides"},
+        {"id": "three-files", "text": "A master ideal-customer-profile.md and two segment files, one per side, are written"},
+        {"id": "segment-names-meaningful", "text": "Segment files are named after who the people are (e.g. dog-owners, dog-walkers), not side-a/side-b or supply/demand"},
+        {"id": "cross-referenced", "text": "The master file links to both segment files and each segment file links back to the master"},
+        {"id": "pains-placed-correctly", "text": "Owner-only pains are in the owners file, walker-only pains are in the walkers file, and the shared need for consistent repeat pairings is in the master file, with no pain duplicated across files"},
+        {"id": "per-side-structure", "text": "The output treats owners as B2C and walkers as B2B (or explains a different choice with evidence)"},
+        {"id": "thin-evidence-flagged", "text": "The output notes that each side rests on a single conversation and lists research gaps per side"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "b2c-detected",
+      "prompt": "Analyse this feedback for my meal-planning app for shift workers.\n\nNadia, 2026-06-02, voice note transcribed:\n\"So I'm on nights this week, 8pm to 8am, and I get home and honestly I just eat cereal or whatever my flatmate left. On my days off I try to batch cook but then my rota changes and half of it goes in the bin. I spent about forty quid on meal kits last month and three of them went off because I got called in for extra shifts. I don't need recipes, I've got loads of recipes. I need something that knows I'm working Thursday night and tells me to cook Wednesday.\"",
+      "expected_output": "Identifies this as B2C (individual paying personally for home life) and uses the individual-profile structure, not a company profile. Pain points with quotes: eating poorly after nights, batch-cooked food wasted when the rota changes, meal kits spoiled due to extra shifts, planning not aligned to rota. Each has Possible Solutions. Notes 'I don't need recipes' as a signal about what not to build. Proposes a memorable persona name (not 'Persona A'). No market sizing.",
+      "files": ["an empty project folder with no existing ICP"],
+      "assertions": [
+        {"id": "b2c-stated", "text": "The output states the business is B2C and gives evidence from the note"},
+        {"id": "individual-profile", "text": "The ICP uses an individual/customer profile (life situation, routines), not a company profile with industry or company size"},
+        {"id": "quotes-per-pain", "text": "Every pain point carries a word-for-word quote from Nadia"},
+        {"id": "possible-solutions-sections", "text": "Each pain point has a section headed 'Possible Solutions'"},
+        {"id": "memorable-persona-name", "text": "Any persona created has a descriptive name, not 'Persona A', 'Primary' or similar"},
+        {"id": "no-market-sizing", "text": "The output contains no market-size, revenue or lifetime-value estimates"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "b2b-detected",
+      "prompt": "Can you analyse this call? Same bookkeeping-for-photographers idea.\n\nCall with Lena, runs Harbour Lane Studio, 2026-06-09\n\"There's three of us, me and two associate shooters, plus a part-time assistant, Jo, who does the admin two days a week. We do about sixty weddings a year. Jo does the invoicing in our accounting software but the associates submit their expenses on WhatsApp photos and she has to key them in. Our accountant charges us extra at year end because the categories are a mess. Anything new, I decide, but if Jo hates it, it's dead.\"",
+      "expected_output": "Identifies B2B and uses a company-profile structure: small photography studio, three shooters plus a part-time admin, about sixty weddings a year, uses accounting software. Decision-making captured: owner pays and decides, admin has an effective veto. Buyer personas are roles (owner, admin). Pain points with quotes (expenses via WhatsApp photos rekeyed, accountant extra charges for messy categories). Notes the structure differs from the earlier sole-trader interviews and flags this as a possible second persona or ICP question.",
+      "files": ["a project folder containing customer-research/ideal-customer-profile.md for the photographer bookkeeping idea, built from one sole-trader interview"],
+      "assertions": [
+        {"id": "b2b-stated", "text": "The output states this conversation is B2B and uses a company profile (studio size, headcount, volume of work, tools)"},
+        {"id": "decision-process", "text": "The decision-making process is captured: Lena decides and pays, Jo can block adoption"},
+        {"id": "role-personas", "text": "Buyer personas are framed as roles within the company (owner, admin), with memorable names"},
+        {"id": "existing-icp-location-used", "text": "Updates go to the existing customer-research/ideal-customer-profile.md, with a new version-log entry citing this conversation"},
+        {"id": "contrast-with-sole-trader", "text": "The output notes this studio differs from the earlier sole-trader evidence and turns it into a decision or research gap rather than silently merging"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "update-named-persona",
+      "prompt": "Please update the 'Night-Shift Nadia' persona. Two more nurses said they plan food on their phone during breaks, not at home, so she should be mobile-first. Oh and also make her more budget-conscious, I just have a feeling about that.",
+      "expected_output": "Changes only the Night-Shift Nadia persona. Shows before and after for the mobile-first change and cites the evidence (asks for or references the two nurse conversations; if no quotes are available, asks for them or marks the change as reported by the founder). Treats 'more budget-conscious' as unsupported: asks the founder to confirm, and if confirmed marks it as a founder assumption not yet evidenced, and adds a research gap to test it. Adds a version-log entry. Leaves other personas and the pain point section untouched.",
+      "files": ["a project folder containing customer-research/ideal-customer-profile.md with a version log at v0.2, personas 'Night-Shift Nadia' and 'The Rota-Juggling Parent', and a negative persona 'The Macro Counter'"],
+      "assertions": [
+        {"id": "only-named-persona", "text": "Only the Night-Shift Nadia persona is changed; other personas and sections are left as they were"},
+        {"id": "before-after", "text": "The output shows the persona text before and after the change"},
+        {"id": "evidence-cited-or-requested", "text": "The mobile-first change is tied to the two nurse conversations, and the skill asks for their quotes or notes if they are not in the project"},
+        {"id": "hunch-not-evidence", "text": "The 'budget-conscious' change is not added as fact: it is either held pending confirmation or labelled as a founder assumption not yet evidenced"},
+        {"id": "version-log-entry", "text": "A new version-log entry records what changed, the date and the source"},
+        {"id": "no-pains-in-persona", "text": "No pain points are written into the persona; any pain referenced links to the ICP pain point section"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "answer-from-icp",
+      "prompt": "What are our customers' top three pains, and how sure are we?",
+      "expected_output": "Reads the existing ICP and answers from it: names the top pains, quotes the customers behind each, says how many conversations support each and whether the evidence was spontaneous or prompted, and gives a confidence level. Does not add new pains that are not in the file. Ends with research gaps.",
+      "files": ["a project folder containing customer-research/ideal-customer-profile.md with five pain points, each with quotes from between one and four conversations, one marked prompted"],
+      "assertions": [
+        {"id": "reads-icp", "text": "The answer is drawn from the existing ICP file and cites its quotes or conversations"},
+        {"id": "confidence-stated", "text": "The answer states how many conversations support each pain and a confidence level"},
+        {"id": "prompted-noted", "text": "The pain supported only by prompted evidence is identified as weaker"},
+        {"id": "nothing-invented", "text": "No pain point or customer characteristic appears that is not in the ICP file"},
+        {"id": "ends-with-gaps", "text": "The response ends with research gaps"}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "review-weak-icp",
+      "prompt": "Can you review our ICP and tell me what's missing?",
+      "expected_output": "Reviews the ICP against the principles and names concrete gaps: generic persona names, pain points inside persona sections, pain points without quotes, no Possible Solutions sections, an invented TAM figure, no negative personas, no version log. Ranks the gaps by how much they could mislead the founder, and suggests what to ask customers to close them.",
+      "files": ["a project folder containing customer-research/ideal-customer-profile.md with personas named 'Primary Persona' and 'Secondary Persona', pain points listed inside each persona without quotes, a line estimating a £40m addressable market, no negative personas, no Possible Solutions sections and no version log"],
+      "assertions": [
+        {"id": "generic-names", "text": "Flags the generic persona names and suggests replacing them with descriptive ones"},
+        {"id": "scattered-pains", "text": "Flags pain points living inside personas instead of the ICP pain point section"},
+        {"id": "missing-quotes-and-solutions", "text": "Flags missing word-for-word quotes and missing Possible Solutions sections"},
+        {"id": "market-size-flagged", "text": "Flags the £40m addressable-market estimate as unsupported by customer evidence"},
+        {"id": "missing-negatives-and-log", "text": "Flags the absence of negative personas and of a version log"},
+        {"id": "ranked-with-next-questions", "text": "Gaps are ranked and paired with questions to ask in the next customer conversations"}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "next-interview-points-to-interview-script",
+      "prompt": "What should I ask in my next customer interview?",
+      "expected_output": "Reads the existing ICP and lists its research gaps as the questions that matter most. Does not write a full interview script itself. Suggests the interview-script skill from pm-skills with the install commands, and warns that its hypothetical questions (e.g. 'magic wand') produce weak evidence and should be dropped or rephrased as 'tell me about the last time…'.",
+      "files": ["a project folder containing customer-research/ideal-customer-profile.md for a bookkeeping tool for freelance photographers, with a research gaps section listing: how often invoices are paid late, and whether they have ever paid for bookkeeping software"],
+      "assertions": [
+        {"id": "lists-gaps", "text": "The output lists the ICP's research gaps as the priority questions"},
+        {"id": "no-full-script", "text": "The skill does not produce a full interview script itself"},
+        {"id": "points-to-interview-script", "text": "The output suggests pm-skills' interview-script and gives the install commands"},
+        {"id": "warns-hypotheticals", "text": "The output warns that hypothetical questions give weak evidence and suggests past-behaviour questions instead"}
+      ]
+    }
+  ]
+}

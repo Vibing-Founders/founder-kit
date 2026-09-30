@@ -54,6 +54,11 @@ description: >
 [Skill instructions here]
 ```
 
+**Every skill name starts with `fk-`** (for Founder Kit), and the skill's directory matches its
+name: `skills/fk-my-skill/SKILL.md` with `name: fk-my-skill`. In Claude Code a skill is already
+namespaced by its plugin (`/my-plugin:fk-my-skill`), but that namespace is lost when a skill is
+used in other agent tools, so the prefix is how founders can tell a Founder Kit skill apart.
+
 The `description` field is used by Claude to decide whether to invoke the skill — make it specific and include example trigger phrases.
 
 ## Adding knowledge files
@@ -125,6 +130,7 @@ After adding your plugin:
 
 - [ ] `plugins/<name>/.claude-plugin/plugin.json` exists with all required fields
 - [ ] At least one `SKILL.md` with valid frontmatter (`name`, `description`)
+- [ ] Every new skill name starts with `fk-` and matches its directory name
 - [ ] Plugin added to README.md plugins table
 - [ ] Plugin details section added to README.md
 - [ ] All legislation files cite official sources
