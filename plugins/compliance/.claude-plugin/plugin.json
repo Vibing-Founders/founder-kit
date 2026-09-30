@@ -1,6 +1,6 @@
 {
   "name": "compliance",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Online safety, GDPR, and application security compliance for platform builders. Covers UK OSA, EU DSA, UK/EU GDPR, Children's Code, COPPA, and OWASP.",
   "author": {
     "name": "Vibing Founders",
