@@ -1,5 +1,5 @@
 ---
-name: competitors
+name: fk-competitors
 description: >
   Researches the competitive landscape for a startup idea or product and returns an
   analysis a bootstrapping founder can use to position and sell: direct and indirect
@@ -100,7 +100,7 @@ points to, for example:
 - Is there a competitor whose unhappy customers you could talk to this week?
 
 And list any research gaps: things the web could not answer that customer
-conversations could (the `icp` skill in this plugin can analyse those conversations).
+conversations could (the `fk-icp` skill in this plugin can analyse those conversations).
 
 ## Plain language
 

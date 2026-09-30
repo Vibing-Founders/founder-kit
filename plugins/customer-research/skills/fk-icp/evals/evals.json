@@ -1,5 +1,5 @@
 {
-  "skill_name": "icp",
+  "skill_name": "fk-icp",
   "note": "All businesses, people and transcripts are invented. Transcripts are embedded in the prompt; where a prompt depends on an existing ICP, `files` describes the fixture the project folder must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
   "evals": [
     {

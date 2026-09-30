@@ -27,7 +27,7 @@ customer-research/
       analysis.md                           # bias flags, pain points, fit, persona signals
       insights.md                           # patterns, priorities, qualifying questions, gaps
   competitors/
-    <YYYY-MM-DD>-<topic>.md                 # written by the competitors skill
+    <YYYY-MM-DD>-<topic>.md                 # written by the fk-competitors skill
 ```
 
 - `<name>` is the customer's name or pseudonym, lowercase with hyphens (`priya-n`,

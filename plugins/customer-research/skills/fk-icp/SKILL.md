@@ -1,5 +1,5 @@
 ---
-name: icp
+name: fk-icp
 description: >
   Builds and maintains an evidence-based ideal customer profile (ICP), buyer personas,
   negative personas (who not to sell to) and qualifying questions from real customer

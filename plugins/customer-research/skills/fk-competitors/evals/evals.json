@@ -1,5 +1,5 @@
 {
-  "skill_name": "competitors",
+  "skill_name": "fk-competitors",
   "note": "All businesses and ideas are invented. Prompts need web search; `files` describes any fixture the project folder must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
   "evals": [
     {
