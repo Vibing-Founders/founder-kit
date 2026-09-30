@@ -21,7 +21,7 @@ as having no evidence yet, with research gaps listing who to talk to.
 ## Files
 
 ```
-customer-research/
+docs/customer-research/                      # or your configured research folder
   ideal-customer-profile.md                  # master
   ideal-customer-profile-<segment>.md        # one per side, e.g. -dog-owners, -walkers
 ```

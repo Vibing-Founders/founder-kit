@@ -59,6 +59,23 @@ name: `skills/fk-my-skill/SKILL.md` with `name: fk-my-skill`. In Claude Code a s
 namespaced by its plugin (`/my-plugin:fk-my-skill`), but that namespace is lost when a skill is
 used in other agent tools, so the prefix is how founders can tell a Founder Kit skill apart.
 
+**Skills that save files work under `docs/` by default.** A plugin keeps its files in
+`docs/<plugin-name>/` from the project root, and lets founders override that in
+`.founder-kit/config.yaml`, a file shared by every Founder Kit plugin:
+
+```yaml
+docs_root: docs            # all Founder Kit plugins: <docs_root>/<plugin-name>
+<plugin-name>:
+  root: docs/some/folder   # optional: this plugin only
+```
+
+Resolve the folder in this order: a location the founder gives in the request, then
+`<plugin-name>.root`, then `<docs_root>/<plugin-name>`, then `docs/<plugin-name>`. Paths are
+relative to the project root. Only write the config file when the founder asks for a lasting
+change, and keep its other keys. Plugins read it themselves rather than using Claude Code's
+`userConfig`, because that is per user (not per project) and Claude Code only. See
+`plugins/customer-research/skills/_shared/docs-location.md` for a worked example.
+
 The `description` field is used by Claude to decide whether to invoke the skill — make it specific and include example trigger phrases.
 
 ## Adding knowledge files

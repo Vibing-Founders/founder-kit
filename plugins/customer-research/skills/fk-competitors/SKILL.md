@@ -28,9 +28,10 @@ Before researching, make sure you know:
 - **What they already know**: competitors they have heard of, tools customers mentioned.
 - **Where they sell**: country or region, if it matters for pricing or availability.
 
-First, look for an ideal customer profile in the project: `ideal-customer-profile.md`
-(usually in `customer-research/`), plus any `ideal-customer-profile-<segment>.md` files
-beside it for a marketplace. If it exists, read it and use it for "who it is for":
+First, work out the **research folder** by following `../_shared/docs-location.md`
+(by default `docs/customer-research/`, configurable in `.founder-kit/config.yaml`). Look
+there for an ideal customer profile, `ideal-customer-profile.md`, plus any
+`ideal-customer-profile-<segment>.md` files beside it for a marketplace. If it exists, read it and use it for "who it is for":
 the target customer, their top pain points, the tools and workarounds they mentioned,
 and the negative personas. Tell the founder you are using it. Tools customers named in
 interviews are competitors, including spreadsheets and paper.
@@ -67,10 +68,10 @@ Fix or remove anything that fails.
 
 ## 4. Write it up
 
-Save to the research folder: if an ICP file was found, use its folder; otherwise
-`customer-research/` in the project root. File:
+Save to the research folder from step 1. File:
 `competitors/<YYYY-MM-DD>-<topic>.md`, lowercase with hyphens, for example
-`customer-research/competitors/2026-05-14-photographer-bookkeeping.md`.
+`docs/customer-research/competitors/2026-05-14-photographer-bookkeeping.md` at the default
+location.
 
 Sections, in order:
 

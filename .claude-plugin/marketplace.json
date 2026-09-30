@@ -43,7 +43,7 @@
     {
       "name": "customer-research",
       "description": "Customer research for bootstrapping founders: turn real customer conversations and public evidence into an ideal customer profile, personas and a competitor view you can use to validate an idea and sell it.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "Vibing Founders",
         "url": "https://github.com/Vibing-Founders"
