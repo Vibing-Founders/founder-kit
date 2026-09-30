@@ -82,6 +82,14 @@ writes only its plugin's section, keeps every other key and section exactly as i
 creates the file if it does not exist. See `plugins/agent-delivery/skills/_shared/config-schema.md`
 for a plugin that keeps its whole config there and migrates an older standalone file.
 
+**Skills may read the founder profile to tailor their advice.** The `founder-coach` plugin keeps
+it at `<founder-coach folder>/founder-profile.md`, by default `docs/founder-coach/founder-profile.md`
+(the folder resolves by the rules above, with `founder-coach.root`). It records each founder's
+background, skills, audiences they can reach, constraints, goals and founder type. Any Founder Kit
+skill may read it, for example to pitch advice at the founder's hours or skills. Only
+`founder-coach` writes it; never write to it from another plugin. It may not exist, so treat it as
+optional.
+
 The `description` field is used by Claude to decide whether to invoke the skill — make it specific and include example trigger phrases.
 
 ## Adding knowledge files

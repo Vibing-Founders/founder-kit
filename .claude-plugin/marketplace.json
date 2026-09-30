@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "founder-kit",
-  "description": "Plugins for bootstrapping founders — customer research, compliance, agent delivery into cloud sandboxes, and smart site delivery for non-coding founders.",
+  "description": "Plugins for bootstrapping founders — a founder coach, customer research, compliance, agent delivery into cloud sandboxes, and smart site delivery for non-coding founders.",
   "owner": {
     "name": "Vibing Founders",
     "url": "https://github.com/Vibing-Founders"
@@ -49,6 +49,17 @@
         "url": "https://github.com/Vibing-Founders"
       },
       "source": "./plugins/customer-research",
+      "category": "productivity"
+    },
+    {
+      "name": "founder-coach",
+      "description": "A coach for bootstrapping founders: works out where you are on the journey from idea to first revenue and beyond, what done looks like for that stage, what to do next and which tool helps, and keeps your founder profile and progress between sessions.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Vibing Founders",
+        "url": "https://github.com/Vibing-Founders"
+      },
+      "source": "./plugins/founder-coach",
       "category": "productivity"
     }
   ]
