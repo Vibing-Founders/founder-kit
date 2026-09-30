@@ -176,7 +176,7 @@ Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path
 
 ### `customer-research`
 
-For bootstrapping founders (solo or two-person teams, coders or not) who need to understand their customers well enough to validate an idea and sell it. Works in a code repository or a plain folder. Files go in `docs/customer-research/` in your project by default, and the skills always tell you where they wrote. To use a different folder, ask ("keep my research in docs/my-idea from now on") or set it in `.founder-kit/config.yaml`:
+For bootstrapping founders (solo or two-person teams, coders or not) who need to understand their customers well enough to validate an idea and sell it. Works in a code repository or a plain folder. Files go in `docs/customer-research/` in your project by default, and the skills always tell you where they wrote. To use a different folder, ask ("keep my research in docs/my-idea from now on") or set it in `.vf-founder-kit/config.yaml`:
 
 ```yaml
 docs_root: docs                      # where all Founder Kit plugins keep their docs
