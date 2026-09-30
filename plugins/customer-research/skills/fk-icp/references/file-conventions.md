@@ -30,6 +30,8 @@ docs/customer-research/
       insights.md                           # patterns, priorities, qualifying questions, gaps
   competitors/
     <YYYY-MM-DD>-<topic>.md                 # written by the fk-competitors skill
+  fact-checks/
+    <YYYY-MM-DD>-<topic>.md                 # written by the fk-fact-check skill
 ```
 
 - `<name>` is the customer's name or pseudonym, lowercase with hyphens (`priya-n`,
