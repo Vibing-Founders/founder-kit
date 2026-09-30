@@ -6,7 +6,7 @@ to the current project folder. Never write to an absolute path.
 ## The research folder
 
 Which folder to use (default `docs/customer-research/`, configurable in
-`.founder-kit/config.yaml`) is decided by `../../_shared/docs-location.md`. Follow it
+`.vf-founder-kit/config.yaml`) is decided by `../../_shared/docs-location.md`. Follow it
 first. Then, inside the research folder:
 
 1. Use `ideal-customer-profile.md` if it exists. Also check for files whose top heading is

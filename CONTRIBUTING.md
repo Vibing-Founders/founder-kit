@@ -61,7 +61,7 @@ used in other agent tools, so the prefix is how founders can tell a Founder Kit 
 
 **Skills that save files work under `docs/` by default.** A plugin keeps its files in
 `docs/<plugin-name>/` from the project root, and lets founders override that in
-`.founder-kit/config.yaml`, a file shared by every Founder Kit plugin:
+`.vf-founder-kit/config.yaml`, a file shared by every Founder Kit plugin:
 
 ```yaml
 docs_root: docs            # all Founder Kit plugins: <docs_root>/<plugin-name>

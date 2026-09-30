@@ -125,8 +125,8 @@
       "id": 9,
       "name": "config-override-root",
       "prompt": "Analyse this interview for my photographer bookkeeping idea. Interview with Sam, 2026-06-20. Me: Tell me about the last time you sent an invoice. Sam: Last week. I made it in Word, then realised I'd forgotten the VAT number and had to send it again.",
-      "expected_output": "Reads .founder-kit/config.yaml, which sets customer-research.root to research/customers, and writes every file there (interviews/sam-2026-06-20/..., ideal-customer-profile.md). Writes nothing to docs/customer-research. Lists the files written under research/customers.",
-      "files": [".founder-kit/config.yaml containing: docs_root: docs, and customer-research: root: research/customers. No other research files."],
+      "expected_output": "Reads .vf-founder-kit/config.yaml, which sets customer-research.root to research/customers, and writes every file there (interviews/sam-2026-06-20/..., ideal-customer-profile.md). Writes nothing to docs/customer-research. Lists the files written under research/customers.",
+      "files": [".vf-founder-kit/config.yaml containing: docs_root: docs, and customer-research: root: research/customers. No other research files."],
       "assertions": [
         {"id": "uses-configured-root", "text": "All files are written under research/customers/"},
         {"id": "not-default", "text": "Nothing is written under docs/customer-research/"},
@@ -137,12 +137,12 @@
       "id": 10,
       "name": "legacy-folder-offers-move-or-record",
       "prompt": "Here's another interview to add. Interview with Jo, 2026-07-01. Me: How do you track expenses today? Jo: A notes app. Then I type them into a spreadsheet at the end of the quarter, which takes a whole Sunday.",
-      "expected_output": "No config file exists, so the research folder is docs/customer-research/, which is empty. Finds the existing customer-research/ideal-customer-profile.md in the project root (from an older version of the plugin) and does not start a second profile. Tells the founder where the existing research is and offers to move it into docs/customer-research/ or to keep it there by recording customer-research.root in .founder-kit/config.yaml. Writes nothing until the founder answers.",
-      "files": ["customer-research/ideal-customer-profile.md at the project root (v0.2, two interviews), no .founder-kit/config.yaml, no docs/ folder"],
+      "expected_output": "No config file exists, so the research folder is docs/customer-research/, which is empty. Finds the existing customer-research/ideal-customer-profile.md in the project root (from an older version of the plugin) and does not start a second profile. Tells the founder where the existing research is and offers to move it into docs/customer-research/ or to keep it there by recording customer-research.root in .vf-founder-kit/config.yaml. Writes nothing until the founder answers.",
+      "files": ["customer-research/ideal-customer-profile.md at the project root (v0.2, two interviews), no .vf-founder-kit/config.yaml, no docs/ folder"],
       "assertions": [
         {"id": "finds-legacy", "text": "The response names the existing customer-research/ideal-customer-profile.md"},
         {"id": "no-second-profile", "text": "No new ideal-customer-profile.md is created under docs/customer-research/"},
-        {"id": "offers-both-choices", "text": "The founder is offered both moving the research and recording its current location in .founder-kit/config.yaml"},
+        {"id": "offers-both-choices", "text": "The founder is offered both moving the research and recording its current location in .vf-founder-kit/config.yaml"},
         {"id": "waits", "text": "No files are written or moved before the founder chooses"}
       ]
     }

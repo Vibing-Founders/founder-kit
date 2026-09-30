@@ -11,14 +11,14 @@ Take the first of these that applies:
 
 1. **The founder asked for a location in this request** ("save this in docs/sideways").
    Use it for this task only, unless they say to keep it (see "Changing the location").
-2. **`.founder-kit/config.yaml` sets `customer-research.root`.** Use that folder.
-3. **`.founder-kit/config.yaml` sets `docs_root`.** Use `<docs_root>/customer-research`.
+2. **`.vf-founder-kit/config.yaml` sets `customer-research.root`.** Use that folder.
+3. **`.vf-founder-kit/config.yaml` sets `docs_root`.** Use `<docs_root>/customer-research`.
 4. **Otherwise**, use `docs/customer-research`.
 
-`.founder-kit/config.yaml` is shared by all Founder Kit plugins. The keys this plugin reads:
+`.vf-founder-kit/config.yaml` is shared by all Founder Kit plugins. The keys this plugin reads:
 
 ```yaml
-# .founder-kit/config.yaml
+# .vf-founder-kit/config.yaml
 docs_root: docs                  # where Founder Kit plugins keep their docs (default: docs)
 
 customer-research:
@@ -39,13 +39,13 @@ research is and offer two choices:
 
 - **Move it** into the research folder (keep the folder structure, then confirm what moved), or
 - **Keep it where it is** by recording that folder as `customer-research.root` in
-  `.founder-kit/config.yaml`.
+  `.vf-founder-kit/config.yaml`.
 
 Wait for their answer before writing anything.
 
 ## Changing the location
 
-Only create or edit `.founder-kit/config.yaml` when the founder asks for a lasting change
+Only create or edit `.vf-founder-kit/config.yaml` when the founder asks for a lasting change
 ("keep my research in docs/sideways from now on") or chooses "keep it where it is" above.
 When you do:
 
