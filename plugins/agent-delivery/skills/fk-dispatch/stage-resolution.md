@@ -12,7 +12,8 @@ else stages.default_stage   →  use it, say it was the configured default
 else                        →  stop and ask for an explicit --stage
 ```
 
-Read `stages.artifact_glob` and `stages.readiness_key` from `.agent-delivery/config.yaml`. With
+Read `stages.artifact_glob` and `stages.readiness_key` from the `agent-delivery` section of
+`.vf-founder-kit/config.yaml` (or the deprecated old file, per `SKILL.md`). With
 `readiness_key` unset, skip straight to `default_stage` — a project with no planning workflow never
 looks for an artifact.
 

@@ -1,23 +1,52 @@
 # Site delivery configuration contract
 
-Every project-specific fact this plugin needs lives in one file in the adopting repository:
+Every project-specific fact this plugin needs lives in one place in the adopting repository: the
+`site-delivery` section of the shared Founder Kit config file.
 
 ```
-.site-delivery/config.yaml
+.vf-founder-kit/config.yaml
 ```
 
-Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow stage. If a skill needs to know something about *your* project, it is a key below.
+```yaml
+docs_root: docs            # shared by all Founder Kit plugins
+site-delivery:
+  schema_version: 1
+  repo:
+    url: https://github.com/Vibing-Founders/my-site
+  # ...every key below, one level in
+# other plugins' sections (agent-delivery, customer-research, ...) may sit in the same file
+```
 
-`fk-onboard` writes this file. `fk-orchestrate` reads it. A human can edit it at any time; it is plain YAML and every key has a default.
+Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow stage. If a skill needs to know something about *your* project, it is a key below. Key paths in this document (`repo.url`, `tracker.kind`, ...) are relative to the `site-delivery` section.
+
+`fk-onboard` writes this section. `fk-orchestrate` reads it. A human can edit it at any time; it is plain YAML and every key has a default.
 
 > **v1 stability.** This format is unstable and may change without a migration path until the plugin is used by multiple external projects. Pin the plugin version if that matters to you.
+
+## Where the config lives, and the old file
+
+**Reading.** Read the `site-delivery` section of `.vf-founder-kit/config.yaml`.
+
+- **Section missing, old file present.** Earlier versions kept this config in its own file, `.site-delivery/config.yaml` (same keys, not nested). If the section is missing and that file exists, use it, and say in the report that `.site-delivery/config.yaml` is deprecated and that running `fk-onboard` will migrate it into `.vf-founder-kit/config.yaml`.
+- **Both present.** The section wins. Say in the report that the old `.site-delivery/config.yaml` is being ignored.
+- **Neither present.** The project is not configured; point at `fk-onboard`.
+
+**Writing.** The file is shared, so `fk-onboard` writes **only the `site-delivery` section**. It keeps every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was, and creates the file (and the `.vf-founder-kit/` folder) if it does not exist.
+
+**Migrating.** When `fk-onboard` finds the old `.site-delivery/config.yaml`, it offers to migrate it:
+
+1. Copy its content into the `site-delivery` section **unchanged** — no values rewritten, defaulted, or merged with new answers.
+2. Show the founder exactly what it wrote.
+3. Offer to delete the old file, and delete it **only after the founder confirms**.
+
+If the section already exists as well, migration does not overwrite it: the old file is reported as ignored, any differences between the two are shown, and only deletion is offered.
 
 ## Precedence
 
 Three layers, highest first:
 
 1. **An explicit argument to a skill** — `fk-orchestrate <brief> --stage brainstorm` beats everything.
-2. **This config file.**
+2. **This config section.**
 3. **The documented default** below.
 
 A skill that falls back to a default for a value that changes its behaviour says so in its report. Silent defaulting is a bug.

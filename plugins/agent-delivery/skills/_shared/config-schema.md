@@ -1,26 +1,66 @@
 # Project configuration contract
 
-Every project-specific fact this plugin needs lives in one file in the adopting repository:
+Every project-specific fact this plugin needs lives in one place in the adopting repository: the
+`agent-delivery` section of the shared Founder Kit config file.
 
 ```
-.agent-delivery/config.yaml
+.vf-founder-kit/config.yaml
+```
+
+```yaml
+docs_root: docs            # shared by all Founder Kit plugins
+agent-delivery:
+  schema_version: 1
+  repo:
+    clone_dir: my-project
+  # ...every key below, one level in
+# other plugins' sections (site-delivery, customer-research, ...) may sit in the same file
 ```
 
 Nothing in the plugin hardcodes a tracker, a test runner, a planning workflow, a file path, or
-a credential. If a skill needs to know something about *your* project, it is a key below.
+a credential. If a skill needs to know something about *your* project, it is a key below. Key
+paths in this document (`repo.clone_dir`, `stages.map`, ...) are relative to the `agent-delivery`
+section.
 
-`fk-onboard` writes this file. `fk-dispatch` and the sandbox runbook read it. A human can edit it at
-any time; it is plain YAML and every key has a default.
+`fk-onboard` writes this section. `fk-dispatch` and the sandbox runbook read it. A human can edit
+it at any time; it is plain YAML and every key has a default.
 
 > **v1 stability.** This format is unstable and may change without a migration path until a
 > second external project adopts it. Pin the plugin version if that matters to you.
+
+## Where the config lives, and the old file
+
+**Reading.** Read the `agent-delivery` section of `.vf-founder-kit/config.yaml`.
+
+- **Section missing, old file present.** Earlier versions kept this config in its own file,
+  `.agent-delivery/config.yaml` (same keys, not nested). If the section is missing and that
+  file exists, use it, and say in the report that `.agent-delivery/config.yaml` is deprecated and
+  that running `fk-onboard` will migrate it into `.vf-founder-kit/config.yaml`.
+- **Both present.** The section wins. Say in the report that the old
+  `.agent-delivery/config.yaml` is being ignored.
+- **Neither present.** The project is not configured; point at `fk-onboard`.
+
+**Writing.** The file is shared, so `fk-onboard` writes **only the `agent-delivery` section**. It
+keeps every other key and section — `docs_root`, other plugins' sections, comments — exactly as
+it was, and creates the file (and the `.vf-founder-kit/` folder) if it does not exist.
+
+**Migrating.** When `fk-onboard` finds the old `.agent-delivery/config.yaml`, it offers to
+migrate it:
+
+1. Copy its content into the `agent-delivery` section **unchanged** — no values rewritten,
+   defaulted, or merged with newly detected ones.
+2. Show the founder exactly what it wrote.
+3. Offer to delete the old file, and delete it **only after the founder confirms**.
+
+If the section already exists as well, migration does not overwrite it: the old file is reported
+as ignored, any differences between the two are shown, and only deletion is offered.
 
 ## Precedence
 
 Three layers, highest first:
 
 1. **An explicit argument to a skill** — `fk-dispatch <ticket> --stage implement` beats everything.
-2. **This config file.**
+2. **This config section.**
 3. **The documented default** below.
 
 A skill that falls back to a default for a value that changes its behaviour says so in its

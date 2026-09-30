@@ -15,8 +15,14 @@ description: >
 # fk-dispatch — run a stage on a ticket in a cloud sandbox
 
 One primitive, two callers: a human in a session now, a scheduler later, both composing the same
-run. Requires `.agent-delivery/config.yaml`; if it is missing, say so and point at the `fk-onboard`
-skill rather than improvising defaults.
+run. Requires the `agent-delivery` section of `.vf-founder-kit/config.yaml`; if it is missing, say
+so and point at the `fk-onboard` skill rather than improvising defaults.
+
+**The old config file.** If that section is missing but the deprecated `.agent-delivery/config.yaml`
+exists, use the old file and say in your report that it is deprecated and that running `fk-onboard`
+will migrate it. If both exist, the section wins, and the report says the old
+`.agent-delivery/config.yaml` is being ignored. See
+[`../_shared/config-schema.md`](../_shared/config-schema.md).
 
 ## Procedure
 

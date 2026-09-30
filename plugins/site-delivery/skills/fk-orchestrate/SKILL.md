@@ -11,15 +11,19 @@ description: >
 
 # fk-orchestrate — run a site delivery from brief to PR
 
-One skill, two paths: thin (brief-to-PR with no tracker) or fuller (tracker + compound-engineering stages). The path is determined by `.site-delivery/config.yaml`, not by guessing.
+One skill, two paths: thin (brief-to-PR with no tracker) or fuller (tracker + compound-engineering stages). The path is determined by the `site-delivery` section of `.vf-founder-kit/config.yaml`, not by guessing.
 
 ## Procedure
 
 ### 1. Read the config
 
-Read `.site-delivery/config.yaml`. If it is missing, **refuse and point to the `fk-onboard` skill** rather than improvising defaults:
+Read the `site-delivery` section of `.vf-founder-kit/config.yaml` (other plugins' sections may sit in the same file; ignore them).
 
-> This repository is not configured for site delivery. Run `/site-delivery:fk-onboard` first to create `.site-delivery/config.yaml`.
+- **Section missing, old file present:** earlier versions kept this config in `.site-delivery/config.yaml`. Use that file, and say in your report that it is deprecated and that running `/site-delivery:fk-onboard` will migrate it.
+- **Both present:** the section wins. Say in your report that the old `.site-delivery/config.yaml` is being ignored.
+- **Neither present:** **refuse and point to the `fk-onboard` skill** rather than improvising defaults:
+
+> This repository is not configured for site delivery. Run `/site-delivery:fk-onboard` first to add a `site-delivery` section to `.vf-founder-kit/config.yaml`.
 
 Validate `schema_version`. If it is not `1`, warn and continue — but name both the version found and the version supported so a later key-level error is diagnosable.
 
@@ -172,7 +176,7 @@ When `tracker.kind` is `github-project` or `linear`, interact with the tracker t
 
 If the configured project, field, state, or option does not exist, **refuse and report it clearly:**
 
-> The config names a GitHub Project called "Widget Co Site Delivery", but I cannot find it. Check the project name in `.site-delivery/config.yaml` and run `/site-delivery:fk-onboard` again if it is wrong.
+> The config names a GitHub Project called "Widget Co Site Delivery", but I cannot find it. Check the project name in the `site-delivery` section of `.vf-founder-kit/config.yaml` and run `/site-delivery:fk-onboard` again if it is wrong.
 
 Never guess a substitute. A ticket parked in the wrong column is worse than a ticket left alone with a clear error message.
 

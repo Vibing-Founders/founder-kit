@@ -59,7 +59,7 @@ something a real customer said or did.
 
 Before reading or writing anything, work out the **research folder** by following
 `../_shared/docs-location.md`. By default it is `docs/customer-research/`; founders can
-change it in `.founder-kit/config.yaml`, and that file also covers research that already
+change it in `.vf-founder-kit/config.yaml`, and that file also covers research that already
 lives somewhere else. Paths are always relative to the project, never absolute. The
 layout inside the folder, naming and the file header format are in
 `references/file-conventions.md`.

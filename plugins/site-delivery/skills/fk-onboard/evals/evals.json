@@ -1,0 +1,20 @@
+{
+  "skill_name": "fk-onboard",
+  "note": "Prompts target the branch points a reader cannot check by reading the skill files. `files` names what the fixture repository must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "legacy-config-migration-offered",
+      "prompt": "Check my site-delivery config.",
+      "expected_output": "The repository has the deprecated .site-delivery/config.yaml from an earlier plugin version, and a .vf-founder-kit/config.yaml holding only docs_root and a customer-research section. Onboarding tells the founder in plain language that it found their settings in the old location and offers to copy them into the site-delivery section of .vf-founder-kit/config.yaml. Once they agree, it copies the old content in unchanged, keeps docs_root and the customer-research section exactly as they were, and shows what it wrote. It then asks whether to delete the old file and WAITS: it does not delete .site-delivery/config.yaml in the same turn as the offer, and does not delete it at all without an explicit yes.",
+      "files": [".site-delivery/config.yaml with a thin-path config (tracker.kind: none, publish.kind: lovable), and .vf-founder-kit/config.yaml containing: docs_root: docs, and customer-research: root: research/customers"],
+      "assertions": [
+        {"id": "offers-migration", "text": "The founder is offered the migration before any file is changed, rather than it being done silently"},
+        {"id": "copies-unchanged", "text": "The site-delivery section holds the old file's keys and values unchanged — nothing rewritten, defaulted, or merged in"},
+        {"id": "keeps-other-sections", "text": "docs_root and the customer-research section are left exactly as they were"},
+        {"id": "shows-what-it-wrote", "text": "The founder is shown what was written to .vf-founder-kit/config.yaml"},
+        {"id": "waits-before-delete", "text": "The old .site-delivery/config.yaml is not deleted until the founder explicitly confirms"}
+      ]
+    }
+  ]
+}

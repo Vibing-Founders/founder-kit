@@ -21,7 +21,7 @@
     {
       "name": "agent-delivery",
       "description": "Dispatch a planned ticket into a Claude cloud sandbox, run its tests against a disposable Supabase preview branch, and get back a pull request with the ticket closed out.",
-      "version": "0.0.2",
+      "version": "0.0.3",
       "author": {
         "name": "Vibing Founders",
         "url": "https://github.com/Vibing-Founders"
@@ -32,7 +32,7 @@
     {
       "name": "site-delivery",
       "description": "Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration and compound-engineering stages.",
-      "version": "0.0.2",
+      "version": "0.0.3",
       "author": {
         "name": "Vibing Founders",
         "url": "https://github.com/Vibing-Founders"
@@ -43,7 +43,7 @@
     {
       "name": "customer-research",
       "description": "Customer research for bootstrapping founders: turn real customer conversations and public evidence into an ideal customer profile, personas and a competitor view you can use to validate an idea and sell it.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {
         "name": "Vibing Founders",
         "url": "https://github.com/Vibing-Founders"

@@ -22,7 +22,8 @@
  *      project's Vitest config is not at `./vitest.config.ts` (a `.mts` or
  *      differently-named config needs the specifier changed here).
  *   2. The `SHIM` constant below, if you changed `database.shim.path` in
- *      `.agent-delivery/config.yaml` from its default.
+ *      the `agent-delivery` section of `.vf-founder-kit/config.yaml` from
+ *      its default.
  * ---------------------------------------------------------------------------
  */
 
@@ -41,11 +42,12 @@ const SHIM = fileURLToPath(new URL('./test/helpers/pg-http-shim.ts', import.meta
  * branch's connection slots.
  *
  * THESE TWO VARIABLE NAMES ARE THE CONTRACT between the run and this file. The
- * dispatched run exports them from `database.test_overrides` in
- * `.agent-delivery/config.yaml`; unset, the project's own settings are left
- * alone. They are documented in `_shared/config-schema.md` under
- * `database.test_overrides` and in the runbook's step 3.7 — if you rename them
- * here, rename them there too or the overrides silently stop applying.
+ * dispatched run exports them from `database.test_overrides` in the
+ * `agent-delivery` section of `.vf-founder-kit/config.yaml`; unset, the
+ * project's own settings are left alone. They are documented in
+ * `_shared/config-schema.md` under `database.test_overrides` and in the
+ * runbook's step 3.7 — if you rename them here, rename them there too or the
+ * overrides silently stop applying.
  *
  * Note this file is only loaded for shim-backed runs. A project that needs the
  * overrides without the shim passes them on the test command line instead; the

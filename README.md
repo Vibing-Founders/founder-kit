@@ -116,7 +116,9 @@ Hand a planned ticket to a Claude cloud sandbox and get back a pull request whos
 
 Running a delivery stage in a cloud sandbox works, but the proof is expensive and most of what it teaches is invisible from the outside: a sandbox has no Docker daemon, so a local database stack is impossible there; raw TCP to Postgres does not route; tools with hand-rolled network dialers hang and fail while `curl` answers instantly; and a setup script starts outside the repository clone, which kills the session before any agent runs. None of that is discoverable by reasoning. This plugin carries that knowledge once, so a second project does not rediscover it at the same cost.
 
-Everything project-specific — tracker, stage map, risk paths, close-out steps, database tier — is declared in `.agent-delivery/config.yaml` in your own repository. The plugin names no planning workflow, tracker, or test runner as a hard dependency.
+Everything project-specific — tracker, stage map, risk paths, close-out steps, database tier — is declared in the `agent-delivery` section of `.vf-founder-kit/config.yaml` in your own repository, a file shared by every Founder Kit plugin. The plugin names no planning workflow, tracker, or test runner as a hard dependency.
+
+Existing `.agent-delivery/config.yaml` and `.site-delivery/config.yaml` files still work (the skills report them as deprecated), and each plugin's `fk-onboard` migrates them into `.vf-founder-kit/config.yaml`, deleting the old file only if you confirm.
 
 > **v1 scope**: the disposable-database tier is Supabase only, and the config format may change without a migration path until a second external project adopts it.
 
@@ -159,7 +161,7 @@ Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Hum
 /site-delivery:fk-onboard check my site-delivery config
 ```
 
-A plain-language wizard that writes `.site-delivery/config.yaml` through conversation. Asks for your site repository, publish platform (Lovable/SST/Supabase+Lovable), and whether you want the thin path (no tracker) or fuller path (GitHub Project or Linear integration with compound-engineering stages). Defaults to thin path for non-coders. Reports every defaulted value explicitly.
+A plain-language wizard that writes the `site-delivery` section of `.vf-founder-kit/config.yaml` through conversation. Asks for your site repository, publish platform (Lovable/SST/Supabase+Lovable), and whether you want the thin path (no tracker) or fuller path (GitHub Project or Linear integration with compound-engineering stages). Defaults to thin path for non-coders. Reports every defaulted value explicitly.
 
 **`/site-delivery:fk-orchestrate`** — run a site delivery from brief to PR
 ```
@@ -174,7 +176,7 @@ Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path
 
 ### `customer-research`
 
-For bootstrapping founders (solo or two-person teams, coders or not) who need to understand their customers well enough to validate an idea and sell it. Works in a code repository or a plain folder. Files go in `docs/customer-research/` in your project by default, and the skills always tell you where they wrote. To use a different folder, ask ("keep my research in docs/my-idea from now on") or set it in `.founder-kit/config.yaml`:
+For bootstrapping founders (solo or two-person teams, coders or not) who need to understand their customers well enough to validate an idea and sell it. Works in a code repository or a plain folder. Files go in `docs/customer-research/` in your project by default, and the skills always tell you where they wrote. To use a different folder, ask ("keep my research in docs/my-idea from now on") or set it in `.vf-founder-kit/config.yaml`:
 
 ```yaml
 docs_root: docs                      # where all Founder Kit plugins keep their docs
@@ -252,7 +254,7 @@ plugins/
     .claude-plugin/plugin.json
     skills/
       _shared/          # Config schema, examples
-      fk-onboard/       # Plain-language wizard for .site-delivery/config.yaml
+      fk-onboard/       # Plain-language wizard for the site-delivery config section
       fk-orchestrate/   # Brief-to-PR thin path or fuller CE stages
   customer-research/
     .claude-plugin/plugin.json
