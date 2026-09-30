@@ -48,7 +48,7 @@ Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-d
 | `compliance` | Online safety, GDPR, and application security compliance for platform builders | `fk-online-safety` (+ `cra` mode), `fk-gdpr` (+ `lia` mode), `fk-application-security`, `fk-dpia` |
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `fk-onboard`, `fk-dispatch` |
 | `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `fk-onboard`, `fk-orchestrate` |
-| `customer-research` | Understand your customers well enough to validate an idea and sell it: an evidence-based ideal customer profile from real conversations, and competitor research you can act on | `fk-icp`, `fk-competitors` |
+| `customer-research` | Understand your customers well enough to validate an idea and sell it: an evidence-based ideal customer profile from real conversations, competitor research you can act on, and a fact-check of the claims you make and meet | `fk-icp`, `fk-competitors`, `fk-fact-check` |
 
 ---
 
@@ -191,7 +191,7 @@ Upgrading from 0.1.0, which wrote to `customer-research/` in the project root? T
 /plugin install customer-research@founder-kit
 ```
 
-You do not need the slash commands: plain requests such as "analyse this customer interview" or "who are my competitors for …" trigger the right skill.
+You do not need the slash commands: plain requests such as "analyse this customer interview", "who are my competitors for …" or "fact-check this" trigger the right skill.
 
 ### Skills
 
@@ -212,6 +212,15 @@ Turns interview transcripts and feedback into an ideal customer profile, buyer p
 ```
 
 Scopes the question with you (using your ideal customer profile if one exists), then runs web research in a separate research agent where your tool supports it. Covers direct and indirect competitors and the "do nothing / spreadsheet" alternative, each competitor's positioning, pricing, target customer and what their own customers complain about, and ends with where a small team can win. Every claim is cited, facts are separated from inference, and stale information is flagged.
+
+**`/customer-research:fk-fact-check`** — check which claims hold up before you repeat them
+```
+/customer-research:fk-fact-check check the claims on my landing page: <paste copy>
+/customer-research:fk-fact-check can I say we're "the only bookkeeping app built for photographers"?
+/customer-research:fk-fact-check fact-check my competitor report for the meal-planning app
+```
+
+Pulls the checkable claims out of your landing page, pitch, sales email, a competitor's marketing or a research report (numbers, dates, awards, comparisons, statements about customers) and flags superlatives such as "the only" or "guaranteed" as needing evidence. You edit the list before anything is researched. A research agent gathers supporting and contradicting evidence with dated, reliability-rated sources, then an independent analyst that sees only the claims and the evidence marks each one Supported, Contradicted or Unsubstantiated. For your own content, claims only your data can prove are marked "needs your own evidence" rather than wrong, quotes from your ideal customer profile can back up claims about customers, and every problem claim gets a rewrite that says only what the evidence supports. Not legal advice. The pipeline follows Ravi Manjunatha's article [Building a Trustworthy AI: Automated Fact-Checking with Google's Agent Development Kit](https://medium.com/google-cloud/building-a-trustworthy-ai-automated-fact-checking-with-googles-agent-development-kit-292e84967261).
 
 ### Works well with
 
@@ -262,6 +271,7 @@ plugins/
       _shared/          # Where research lives (docs-location rules)
       fk-icp/           # Ideal customer profile, personas, qualifying questions
       fk-competitors/   # Competitor research with a bundled research agent
+      fk-fact-check/    # Claim checking with bundled research and analyst agents
 ```
 
 ---
