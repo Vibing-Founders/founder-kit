@@ -11,7 +11,7 @@ Work through 1 → 5 in order. Step 2 gates step 3.
 
 ## 1. Establish what the environment must carry
 
-Read the config written in phase 2.
+Read the config written in phase 2 — the `agent-delivery` section of `.vf-founder-kit/config.yaml`.
 
 | Variable | Needed when | What it is |
 |---|---|---|

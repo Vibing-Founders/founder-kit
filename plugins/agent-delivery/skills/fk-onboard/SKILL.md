@@ -2,7 +2,8 @@
 name: fk-onboard
 description: >
   Prepare a repository to dispatch tickets into a Claude cloud sandbox: detect the stack,
-  tracker and planning artifacts, write .agent-delivery/config.yaml, generate the cloud
+  tracker and planning artifacts, write the agent-delivery section of .vf-founder-kit/config.yaml
+  (migrating an older standalone config file on request), generate the cloud
   environment's variable block and setup script for a human to paste, conditionally install
   the Postgres-over-HTTPS shim, and prove the disposable-database tier with a throwaway
   preview branch before any real work is dispatched. Use this skill when someone wants to set
@@ -24,8 +25,8 @@ own fault.** This skill's job is to remove that uncertainty.
 
 Onboarding is complete when:
 
-1. `.agent-delivery/config.yaml` exists and every value in it was either detected or is a
-   default that has been **reported as a default**.
+1. The `agent-delivery` section of `.vf-founder-kit/config.yaml` exists and every value in it was
+   either detected or is a default that has been **reported as a default**.
 2. The human has pasted the generated variable block and setup script into the cloud
    environment form.
 3. If the database tier is on: a throwaway preview branch has been created, built green, run one
@@ -46,9 +47,27 @@ detection report before writing anything.
 
 ### 2. Write the config
 
-From the detection report, write `.agent-delivery/config.yaml`, using
-[`assets/config.example.yaml`](assets/config.example.yaml) as the shape and
+From the detection report, write the `agent-delivery` section of `.vf-founder-kit/config.yaml`,
+using [`assets/config.example.yaml`](assets/config.example.yaml) as the shape and
 [`../_shared/config-schema.md`](../_shared/config-schema.md) as the reference.
+
+**The file is shared by every Founder Kit plugin. Write only the `agent-delivery` section.** Keep
+every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was.
+If the file does not exist, create it (and the `.vf-founder-kit/` folder) with just this section.
+
+**An old config file is migrated, not merged.** Earlier versions of this plugin kept the config in
+its own file, `.agent-delivery/config.yaml`. If you find it, offer to migrate it before writing
+anything else:
+
+1. Copy its content into the `agent-delivery` section **unchanged**. Do not rewrite, default, or
+   merge in detected values while migrating; propose any changes separately afterwards, as a
+   re-run would.
+2. Show the founder exactly what you wrote.
+3. Offer to delete the old `.agent-delivery/config.yaml`. Delete it **only after the founder
+   confirms**; otherwise leave it, and say it is now ignored because the section wins.
+
+If the section already exists as well, do not overwrite it from the old file: say the old file is
+ignored, show any differences between the two, and offer only to delete it.
 
 **Report every value that was defaulted rather than detected.** A default that happens to be
 right and a detection that happens to be right look identical in the file and completely
@@ -56,7 +75,7 @@ different when they turn out to be wrong.
 
 **Re-running against an already-configured repository reports what would change and asks before
 overwriting.** Someone may have hand-edited it since; silently reverting that is worse than
-stopping.
+stopping. This applies to the `agent-delivery` section only — other sections are never touched.
 
 ### 3. Generate the environment artifacts — read `environment.md`
 

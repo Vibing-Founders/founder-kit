@@ -35,6 +35,14 @@ working around them.
    error with nothing useful in the log. Nothing you do from inside can catch this, because you
    never ran.
 
+**Where "your config" lives.** Wherever this runbook says "your config", it means the
+`agent-delivery` section of `.vf-founder-kit/config.yaml` at the root of the repository clone; key
+paths such as `database.test_env` are relative to that section. Other plugins' sections may sit in
+the same file — ignore them. If the section is missing but the deprecated
+`.agent-delivery/config.yaml` exists, use that file (same keys, not nested) and say in your report
+that it is deprecated and that running `fk-onboard` will migrate it. If both exist, the section
+wins, and your report says the old `.agent-delivery/config.yaml` was ignored.
+
 Beyond those: read the repository's own instructions file at the root first — it is authoritative
 where it says more than this runbook. The plan for your ticket, when one exists, is the source of
 truth for scope. Your session is destroyed when the run ends, so continuity lives in git, the

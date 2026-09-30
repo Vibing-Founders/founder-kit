@@ -1,169 +1,175 @@
 # agent-delivery — project configuration
 #
-# Copy to .agent-delivery/config.yaml in your repository root, or let the `fk-onboard`
-# skill write it for you from what it detects.
+# This plugin's settings live in the `agent-delivery` section of .vf-founder-kit/config.yaml
+# in your repository root. That file is shared by every Founder Kit plugin, so other
+# plugins' sections (site-delivery, customer-research, ...) may sit in the same file —
+# leave them as they are. Copy the `agent-delivery` section below into it, or let the
+# `fk-onboard` skill write it for you from what it detects.
 #
-# Precedence: an explicit skill argument beats this file; this file beats the default.
+# Precedence: an explicit skill argument beats this section; this section beats the default.
 # Every key is optional except the four marked REQUIRED. Commented-out keys show the
 # default the plugin uses when you leave them out.
 #
 # Full reference: skills/_shared/config-schema.md in the agent-delivery plugin.
 # v1 note: this format is unstable and may change without a migration path.
 
-schema_version: 1
+docs_root: docs            # shared by all Founder Kit plugins (optional)
 
-# --- How the sandbox builds this project -------------------------------------
+agent-delivery:
+  schema_version: 1
 
-repo:
-  # REQUIRED. The directory name of the clone inside the sandbox. There is no safe
-  # guess: the environment's setup script starts OUTSIDE the clone, and a wrong value
-  # kills the session before any agent runs, leaving nothing in the log to read.
-  clone_dir: my-project
+  # --- How the sandbox builds this project -------------------------------------
 
-  # install: npm ci
-  # post_install: []                 # e.g. ["npm run routes:generate"]
+  repo:
+    # REQUIRED. The directory name of the clone inside the sandbox. There is no safe
+    # guess: the environment's setup script starts OUTSIDE the clone, and a wrong value
+    # kills the session before any agent runs, leaving nothing in the log to read.
+    clone_dir: my-project
 
-  # Must accept file paths appended to it — the run tests what the change touched,
-  # not the whole suite.
-  # test_command: npx vitest run
+    # install: npm ci
+    # post_install: []                 # e.g. ["npm run routes:generate"]
 
-  # Skipped entirely when unset.
-  # lint_command: npm run lint
-  # typecheck_command: npm run type-check
+    # Must accept file paths appended to it — the run tests what the change touched,
+    # not the whole suite.
+    # test_command: npx vitest run
 
-# --- Where tickets live ------------------------------------------------------
+    # Skipped entirely when unset.
+    # lint_command: npm run lint
+    # typecheck_command: npm run type-check
 
-tracker:
-  # REQUIRED. github | linear
-  kind: github
+  # --- Where tickets live ------------------------------------------------------
 
-  # Where "ready for human review" lives. The run sets this on finishing.
-  review_marker:
-    # kind: github — a project board column
-    project: Delivery
-    field: Status
-    option: In review
+  tracker:
+    # REQUIRED. github | linear
+    kind: github
 
-    # kind: linear — a workflow state
-    # state: In Review
+    # Where "ready for human review" lives. The run sets this on finishing.
+    review_marker:
+      # kind: github — a project board column
+      project: Delivery
+      field: Status
+      option: In review
 
-# --- Which skill runs for a ticket -------------------------------------------
-#
-# EVERY default in this block assumes compound-engineering is your planning
-# workflow. Using something else? Override these four and nothing else changes.
-# Using no planning workflow at all? Set default_stage and leave readiness_key
-# unset — stage resolution then never looks for a planning artifact.
+      # kind: linear — a workflow state
+      # state: In Review
 
-stages:
-  # artifact_glob: docs/plans/*.md
-  # readiness_key: artifact_readiness
+  # --- Which skill runs for a ticket -------------------------------------------
+  #
+  # EVERY default in this block assumes compound-engineering is your planning
+  # workflow. Using something else? Override these four and nothing else changes.
+  # Using no planning workflow at all? Set default_stage and leave readiness_key
+  # unset — stage resolution then never looks for a planning artifact.
 
-  # map:                             # readiness value -> stage
-  #   requirements-only: plan
-  #   implementation-ready: implement
+  stages:
+    # artifact_glob: docs/plans/*.md
+    # readiness_key: artifact_readiness
 
-  # skills:                          # stage -> the skill the sandbox run invokes
-  #   plan: compound-engineering:ce-plan
-  #   implement: compound-engineering:ce-work
+    # map:                             # readiness value -> stage
+    #   requirements-only: plan
+    #   implementation-ready: implement
 
-  # Stages needing question-and-answer with a human. fk-dispatch REFUSES these with
-  # the reason rather than firing a run that cannot finish.
-  # interactive: [brainstorm]
+    # skills:                          # stage -> the skill the sandbox run invokes
+    #   plan: compound-engineering:ce-plan
+    #   implement: compound-engineering:ce-work
 
-  # Used when no readiness signal can be read. Left null, fk-dispatch asks for an
-  # explicit --stage instead of guessing.
-  # default_stage: null
+    # Stages needing question-and-answer with a human. fk-dispatch REFUSES these with
+    # the reason rather than firing a run that cannot finish.
+    # interactive: [brainstorm]
 
-# --- Where a run must halt ---------------------------------------------------
-#
-# Reaching a brake means: stop, open a DRAFT pull request, blocker stated first.
+    # Used when no readiness signal can be read. Left null, fk-dispatch asks for an
+    # explicit --stage instead of guessing.
+    # default_stage: null
 
-risk_brakes:
-  # Globs for surfaces too consequential to change unattended.
-  paths: []
-  #  - "docs/tech/billing-reliability/**"
-  #  - "src/payments/**"
+  # --- Where a run must halt ---------------------------------------------------
+  #
+  # Reaching a brake means: stop, open a DRAFT pull request, blocker stated first.
 
-  # migration | payments | auth
-  changes: [migration]
+  risk_brakes:
+    # Globs for surfaces too consequential to change unattended.
+    paths: []
+    #  - "docs/tech/billing-reliability/**"
+    #  - "src/payments/**"
 
-# --- The disposable-database tier --------------------------------------------
-#
-# Leave enabled: false and every key below is ignored. When true, onboarding
-# checks the prerequisites (branching enabled, GitHub integration installed,
-# Supabase connector available, cloud environment created) rather than assuming
-# them, and proves the tier with a throwaway branch before you dispatch anything.
+    # migration | payments | auth
+    changes: [migration]
 
-database:
-  enabled: false
+  # --- The disposable-database tier --------------------------------------------
+  #
+  # Leave enabled: false and every key below is ignored. When true, onboarding
+  # checks the prerequisites (branching enabled, GitHub integration installed,
+  # Supabase connector available, cloud environment created) rather than assuming
+  # them, and proves the tier with a throwaway branch before you dispatch anything.
 
-  # provider: supabase               # the only provider in v1
+  database:
+    enabled: false
 
-  # A correctness key, not a cost key. The Postgres-over-HTTPS shim opens one
-  # connection per query and the branch's own functions open their own; an
-  # undersized branch starves both under a parallel suite, and the symptom is
-  # misleading (functions returning 500, which reads as a missing secret).
-  # instance_size: small
+    # provider: supabase               # the only provider in v1
 
-  region: eu-west-2                  # REQUIRED when enabled
+    # A correctness key, not a cost key. The Postgres-over-HTTPS shim opens one
+    # connection per query and the branch's own functions open their own; an
+    # undersized branch starves both under a parallel suite, and the symptom is
+    # misleading (functions returning 500, which reads as a missing secret).
+    # instance_size: small
 
-  # branch_name_prefix: run-
-  # function_secrets_var: BRANCH_FUNCTION_SECRETS
+    region: eu-west-2                  # REQUIRED when enabled
 
-  # Repo paths the run writes the forwarded secret set to, for tooling that reads
-  # a file rather than the environment. Every path here must be git-ignored;
-  # onboarding refuses to declare the tier ready otherwise.
-  # secrets_files: []
+    # branch_name_prefix: run-
+    # function_secrets_var: BRANCH_FUNCTION_SECRETS
 
-  # branch_ref_var: SUPABASE_BRANCH_REF
+    # Repo paths the run writes the forwarded secret set to, for tooling that reads
+    # a file rather than the environment. Every path here must be git-ignored;
+    # onboarding refuses to declare the tier ready otherwise.
+    # secrets_files: []
 
-  # The environment variable NAMES your suite already reads to find its database.
-  # The run exports these pointing at its own preview branch. Names only — no
-  # value ever appears in this file, in a dispatched prompt, or in a report.
-  test_env:
-    url: [SUPABASE_URL, VITE_SUPABASE_URL]
-    anon_key: [SUPABASE_ANON_KEY, VITE_SUPABASE_ANON_KEY]
-    service_role_key: [SUPABASE_SERVICE_ROLE_KEY]
+    # branch_ref_var: SUPABASE_BRANCH_REF
 
-  # The shim carries SQL over HTTPS for tests that open a direct Postgres
-  # connection, because a sandbox has no raw TCP route to the database.
-  # `auto` installs it only if such tests exist and the precondition scan passes.
-  # shim:
-  #   enabled: auto                  # auto | true | false
-  #   path: test/helpers/pg-http-shim.ts
-  #   test_config: vitest.config.pghttp.ts
+    # The environment variable NAMES your suite already reads to find its database.
+    # The run exports these pointing at its own preview branch. Names only — no
+    # value ever appears in this file, in a dispatched prompt, or in a report.
+    test_env:
+      url: [SUPABASE_URL, VITE_SUPABASE_URL]
+      anon_key: [SUPABASE_ANON_KEY, VITE_SUPABASE_ANON_KEY]
+      service_role_key: [SUPABASE_SERVICE_ROLE_KEY]
 
-  # Applied only when the suite targets a branch. A remote branch is slower than a
-  # local database in ways that look like failures: hooks time out on latency, and
-  # a worker count tuned for a local stack oversubscribes a branch's connections.
-  # test_overrides:
-  #   max_workers: null
-  #   hook_timeout_ms: null
+    # The shim carries SQL over HTTPS for tests that open a direct Postgres
+    # connection, because a sandbox has no raw TCP route to the database.
+    # `auto` installs it only if such tests exist and the precondition scan passes.
+    # shim:
+    #   enabled: auto                  # auto | true | false
+    #   path: test/helpers/pg-http-shim.ts
+    #   test_config: vitest.config.pghttp.ts
 
-# --- What a finished run does to the ticket ----------------------------------
-#
-# All three default on; each is independently switchable off. With all three off,
-# a run opens a pull request and touches the tracker not at all.
+    # Applied only when the suite targets a branch. A remote branch is slower than a
+    # local database in ways that look like failures: hooks time out on latency, and
+    # a worker count tuned for a local stack oversubscribes a branch's connections.
+    # test_overrides:
+    #   max_workers: null
+    #   hook_timeout_ms: null
 
-close_out:
-  # review_marker: true
-  # manual_test_checklist: true
+  # --- What a finished run does to the ticket ----------------------------------
+  #
+  # All three default on; each is independently switchable off. With all three off,
+  # a run opens a pull request and touches the tracker not at all.
 
-  # Applies only to tickets the tracker reports as defects. Set false if your
-  # project has no defect-recording practice — the run then says it skipped the
-  # step rather than inventing a record format.
-  # defect_record: true
+  close_out:
+    # review_marker: true
+    # manual_test_checklist: true
 
-# --- How a run is fired ------------------------------------------------------
+    # Applies only to tickets the tracker reports as defects. Set false if your
+    # project has no defect-recording practice — the run then says it skipped the
+    # step rather than inventing a record format.
+    # defect_record: true
 
-dispatch:
-  # THE ENVIRONMENT IS THE TIER DECLARATION. Selecting the cloud environment that
-  # carries the database credentials and setup script is what puts a run at the
-  # database tier; there is no separate switch. REQUIRED when database.enabled.
-  environment: ""
+  # --- How a run is fired ------------------------------------------------------
 
-  # model: claude-sonnet-5
+  dispatch:
+    # THE ENVIRONMENT IS THE TIER DECLARATION. Selecting the cloud environment that
+    # carries the database credentials and setup script is what puts a run at the
+    # database tier; there is no separate switch. REQUIRED when database.enabled.
+    environment: ""
 
-  # Fallback only. A run's first move is to invoke the plugin's skill; it fetches
-  # this URL only when that invocation is unavailable.
-  # runbook_url: https://raw.githubusercontent.com/Vibing-Founders/founder-kit/main/plugins/agent-delivery/skills/_shared/sandbox-runbook.md
+    # model: claude-sonnet-5
+
+    # Fallback only. A run's first move is to invoke the plugin's skill; it fetches
+    # this URL only when that invocation is unavailable.
+    # runbook_url: https://raw.githubusercontent.com/Vibing-Founders/founder-kit/main/plugins/agent-delivery/skills/_shared/sandbox-runbook.md
