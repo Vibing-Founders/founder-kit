@@ -61,7 +61,7 @@ used in other agent tools, so the prefix is how founders can tell a Founder Kit 
 
 **Skills that save files work under `docs/` by default.** A plugin keeps its files in
 `docs/<plugin-name>/` from the project root, and lets founders override that in
-`.founder-kit/config.yaml`, a file shared by every Founder Kit plugin:
+`.vf-founder-kit/config.yaml`, a file shared by every Founder Kit plugin:
 
 ```yaml
 docs_root: docs            # all Founder Kit plugins: <docs_root>/<plugin-name>
@@ -75,6 +75,12 @@ relative to the project root. Only write the config file when the founder asks f
 change, and keep its other keys. Plugins read it themselves rather than using Claude Code's
 `userConfig`, because that is per user (not per project) and Claude Code only. See
 `plugins/customer-research/skills/_shared/docs-location.md` for a worked example.
+
+**Plugin settings beyond the docs folder live in the same file**, in the plugin's own section
+(`<plugin-name>:`), rather than in a config file of the plugin's own. A skill that writes the file
+writes only its plugin's section, keeps every other key and section exactly as it was, and
+creates the file if it does not exist. See `plugins/agent-delivery/skills/_shared/config-schema.md`
+for a plugin that keeps its whole config there and migrates an older standalone file.
 
 The `description` field is used by Claude to decide whether to invoke the skill — make it specific and include example trigger phrases.
 
