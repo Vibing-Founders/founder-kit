@@ -2,6 +2,29 @@
 
 This document explains how to add a new plugin to the founder-kit marketplace.
 
+## Where does a new thing go?
+
+Pick the smallest unit that meets the goal. Work down this list and stop at the first that fits.
+
+| If the addition is… | It is a… | It goes in… |
+|---|---|---|
+| A fact, rule, benchmark or reference an existing skill should know | Knowledge file | `skills/<skill>/knowledge/`, or `skills/_shared/` when more than one skill uses it |
+| A law, act or regulation | Legislation file | See [plugins/compliance/LEGISLATION.md](./plugins/compliance/LEGISLATION.md) |
+| Another output from the same inputs and knowledge an existing skill already uses | Mode of that skill | A sibling file such as `fk-online-safety/cra.md`, routed from that skill's `SKILL.md` |
+| A different job for the same founder, in a problem area a plugin already covers | New skill | `plugins/<existing-plugin>/skills/fk-<name>/` |
+| A problem area no plugin covers, which a founder could want without the others | New plugin | `plugins/<new-name>/` |
+| Code that runs in the adopting repository | Executable asset | `skills/<skill>/assets/`, with tests in `plugins/<name>/tests/` |
+| A change to how the kit itself is built or maintained | Convention or maintainer skill | This file, `CLAUDE.md`, or `.claude/skills/` |
+
+A new skill earns its place when a founder would ask for it by name and it has its own trigger
+phrases; if it would only ever run as a step inside another skill, make it a mode or a knowledge
+file instead. A new plugin earns its place when it has a different audience or install decision
+from the existing ones — two skills are not a reason on their own.
+
+Suggestions for additions are filed with the "Suggestion for the kit" issue template and assessed
+with the `triage-suggestion` maintainer skill (`.claude/skills/triage-suggestion/`), which produces
+a proposal for review before anything is built.
+
 ## Plugin directory structure
 
 Every plugin lives under `plugins/<plugin-name>/` and must contain:

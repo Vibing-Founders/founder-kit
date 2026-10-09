@@ -1,0 +1,59 @@
+name: Suggestion for the kit
+description: Suggest something to add to or change in Founder Kit (a plugin, skill, knowledge file or improvement). Agents and people both welcome.
+title: "Suggestion: "
+labels: ["suggestion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggestions are triaged with the `triage-suggestion` maintainer skill, which turns each one into a
+        proposal for a maintainer to review. Nothing is added to the kit without that review.
+  - type: textarea
+    id: what
+    attributes:
+      label: What should be added or changed?
+      description: Describe the capability, not the implementation. One suggestion per issue.
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Why?
+      description: What happened that prompted this? What did a founder (or an agent working for one) try to do and find missing or awkward?
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal of having this in the kit
+      description: What can a bootstrapping founder do once this exists that they cannot do well today?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Closest existing area
+      options:
+        - compliance
+        - agent-delivery
+        - site-delivery
+        - customer-research
+        - A new area
+        - The kit itself (docs, tests, conventions)
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Anything that shows the need is real - how often it came up, a workaround in use today, links, an example prompt and the output you wanted. Leave out personal data and anything confidential.
+    validations:
+      required: false
+  - type: input
+    id: source
+    attributes:
+      label: Suggested by
+      description: Who or what is making the suggestion, e.g. "Claude session working on <project type>" or a person's GitHub handle.
+    validations:
+      required: false
