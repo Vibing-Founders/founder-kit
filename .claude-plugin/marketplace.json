@@ -1,12 +1,23 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "founder-kit",
-  "description": "Plugins for bootstrapping founders — customer research, compliance, agent delivery into cloud sandboxes, and smart site delivery for non-coding founders.",
+  "description": "Plugins for bootstrapping founders — project setup, customer research, compliance, agent delivery into cloud sandboxes, and smart site delivery for non-coding founders.",
   "owner": {
     "name": "Vibing Founders",
     "url": "https://github.com/Vibing-Founders"
   },
   "plugins": [
+    {
+      "name": "core",
+      "description": "The starting point for Founder Kit: set up a new project with a baseline for working with Claude Code agents, or check an existing project against the current baseline and fill the gaps.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Vibing Founders",
+        "url": "https://github.com/Vibing-Founders"
+      },
+      "source": "./plugins/core",
+      "category": "productivity"
+    },
     {
       "name": "compliance",
       "description": "Online safety, GDPR, and application security compliance for platform builders. Covers UK OSA, EU DSA, UK/EU GDPR, Children's Code, COPPA, and OWASP.",

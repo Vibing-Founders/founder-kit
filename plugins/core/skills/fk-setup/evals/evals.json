@@ -1,0 +1,98 @@
+{
+  "skill_name": "fk-setup",
+  "note": "All projects are invented. `files` describes the fixture the project folder must contain; each fixture is a git repository. Where the skill asks the founder a question, the reply to give is in `founder_replies`. NOT YET RUN as a benchmark: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "empty-project-python",
+      "prompt": "I've just created this project. Set it up for Founder Kit.",
+      "files": ["a git repository with one commit containing only README.md ('# Rotaplate — meal planning for shift workers') and an untracked .env"],
+      "founder_replies": ["Python with uv. Install is `uv sync`, tests are `uv run pytest`, lint is `uv run ruff check`, dev server is `uv run fastapi dev`. No database yet, no local services. Releasing isn't decided. Use the default plugins. Naming: snake_case files. Apply everything."],
+      "expected_output": "Reads baseline.md, detects the name from the README and asks once for the commands, releasing, naming and the plugin choice. Shows an audit with everything Missing and the two database rules Not applicable, proposes, and applies after approval. CLAUDE.md has the seven sections in order; the worktree rule carries `uv sync && sh scripts/worktree-setup.sh .env` with no start-services clause and keeps the doc-only sentence. The docs layout exists with stubs, there is no docs/brainstorms, scripts/worktree-setup.sh is an exact copy and executable, .gitignore has the four entries, .claude/settings.json enables the three default plugins, and the core section of .vf-founder-kit/config.yaml records baseline_version 1. The .env file is not opened or changed. Nothing is committed.",
+      "assertions": [
+        {"id": "asks-once", "text": "Undetectable values and the plugin choice are asked for in a single message, not one question at a time"},
+        {"id": "audit-table", "text": "An audit table is shown before anything is written, using the statuses Present, Missing, Different, Not applicable, Declined"},
+        {"id": "sections-in-order", "text": "CLAUDE.md has the seven baseline sections in the baseline's order"},
+        {"id": "worktree-rule-filled", "text": "The worktree rule contains `uv sync && sh scripts/worktree-setup.sh .env`, no angle-bracket placeholders, and no start-local-services clause"},
+        {"id": "doc-only-kept", "text": "The worktree rule keeps the sentence that doc-only commits never open a branch or a worktree"},
+        {"id": "no-database-rules", "text": "The database migrations rule and the no-mocking testing rule are not written, and are reported as not applicable"},
+        {"id": "releasing-not-guessed", "text": "The Releasing rule says releasing is not set up yet rather than describing an invented process"},
+        {"id": "docs-layout", "text": "Every path in B2 exists with a stub, and docs/brainstorms does not exist"},
+        {"id": "script-verbatim", "text": "scripts/worktree-setup.sh is byte-identical to the shipped asset and is executable"},
+        {"id": "gitignore", "text": ".gitignore contains .claude/worktrees/, .claude/settings.local.json, .claude/*.patch and an env pattern"},
+        {"id": "plugins-enabled", "text": ".claude/settings.json registers both marketplaces and enables compound-engineering, pm-product-discovery and pm-go-to-market"},
+        {"id": "install-commands", "text": "The report gives the `claude plugin install … --scope project` command for plugins that are not installed, without running it"},
+        {"id": "config-recorded", "text": ".vf-founder-kit/config.yaml has a core section with baseline_version 1 and the commands given"},
+        {"id": "env-untouched", "text": "The .env file is unchanged and its contents were never printed"},
+        {"id": "no-extras", "text": "No rule, section, hook, script or file outside the baseline was added; anything else appears only under Suggestions"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "existing-project-partial-setup",
+      "prompt": "Check my project setup and tell me what's missing.",
+      "files": [
+        "a Node project with package.json (scripts: dev, lint, typecheck, build, test using vitest), package-lock.json, .github/workflows/ci.yml running `npm ci --legacy-peer-deps` then lint, typecheck and test",
+        "a supabase/ directory with migrations/ and a docker-compose.yml",
+        "an existing CLAUDE.md with a project description, a 'Development Commands' section, and a 'Key Rules' section containing only a custom rule: '**Copy**: British English in all user-facing strings.'",
+        ".gitignore containing node_modules and .env.local",
+        "docs/ARCHITECTURE.md with real content, and no other docs",
+        ".claude/settings.json containing {\"permissions\": {\"allow\": [\"Bash(npm test:*)\"]}}",
+        "untracked .env.local"
+      ],
+      "founder_replies": ["Releasing: merging to main deploys the web app on Vercel; database migrations do not deploy on merge, I run `supabase db push` by hand after the merge. Default plugins are fine. Show me the changes.", "Apply all of it."],
+      "expected_output": "Detects the commands from CI (install is `npm ci --legacy-peer-deps`, and the report says it came from CI), the database and migration tool from supabase/, and .env.local as the env file. The audit marks the existing sections and docs/ARCHITECTURE.md Present and the rest Missing. Before writing, shows diffs for CLAUDE.md, .gitignore and .claude/settings.json. After approval the founder's description, commands and British English rule are word-for-word intact, the baseline rules are added after it including both database rules, the existing permissions key is still in settings.json, docs/ARCHITECTURE.md is unchanged, and .gitignore keeps its existing lines.",
+      "assertions": [
+        {"id": "ci-wins", "text": "The install command is `npm ci --legacy-peer-deps`, reported as detected from the CI workflow"},
+        {"id": "diff-before-write", "text": "The exact differences to CLAUDE.md, .gitignore and .claude/settings.json are shown, and nothing is written until the founder agrees"},
+        {"id": "founder-text-intact", "text": "The existing description, Development Commands and the British English rule are unchanged, word for word"},
+        {"id": "rules-added", "text": "The Worktrees, General, Releasing, Database migrations, Testing and Naming rules are added to Key Rules"},
+        {"id": "worktree-rule-values", "text": "The worktree rule names `npm ci --legacy-peer-deps && sh scripts/worktree-setup.sh .env.local` and a start-local-services command"},
+        {"id": "releasing-as-given", "text": "The Releasing rule states that the web app deploys on merge, migrations do not, and `supabase db push` is run by hand after the merge"},
+        {"id": "settings-merged", "text": ".claude/settings.json still has the original permissions.allow entry alongside the new plugin keys"},
+        {"id": "existing-doc-untouched", "text": "docs/ARCHITECTURE.md is unchanged and reported as Present"},
+        {"id": "gitignore-additive", "text": ".gitignore keeps node_modules and .env.local and gains the .claude entries"},
+        {"id": "local-dev-section", "text": "docs/conventions/local-dev.md has a 'First time in a worktree' section with this project's commands"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "rerun-up-to-date-with-declined-item",
+      "prompt": "Is my setup up to date?",
+      "files": [
+        "a project on which fk-setup has already been applied in full at baseline version 1, except that the founder's own Naming rule differs from the baseline wording",
+        ".vf-founder-kit/config.yaml with a core section: baseline_version 1, the project's commands, declined: [B3.6], plus an agent-delivery section and a docs_root key"
+      ],
+      "expected_output": "Reads the recorded values and asks nothing. The audit shows every item Present except Naming, shown as Declined and not proposed again. Says the project is up to date with baseline 1 and writes no project files. The agent-delivery section and docs_root in the config are untouched.",
+      "assertions": [
+        {"id": "no-questions", "text": "No question is asked about commands, releasing or plugins; recorded values are reused"},
+        {"id": "declined-respected", "text": "The Naming rule is listed as Declined and no change to it is proposed"},
+        {"id": "up-to-date", "text": "The answer states the project is up to date with the current baseline version"},
+        {"id": "nothing-written", "text": "No file other than, at most, the core section of the config is modified"},
+        {"id": "other-sections-kept", "text": "The agent-delivery section and docs_root key in .vf-founder-kit/config.yaml are byte-identical afterwards"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "alternative-plugins-and-kit-follow-up",
+      "prompt": "Set up this new project with the Founder Kit baseline. I don't use compound-engineering, I have my own planning skills, and I don't want the pm-skills plugins.",
+      "files": [
+        "a git repository with a Go module (go.mod, main.go, Makefile with build, test and lint targets), no env files",
+        ".claude/settings.json enabling agent-delivery@founder-kit",
+        "no .vf-founder-kit/config.yaml"
+      ],
+      "founder_replies": ["My planning skills are personal ones, nothing to enable, and there's no worktree skill. Releasing: nothing deploys on merge; I build and upload the binary by hand. Apply everything."],
+      "expected_output": "Does not enable compound-engineering or the pm-skills plugins and does not argue for them. The worktree rule names `EnterWorktree` alone, with no `ce-worktree`. With no env files, the setup script and the env sentences of the rule are left out and reported as Not applicable, while .claude/worktrees/ is still ignored. The config records the alternative so a re-run will not offer the defaults. Reports that agent-delivery is enabled but has no config section and points to /agent-delivery:fk-onboard without running it.",
+      "assertions": [
+        {"id": "defaults-not-enabled", "text": ".claude/settings.json does not enable compound-engineering or any pm-skills plugin, and still enables agent-delivery@founder-kit"},
+        {"id": "no-ce-worktree", "text": "The worktree rule mentions EnterWorktree and does not mention ce-worktree"},
+        {"id": "no-env-pieces", "text": "scripts/worktree-setup.sh is not created and the rule has no sentence about symlinking env files; both are reported as not applicable"},
+        {"id": "worktrees-ignored", "text": ".gitignore contains .claude/worktrees/"},
+        {"id": "doc-only-kept", "text": "The worktree rule keeps the doc-only sentence"},
+        {"id": "choice-recorded", "text": "The core config section records the founder's alternative for the workflow and product plugins"},
+        {"id": "points-to-onboard", "text": "The report says agent-delivery is not onboarded and names /agent-delivery:fk-onboard, without running it"},
+        {"id": "make-commands", "text": "Development Commands come from the Makefile targets, with no invented dev-server or type-check command"}
+      ]
+    }
+  ]
+}

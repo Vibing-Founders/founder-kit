@@ -26,7 +26,14 @@ A Claude plugin marketplace hosting bootstrapping founder focused plugins for we
 /plugin marketplace add Vibing-Founders/founder-kit
 ```
 
-Once added, you can install any plugin from this marketplace:
+Start with `core`, then run its setup skill in your project:
+
+```
+/plugin install core@founder-kit
+/core:fk-setup
+```
+
+Every other plugin is optional and works on its own. Install the ones you need:
 
 ```
 /plugin install compliance@founder-kit
@@ -45,6 +52,7 @@ Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-d
 
 | Plugin | Description | Skills |
 |--------|-------------|--------|
+| `core` | Start here. Sets a project up with a baseline for working with Claude Code agents, and checks an existing project for gaps whenever you re-run it | `fk-setup` |
 | `compliance` | Online safety, GDPR, and application security compliance for platform builders | `fk-online-safety` (+ `cra` mode), `fk-gdpr` (+ `lia` mode), `fk-application-security`, `fk-dpia` |
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `fk-onboard`, `fk-dispatch` |
 | `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `fk-onboard`, `fk-orchestrate` |
@@ -53,6 +61,51 @@ Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-d
 ---
 
 ## Plugin Details
+
+### `core`
+
+The starting point for Founder Kit. Install it first; the other plugins are optional alongside it.
+
+Starting a project with agents means re-creating the same rules, docs folders and supporting
+scripts each time, and missing some. `core` carries that baseline once, so a new project starts
+with it and an older one can be checked against it.
+
+```
+/plugin install core@founder-kit
+```
+
+### Skills
+
+**`/core:fk-setup`** — set a project up, or check what an existing one is missing
+```
+/core:fk-setup set up this new project
+/core:fk-setup check my project setup
+/core:fk-setup what's new in the baseline since I last ran this?
+```
+
+Audits the project against the baseline, shows you what is present, missing or different, and
+applies only what you approve:
+
+- a `CLAUDE.md` with development commands, a directory map and standing rules, filled in with your
+  project's own commands
+- the **worktree rule**, so branch work happens in its own git worktree, plus what makes a fresh
+  worktree usable: a script that links your env files from the main checkout rather than copying
+  them, the ignore entries, and a "First time in a worktree" guide
+- a `docs/` layout for architecture, decisions, plans, solutions and conventions
+- the default plugins, [compound-engineering](https://github.com/EveryInc/compound-engineering-plugin)
+  for planning and delivery and [pm-skills](https://github.com/phuryn/pm-skills) for product
+  work, or your own alternatives if you prefer them
+
+It detects your stack rather than assuming one, never overwrites a file without showing you the
+difference first, and never opens your env files. Re-run it at any time: it reports what the
+baseline has gained since your last run, and which other Founder Kit plugins you have installed
+but not yet set up.
+
+The worktree script needs a POSIX shell (macOS, Linux, cloud sandboxes, WSL). Plugins enabled in
+a project's settings do not carry into Claude Code cloud sessions; the rules, docs and script do,
+because they are files in your repository.
+
+---
 
 ### `compliance`
 
@@ -245,6 +298,11 @@ this plugin leaves on purpose:
 
 ```
 plugins/
+  core/
+    .claude-plugin/plugin.json
+    skills/
+      fk-setup/         # Project baseline: audit, propose, apply (baseline.md is the versioned list)
+    tests/              # Unit tests for the worktree setup script
   compliance/
     .claude-plugin/plugin.json
     skills/

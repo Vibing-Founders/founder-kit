@@ -12,6 +12,7 @@ Pick the smallest unit that meets the goal. Work down this list and stop at the 
 | A law, act or regulation | Legislation file | See [plugins/compliance/LEGISLATION.md](./plugins/compliance/LEGISLATION.md) |
 | Another output from the same inputs and knowledge an existing skill already uses | Mode of that skill | A sibling file such as `fk-online-safety/cra.md`, routed from that skill's `SKILL.md` |
 | A different job for the same founder, in a problem area a plugin already covers | New skill | `plugins/<existing-plugin>/skills/fk-<name>/` |
+| Something every founder needs whichever other plugins they use | Part of `core` | `plugins/core/`; a new baseline item goes in `skills/fk-setup/baseline.md` with a version bump |
 | A problem area no plugin covers, which a founder could want without the others | New plugin | `plugins/<new-name>/` |
 | Code that runs in the adopting repository | Executable asset | `skills/<skill>/assets/`, with tests in `plugins/<name>/tests/` |
 | A change to how the kit itself is built or maintained | Convention or maintainer skill | This file, `CLAUDE.md`, or `.claude/skills/` |
@@ -91,6 +92,9 @@ docs_root: docs            # all Founder Kit plugins: <docs_root>/<plugin-name>
 <plugin-name>:
   root: docs/some/folder   # optional: this plugin only
 ```
+
+The exception is `core`'s `fk-setup`, whose job is the project's own layout: it writes `CLAUDE.md`,
+the `docs/` tree, `scripts/` and `.claude/settings.json` directly, and honours `docs_root`.
 
 Resolve the folder in this order: a location the founder gives in the request, then
 `<plugin-name>.root`, then `<docs_root>/<plugin-name>`, then `docs/<plugin-name>`. Paths are
