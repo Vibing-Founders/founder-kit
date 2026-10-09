@@ -12,6 +12,13 @@ When using `/skill-creator` on a skill in this repo:
 - Raw run output (`iteration-N/`, transcripts, timing/grading): `<skill-name>-workspace/` as a sibling of the skill directory. Matched by `.gitignore` (`*-workspace`) — never commit this, it's large and reproducible.
 - Latest benchmark summary: after an iteration finishes, copy `benchmark.json`/`benchmark.md` from the workspace into `skills/<skill>/evals/`, overwriting the previous snapshot, so `git log` on that file shows how the skill's scores changed over time.
 
+## Versions
+
+When you change anything under `plugins/<name>/` other than its `tests/` or `evals/`, raise that
+plugin's `version` in the same change, in both `plugins/<name>/.claude-plugin/plugin.json` and its
+entry in `.claude-plugin/marketplace.json`. Founders only receive a change when the version goes
+up. See "Versions" in CONTRIBUTING.md for patch, minor or major.
+
 ## Tests
 
 Most of this repo is Markdown that Claude reads, and evals are how that gets checked. A few plugins
@@ -23,6 +30,9 @@ tests, because a reader cannot verify a safety guard by looking at it.
   Needs Node >= 22.18, where type stripping is on by default.
 - Location: `plugins/<name>/tests/*.test.ts`. Deliberately **not** inside `skills/**/assets/`,
   since files there are copied verbatim into adopting repos.
+- Repo-wide checks live in `tests/*.test.ts`, with helpers in `scripts/`. `tests/versions.test.ts`
+  fails when a plugin's `plugin.json` and `marketplace.json` versions disagree, or when a plugin's
+  shipped files changed since `origin/main` without its version going up.
 - What earns a test: shipped executable assets, especially anything that refuses, guards, or
   validates. Skill instructions and knowledge files are covered by evals instead.
 

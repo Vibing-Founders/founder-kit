@@ -61,6 +61,30 @@ plugins/
 
 All fields are required. `keywords` should be an array of lowercase strings.
 
+## Versions
+
+Claude Code decides whether a founder's installed plugin needs updating by comparing version
+strings, not commits. **A change merged without a version bump reaches nobody who already has the
+plugin**, and nothing reports it.
+
+So, in any pull request that changes a plugin's shipped files (anything under `plugins/<name>/`
+except its `tests/` and `evals/`):
+
+1. Raise `version` in `plugins/<name>/.claude-plugin/plugin.json`.
+2. Set the same version on the plugin's entry in `.claude-plugin/marketplace.json`.
+
+| Raise | When |
+|---|---|
+| Patch (`0.1.0` → `0.1.1`) | A fix or a wording change; the skill does the same job better |
+| Minor (`0.1.0` → `0.2.0`) | Something new a founder can use: a skill, a mode, a knowledge file, a baseline item |
+| Major (`0.1.0` → `1.0.0`) | Something a founder has to act on: a renamed or removed skill, a changed config key or file location |
+
+One bump per pull request is enough, however many commits it has. `npm test` enforces both steps:
+it fails when the two files disagree, and when a plugin changed since `main` without its version
+going up. The same tests run on every pull request.
+
+If two open pull requests bump the same plugin, the second to merge has to rebase and bump again.
+
 ## Skill structure
 
 Each skill is a `SKILL.md` file with YAML frontmatter followed by the skill body:
@@ -181,6 +205,7 @@ After adding your plugin:
 - [ ] `plugins/<name>/.claude-plugin/plugin.json` exists with all required fields
 - [ ] At least one `SKILL.md` with valid frontmatter (`name`, `description`)
 - [ ] Every new skill name starts with `fk-` and matches its directory name
+- [ ] Each changed plugin has a higher `version`, the same in its `plugin.json` and in `marketplace.json`
 - [ ] Plugin added to README.md plugins table
 - [ ] Plugin details section added to README.md
 - [ ] All legislation files cite official sources

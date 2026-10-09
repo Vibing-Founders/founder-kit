@@ -39,6 +39,22 @@ Every other plugin is optional and works on its own. Install the ones you need:
 /plugin install compliance@founder-kit
 ```
 
+### Keeping it up to date
+
+Claude Code does not update third-party marketplaces automatically unless you ask it to. Turn it
+on once: run `/plugin`, open **Marketplaces**, select **founder-kit** and choose **Enable
+auto-update**. New versions of the plugins you have installed then arrive in the background, and
+Claude Code tells you to run `/reload-plugins` to start using them.
+
+To update by hand instead:
+
+```
+/plugin marketplace update founder-kit
+```
+
+New plugins added to the marketplace are never installed for you. They appear under **Discover**
+in `/plugin`.
+
 Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-delivery:fk-dispatch`). If you installed a plugin when its commands had no prefix (`/compliance:gdpr`, `/agent-delivery:dispatch` and so on), update or reinstall it to get the new names:
 
 ```
