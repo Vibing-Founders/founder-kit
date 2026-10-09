@@ -35,6 +35,7 @@ founder angle, or advice for a regulated sector the kit says it does not cover.
 
 | Plugin | The founder's question | Skills | Saves to |
 |---|---|---|---|
+| `core` | How should my project be set up for working with agents, and what is it missing? | `fk-setup` | `CLAUDE.md`, `docs/`, `scripts/`, `.claude/settings.json`, `.gitignore` |
 | `customer-research` | Who is my customer, who else serves them, and can I back up what I say? | `fk-icp`, `fk-competitors`, `fk-fact-check` | `docs/customer-research/` |
 | `compliance` | Which rules apply to what I am building, and where do I fall short? | `fk-online-safety` (modes `assess`, `checklist`, `strategy-check`, `cra`), `fk-gdpr` (modes `assess`, `checklist`, `lia`), `fk-application-security` (modes `assess`, `checklist`), `fk-dpia` | — |
 | `site-delivery` | How do I get a change to my website made without writing code? | `fk-onboard`, `fk-orchestrate` | A pull request |
@@ -47,6 +48,12 @@ Maintainer skills in `.claude/skills/` work on the kit itself and are not shippe
 
 Each plugin installs and works on its own. No skill requires another plugin to be installed. They
 connect in these ways:
+
+- **One front door.** `core` is the recommended first install. Its `fk-setup` skill lays the
+  project baseline and, on every run, reports which other installed Founder Kit plugins still need
+  their own setup. It points to their `fk-onboard` skills and does not run them. Things every
+  founder needs regardless of which other plugins they use belong in `core`; anything tied to one
+  problem area belongs in that area's plugin.
 
 - **One config file.** `.vf-founder-kit/config.yaml` in the founder's project holds a section per
   plugin plus the shared `docs_root`. A skill writes only its own plugin's section. `compliance`
@@ -65,7 +72,10 @@ connect in these ways:
   `plugins/compliance/skills/_shared/legislation/`; see
   [LEGISLATION.md](./plugins/compliance/LEGISLATION.md).
 - **Onboard, then act.** A plugin that needs per-project setup has an `fk-onboard` skill that
-  writes its config section, and its other skills read that section.
+  writes its config section, and its other skills read that section. `fk-setup` is the project-wide
+  step before those.
+- **Default companions, not dependencies.** `fk-setup` enables `compound-engineering` and two
+  `pm-skills` plugins by default and lets the founder name alternatives.
 
 ## Gaps and direction
 

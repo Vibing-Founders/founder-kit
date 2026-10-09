@@ -1,0 +1,14 @@
+{
+  "name": "core",
+  "version": "0.1.0",
+  "description": "The starting point for Founder Kit: set up a new project with a baseline for working with Claude Code agents, or check an existing project against the current baseline and fill the gaps.",
+  "author": {
+    "name": "Vibing Founders",
+    "url": "https://github.com/Vibing-Founders"
+  },
+  "homepage": "https://github.com/Vibing-Founders/founder-kit",
+  "repository": "https://github.com/Vibing-Founders/founder-kit",
+  "license": "MIT",
+  "keywords": ["project-setup", "claude-md", "worktrees", "baseline", "onboarding", "founder-kit"],
+  "skills": ["./skills/"]
+}
