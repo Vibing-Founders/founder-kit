@@ -1,8 +1,8 @@
 # founder-kit
 
-A Claude Code plugin marketplace (`.claude-plugin/marketplace.json`). Each plugin under `plugins/<name>/` bundles skills for a specific problem area — `compliance` (GDPR, UK Online Safety Act, OWASP, DPIA/LIA/CRA assessments for platform builders) `agent-delivery` (dispatching planned tickets into Claude cloud sandboxes with a disposable database), `site-delivery` (brief-to-PR website delivery for non-coding founders), `customer-research` (ideal customer profile, personas, competitor research and fact-checking) and `founder-coach` (the front door: where a founder is on the journey to first revenue, what to do next and which tool helps, with a founder profile other skills may read).
+A Claude Code plugin marketplace (`.claude-plugin/marketplace.json`). Each plugin under `plugins/<name>/` bundles skills for a specific problem area — `founder-coach` (the front door: where a founder is on the journey to first revenue, what to do next and which tool helps, with a founder profile other skills may read), `core` (project baseline setup and gap check, which the coach recommends when a project is not set up yet), `compliance` (GDPR, UK Online Safety Act, OWASP, DPIA/LIA/CRA assessments for platform builders), `agent-delivery` (dispatching planned tickets into Claude cloud sandboxes with a disposable database), `site-delivery` (brief-to-PR website delivery for non-coding founders) and `customer-research` (ideal customer profile, personas, competitor research and fact-checking).
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for the required plugin/skill directory structure and PR checklist. See [plugins/compliance/LEGISLATION.md](./plugins/compliance/LEGISLATION.md) for how to add or update legislation reference files.
+See [KIT-MAP.md](./KIT-MAP.md) for who the kit is for, what belongs in it and how the plugins fit together — update it in the same PR when a plugin or skill is added, removed or changes purpose. See [CONTRIBUTING.md](./CONTRIBUTING.md) for the required plugin/skill directory structure, where a new addition should go, and the PR checklist. Suggestions for additions are assessed with the `triage-suggestion` maintainer skill, which produces a proposal for review and builds nothing until it is approved. See [plugins/compliance/LEGISLATION.md](./plugins/compliance/LEGISLATION.md) for how to add or update legislation reference files.
 
 ## Eval conventions
 
@@ -11,6 +11,13 @@ When using `/skill-creator` on a skill in this repo:
 - Eval prompts/assertions: `skills/<skill>/evals/evals.json` (sibling to that skill's `SKILL.md`). For a subcommand without its own directory (e.g. `cra` lives in `fk-online-safety/cra.md`), namespace the file: `fk-online-safety/evals/cra-evals.json`.
 - Raw run output (`iteration-N/`, transcripts, timing/grading): `<skill-name>-workspace/` as a sibling of the skill directory. Matched by `.gitignore` (`*-workspace`) — never commit this, it's large and reproducible.
 - Latest benchmark summary: after an iteration finishes, copy `benchmark.json`/`benchmark.md` from the workspace into `skills/<skill>/evals/`, overwriting the previous snapshot, so `git log` on that file shows how the skill's scores changed over time.
+
+## Versions
+
+When you change anything under `plugins/<name>/` other than its `tests/` or `evals/`, raise that
+plugin's `version` in the same change, in both `plugins/<name>/.claude-plugin/plugin.json` and its
+entry in `.claude-plugin/marketplace.json`. Founders only receive a change when the version goes
+up. See "Versions" in CONTRIBUTING.md for patch, minor or major.
 
 ## Tests
 
@@ -23,6 +30,9 @@ tests, because a reader cannot verify a safety guard by looking at it.
   Needs Node >= 22.18, where type stripping is on by default.
 - Location: `plugins/<name>/tests/*.test.ts`. Deliberately **not** inside `skills/**/assets/`,
   since files there are copied verbatim into adopting repos.
+- Repo-wide checks live in `tests/*.test.ts`, with helpers in `scripts/`. `tests/versions.test.ts`
+  fails when a plugin's `plugin.json` and `marketplace.json` versions disagree, or when a plugin's
+  shipped files changed since `origin/main` without its version going up.
 - What earns a test: shipped executable assets, especially anything that refuses, guards, or
   validates. Skill instructions and knowledge files are covered by evals instead.
 

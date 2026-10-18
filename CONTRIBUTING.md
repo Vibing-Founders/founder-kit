@@ -2,6 +2,30 @@
 
 This document explains how to add a new plugin to the founder-kit marketplace.
 
+## Where does a new thing go?
+
+Pick the smallest unit that meets the goal. Work down this list and stop at the first that fits.
+
+| If the addition is… | It is a… | It goes in… |
+|---|---|---|
+| A fact, rule, benchmark or reference an existing skill should know | Knowledge file | `skills/<skill>/knowledge/`, or `skills/_shared/` when more than one skill uses it |
+| A law, act or regulation | Legislation file | See [plugins/compliance/LEGISLATION.md](./plugins/compliance/LEGISLATION.md) |
+| Another output from the same inputs and knowledge an existing skill already uses | Mode of that skill | A sibling file such as `fk-online-safety/cra.md`, routed from that skill's `SKILL.md` |
+| A different job for the same founder, in a problem area a plugin already covers | New skill | `plugins/<existing-plugin>/skills/fk-<name>/` |
+| Something every founder needs whichever other plugins they use | Part of `core` | `plugins/core/`; a new baseline item goes in `skills/fk-setup/baseline.md` with a version bump |
+| A problem area no plugin covers, which a founder could want without the others | New plugin | `plugins/<new-name>/` |
+| Code that runs in the adopting repository | Executable asset | `skills/<skill>/assets/`, with tests in `plugins/<name>/tests/` |
+| A change to how the kit itself is built or maintained | Convention or maintainer skill | This file, `CLAUDE.md`, or `.claude/skills/` |
+
+A new skill earns its place when a founder would ask for it by name and it has its own trigger
+phrases; if it would only ever run as a step inside another skill, make it a mode or a knowledge
+file instead. A new plugin earns its place when it has a different audience or install decision
+from the existing ones — two skills are not a reason on their own.
+
+Suggestions for additions are filed with the "Suggestion for the kit" issue template and assessed
+with the `triage-suggestion` maintainer skill (`.claude/skills/triage-suggestion/`), which produces
+a proposal for review before anything is built.
+
 ## Plugin directory structure
 
 Every plugin lives under `plugins/<plugin-name>/` and must contain:
@@ -37,6 +61,30 @@ plugins/
 
 All fields are required. `keywords` should be an array of lowercase strings.
 
+## Versions
+
+Claude Code decides whether a founder's installed plugin needs updating by comparing version
+strings, not commits. **A change merged without a version bump reaches nobody who already has the
+plugin**, and nothing reports it.
+
+So, in any pull request that changes a plugin's shipped files (anything under `plugins/<name>/`
+except its `tests/` and `evals/`):
+
+1. Raise `version` in `plugins/<name>/.claude-plugin/plugin.json`.
+2. Set the same version on the plugin's entry in `.claude-plugin/marketplace.json`.
+
+| Raise | When |
+|---|---|
+| Patch (`0.1.0` → `0.1.1`) | A fix or a wording change; the skill does the same job better |
+| Minor (`0.1.0` → `0.2.0`) | Something new a founder can use: a skill, a mode, a knowledge file, a baseline item |
+| Major (`0.1.0` → `1.0.0`) | Something a founder has to act on: a renamed or removed skill, a changed config key or file location |
+
+One bump per pull request is enough, however many commits it has. `npm test` enforces both steps:
+it fails when the two files disagree, and when a plugin changed since `main` without its version
+going up. The same tests run on every pull request.
+
+If two open pull requests bump the same plugin, the second to merge has to rebase and bump again.
+
 ## Skill structure
 
 Each skill is a `SKILL.md` file with YAML frontmatter followed by the skill body:
@@ -68,6 +116,9 @@ docs_root: docs            # all Founder Kit plugins: <docs_root>/<plugin-name>
 <plugin-name>:
   root: docs/some/folder   # optional: this plugin only
 ```
+
+The exception is `core`'s `fk-setup`, whose job is the project's own layout: it writes `CLAUDE.md`,
+the `docs/` tree, `scripts/` and `.claude/settings.json` directly, and honours `docs_root`.
 
 Resolve the folder in this order: a location the founder gives in the request, then
 `<plugin-name>.root`, then `<docs_root>/<plugin-name>`, then `docs/<plugin-name>`. Paths are
@@ -162,6 +213,7 @@ After adding your plugin:
 - [ ] `plugins/<name>/.claude-plugin/plugin.json` exists with all required fields
 - [ ] At least one `SKILL.md` with valid frontmatter (`name`, `description`)
 - [ ] Every new skill name starts with `fk-` and matches its directory name
+- [ ] Each changed plugin has a higher `version`, the same in its `plugin.json` and in `marketplace.json`
 - [ ] Plugin added to README.md plugins table
 - [ ] Plugin details section added to README.md
 - [ ] All legislation files cite official sources

@@ -14,6 +14,7 @@ If a plugin is missing, the founder first needs the marketplace:
 
 | Tool | Helps with | Stages | Install |
 |---|---|---|---|
+| `core:fk-setup` | Setting the project up for working with agents (rules, docs folders, settings), and checking an existing project for gaps. Recommend it once when the founder is working in a project folder that has no `.vf-founder-kit/config.yaml` yet, or before they start building | Any; usually first, or before 3 to 4 | `/plugin install core@founder-kit` |
 | `customer-research:fk-icp` | Analysing interview transcripts; ideal customer profile, personas, who not to sell to, what to ask next | 2 onwards | `/plugin install customer-research@founder-kit` |
 | `customer-research:fk-competitors` | Who else solves the problem, including spreadsheets and doing nothing; where a small team can win | 1 to 3 | `/plugin install customer-research@founder-kit` |
 | `customer-research:fk-fact-check` | Checking claims on a landing page or pitch before using them; checking research | 3, and any research | `/plugin install customer-research@founder-kit` |

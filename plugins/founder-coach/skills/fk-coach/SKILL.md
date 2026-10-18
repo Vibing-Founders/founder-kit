@@ -84,7 +84,9 @@ If it is unclear which the founder wants, default to **Where am I**.
    Where there is an open question, help shape it as a bet (hypothesis, smallest test,
    kill criteria, date). Inside stages 1 to 4, use the finer steps in `references/journey.md`.
 5. **Recommend a tool** for the next action from `references/toolkit.md`, with its
-   install command. Never assume it is installed, and never run it yourself.
+   install command. Never assume it is installed, and never run it yourself. If the
+   project has not been set up yet (no `.vf-founder-kit/config.yaml`), also recommend
+   `core`'s `fk-setup` once.
 6. **Update `journey.md`** (and the profile if you learned something) and list the files.
 
 ### Update profile
