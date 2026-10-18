@@ -1,0 +1,93 @@
+{
+  "skill_name": "fk-coach",
+  "note": "All founders, businesses and conversations are invented. Where a prompt depends on existing coaching files, `files` describes the fixture the project folder must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "first-conversation-no-files",
+      "prompt": "Coach me. I'm a former product designer, I work three days a week at an agency, and I've got an idea for a bookkeeping tool for freelance photographers. Not sure where to start.",
+      "expected_output": "Finds no coaching files, works out the coaching folder (docs/founder-coach/ by default), and starts from the founder rather than the idea. Reflects back what it heard, then asks exactly one question (for example about hours, runway, who she can reach, or what she wants the business to be) rather than a list. Places her at stage 1 (problem not yet validated, no profile). Creates founder-profile.md with what is known (designer background, three days a week at an agency, designer founder type with its time sinks) and unknowns marked as not asked yet, and journey.md at stage 1 with exit criteria marked not yet. Shows the founder what was written and lists both file paths. Does not run any other skill.",
+      "files": ["an empty project folder with no docs/founder-coach/ and no .vf-founder-kit/config.yaml"],
+      "assertions": [
+        {"id": "one-question", "text": "The response asks exactly one question of the founder, not a list of questions"},
+        {"id": "reflects-back", "text": "The response reflects back what the founder said (designer, part-time, photographers' bookkeeping) before asking"},
+        {"id": "stage-1", "text": "The founder is placed at stage 1 (find a problem worth you solving), not at a build stage"},
+        {"id": "creates-profile", "text": "docs/founder-coach/founder-profile.md is created with the stated background and constraints, and unknowns marked as unknown or not asked rather than guessed"},
+        {"id": "creates-journey", "text": "docs/founder-coach/journey.md is created with the current stage and each exit criterion marked met or not yet"},
+        {"id": "files-listed", "text": "The response shows what was written and ends with the paths of the files created, relative to the project"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "stage-2-prompted-evidence",
+      "prompt": "Where am I? I've done six interviews now and everyone said they'd use it. Can I start building?",
+      "expected_output": "Reads both files. Keeps the founders at stage 2: the interviews exist but the journey evidence shows the pain was only described when asked and 'would use it' answers are opinions, not evidence of pain or willingness to pay. Shows the stage 2 scorecard with each criterion not yet met and the evidence. Says kindly that building now skips the offer test. Agrees up to three dated next actions aimed at unprompted pain and willingness-to-pay evidence. Recommends fk-icp to analyse the transcripts (with /plugin install customer-research@founder-kit) and interview-script from pm-skills to prepare better interviews, warning to drop its hypothetical questions. Updates journey.md and lists it.",
+      "files": [
+        "docs/founder-coach/founder-profile.md for two nurses, Aisha and Tom, building a meal-planning app for shift workers, both domain experts",
+        "docs/founder-coach/journey.md at stage 2 (validate the problem), with six interviews logged as evidence and a note that the pain came up only when the interviewer asked about it; both stage 2 criteria not yet met"
+      ],
+      "assertions": [
+        {"id": "stays-at-2", "text": "The founders remain at stage 2; the coach does not move them to stage 3 or 4 or endorse building now"},
+        {"id": "prompted-not-evidence", "text": "The coach explains that prompted answers and 'would use it' are weak evidence and do not meet the exit criteria"},
+        {"id": "scorecard", "text": "Each stage 2 exit criterion is shown as not yet met with the evidence behind it"},
+        {"id": "recommends-fk-icp", "text": "Recommends customer-research:fk-icp for the transcripts, with its install command"},
+        {"id": "recommends-interview-script", "text": "Recommends interview-script from pm-skills and warns about its hypothetical questions"},
+        {"id": "max-three-actions", "text": "Agrees no more than three next actions, each with a date"},
+        {"id": "updates-journey", "text": "Updates docs/founder-coach/journey.md and lists it as changed"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "sanity-check-designer-logo",
+      "prompt": "Should I redo my logo? A couple of people I interviewed said it looks a bit amateur.",
+      "expected_output": "Reads the profile (designer founder type, with rebranding after feedback listed as a time sink) and journey (stage 2, problem not yet validated). Says plainly and kindly that a new logo does not move any stage 2 exit criterion, and names it as a designer time sink (rebranding after feedback). Notes the logo comments are not evidence about the problem. Offers the smallest move that would help instead, such as more interviews focused on the last time the pain happened. Leaves the decision to the founder and logs it if one is made. Does not start designing a logo.",
+      "files": [
+        "docs/founder-coach/founder-profile.md for Priya, a former product designer building a bookkeeping tool for freelance photographers, founder type designer, time sinks including rebranding after feedback",
+        "docs/founder-coach/journey.md at stage 2 with three interviews and no unprompted pain evidence yet"
+      ],
+      "assertions": [
+        {"id": "flags-distraction", "text": "The coach says the logo redesign is probably a distraction at stage 2 because it does not move an exit criterion"},
+        {"id": "names-time-sink", "text": "The coach links it to the designer founder type's time sink (rebranding or polishing after feedback)"},
+        {"id": "kind-specific", "text": "The tone is kind and specific, referring to what the founder said rather than lecturing"},
+        {"id": "offers-alternative", "text": "Offers a concrete alternative that moves stage 2 forward"},
+        {"id": "founder-decides", "text": "Leaves the decision to the founder rather than forbidding it"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "check-in-offer-test-failed",
+      "prompt": "Check-in: the pre-order page for the meal-planning app was live for three weeks. 240 visitors, 31 joined the waitlist, nobody paid the £5 pre-order.",
+      "expected_output": "Reads both files. Walks the loop (learn, bet, test, sell/measure, decide) and holds the result against the bet's kill criteria (at least five pre-orders by the review date), which were not met. Points out that waitlist sign-ups are not demand. Helps the founders decide; if they agree, moves the stage back from 3 to 2, framed as normal. Records a decision log entry (date, decision, why, stage change 3 → 2), updates the criteria, and agrees up to three dated next actions, such as interviews with the waitlist sign-ups about the last time planning meals on shift went wrong. Lists the files changed.",
+      "files": [
+        "docs/founder-coach/founder-profile.md for two nurses, Aisha and Tom, building a meal-planning app for shift workers",
+        "docs/founder-coach/journey.md at stage 3 (validate the offer), current bet: a pre-order page at £5, kill criteria 'fewer than five pre-orders by the review date means go back and re-check the problem', review date today"
+      ],
+      "assertions": [
+        {"id": "walks-loop", "text": "The check-in walks through what was learned, the bet, the test, the result and the decision"},
+        {"id": "kill-criteria", "text": "Compares the result with the bet's kill criteria and says they were triggered"},
+        {"id": "waitlist-not-demand", "text": "Says waitlist sign-ups are not evidence that people will pay"},
+        {"id": "moves-back", "text": "Moves (or proposes moving, with founder agreement) the stage back from 3 to 2 and frames moving back as normal"},
+        {"id": "logs-decision", "text": "Adds a decision log entry to journey.md with date, decision, reason and stage change 3 → 2"},
+        {"id": "next-actions", "text": "Sets no more than three dated next actions aimed at stage 2 criteria"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "two-founder-profile-update",
+      "prompt": "Update my profile: my friend Tom is joining as co-founder. He's a nurse too, but he's the one who can build things, he's made a few apps with no-code tools. He can do about ten hours a week.",
+      "expected_output": "Reads the existing single-founder profile for Aisha. Adds a separate section for Tom with what was said (nurse, builds no-code apps, about ten hours a week) and unknowns marked as not asked yet, asking one follow-up question at a time for the rest. Suggests a founder type for Tom only from evidence (some engineer/hacker traits) or asks, and records the time sinks to watch. Updates the team section (who does what, combined hours). Shows before and after, says how the change affects the plan (for example, building capacity for stage 4, and the risk of building before the offer is tested), and lists the files changed.",
+      "files": [
+        "docs/founder-coach/founder-profile.md with one section for Aisha, a nurse and domain expert building a meal-planning app for shift workers, 12 hours a week, and a team section saying solo",
+        "docs/founder-coach/journey.md at stage 2"
+      ],
+      "assertions": [
+        {"id": "separate-section", "text": "Tom gets his own founder section, separate from Aisha's"},
+        {"id": "evidence-only", "text": "Only what was said is recorded for Tom; unknowns are marked rather than invented"},
+        {"id": "team-section", "text": "The team section is updated to cover both founders, who does what and combined hours"},
+        {"id": "type-and-time-sinks", "text": "Tom's founder type and time sinks are recorded from evidence or asked about, including the risk of building too early"},
+        {"id": "one-question", "text": "Any follow-up asks one question at a time"},
+        {"id": "files-listed", "text": "Lists docs/founder-coach/founder-profile.md as changed"}
+      ]
+    }
+  ]
+}

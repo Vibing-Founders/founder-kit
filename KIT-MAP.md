@@ -35,6 +35,7 @@ founder angle, or advice for a regulated sector the kit says it does not cover.
 
 | Plugin | The founder's question | Skills | Saves to |
 |---|---|---|---|
+| `founder-coach` | Where am I on the way to first revenue, what should I do next, and which tool helps? | `fk-coach` | `docs/founder-coach/` (`founder-profile.md`, `journey.md`) |
 | `core` | How should my project be set up for working with agents, and what is it missing? | `fk-setup` | `CLAUDE.md`, `docs/`, `scripts/`, `.claude/settings.json`, `.gitignore` |
 | `customer-research` | Who is my customer, who else serves them, and can I back up what I say? | `fk-icp`, `fk-competitors`, `fk-fact-check` | `docs/customer-research/` |
 | `compliance` | Which rules apply to what I am building, and where do I fall short? | `fk-online-safety` (modes `assess`, `checklist`, `strategy-check`, `cra`), `fk-gdpr` (modes `assess`, `checklist`, `lia`), `fk-application-security` (modes `assess`, `checklist`), `fk-dpia` | — |
@@ -49,11 +50,15 @@ Maintainer skills in `.claude/skills/` work on the kit itself and are not shippe
 Each plugin installs and works on its own. No skill requires another plugin to be installed. They
 connect in these ways:
 
-- **One front door.** `core` is the recommended first install. Its `fk-setup` skill lays the
-  project baseline and, on every run, reports which other installed Founder Kit plugins still need
-  their own setup. It points to their `fk-onboard` skills and does not run them. Things every
-  founder needs regardless of which other plugins they use belong in `core`; anything tied to one
-  problem area belongs in that area's plugin.
+- **One front door.** `founder-coach` is where a founder starts. Its `fk-coach` skill works out
+  where they are on the journey and recommends the tool for their next action, including `core`'s
+  `fk-setup` when the project is not set up yet. It recommends and never runs other skills.
+- **Project setup.** `core`'s `fk-setup` lays the project baseline and, on every run, reports which
+  other installed Founder Kit plugins still need their own setup. It points to their `fk-onboard`
+  skills and does not run them. Things every founder needs regardless of which other plugins they
+  use belong in `core`; anything tied to one problem area belongs in that area's plugin.
+- **One founder profile.** `fk-coach` writes `founder-profile.md`; any skill may read it to tailor
+  its advice, and none other writes it.
 
 - **One config file.** `.vf-founder-kit/config.yaml` in the founder's project holds a section per
   plugin plus the shared `docs_root`. A skill writes only its own plugin's section. `compliance`

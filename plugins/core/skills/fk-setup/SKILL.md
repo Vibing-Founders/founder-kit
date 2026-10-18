@@ -149,7 +149,7 @@ baseline version.
 
 ## Step 7: Check the rest of Founder Kit
 
-`fk-setup` is the starting point for the kit; other plugins have their own setup. For each
+`fk-setup` sets up the project as a whole; other plugins have their own setup. For each
 Founder Kit plugin that is enabled for this project (`claude plugin list --json`, or
 `enabledPlugins` in `.claude/settings.json`) and needs per-project setup, check whether its section exists in
 `.vf-founder-kit/config.yaml`:
