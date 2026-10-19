@@ -77,7 +77,7 @@ Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-d
 |--------|-------------|--------|
 | `founder-coach` | Start here: a coach that works out where you are on the journey to first revenue, what done looks like for that stage, what to do next and which tool helps, and remembers your progress between sessions | `fk-coach` |
 | `core` | Sets a project up with a baseline for working with Claude Code agents, and checks an existing project for gaps whenever you re-run it | `fk-setup` |
-| `compliance` | Online safety, GDPR, and application security compliance for platform builders | `fk-online-safety` (+ `cra` mode), `fk-gdpr` (+ `lia` mode), `fk-application-security`, `fk-dpia` |
+| `compliance` | Online safety, GDPR, application security and Supabase data access compliance for platform builders | `fk-online-safety` (+ `cra` mode), `fk-gdpr` (+ `lia` mode), `fk-application-security`, `fk-dpia`, `fk-supabase-rls` |
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `fk-onboard`, `fk-dispatch` |
 | `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `fk-onboard`, `fk-orchestrate` |
 | `customer-research` | Understand your customers well enough to validate an idea and sell it: an evidence-based ideal customer profile from real conversations, competitor research you can act on, and a fact-check of the claims you make and meet | `fk-icp`, `fk-competitors`, `fk-fact-check` |
@@ -146,6 +146,7 @@ Provides a starting point for exploring the regulations most relevant to platfor
 - **UK Children's Code** — age-appropriate design for services likely accessed by children
 - **US COPPA** — children's online privacy protection for US-facing platforms
 - **OWASP Top 10** — application security baseline
+- **Supabase row-level security** — whether a Supabase app's policies actually keep each customer's data to themselves
 
 ### Skills
 
@@ -175,6 +176,36 @@ Provides a starting point for exploring the regulations most relevant to platfor
 /compliance:fk-dpia run a DPIA on our codebase
 /compliance:fk-dpia for our new user profiling feature
 ```
+
+**`/compliance:fk-supabase-rls`** — Check whether your Supabase app's row-level security protects your customers' data
+```
+/compliance:fk-supabase-rls check my Supabase security
+/compliance:fk-supabase-rls I built this with Lovable, is my data safe?
+/compliance:fk-supabase-rls can anyone read my bookings table?
+```
+
+For apps built on Supabase, by hand or with an AI app builder such as Lovable, Bolt or v0. The
+anon key ships in every browser, so a table without a tight policy can be read, or changed, by
+anyone who opens the developer tools. This skill reads your policies (from a connected Supabase
+MCP server in read-only mode, or from the migration files in your repository), finds every
+Supabase query in your code, and compares what each one needs with what the policies allow. You
+get a plain-language report ranked critical, high, medium and low: who could exploit each problem,
+what data is at risk, the evidence, and the exact SQL fix to hand to your builder. It flags a
+service-role key in browser code, policies that break a feature, and personal data exposure that
+may need a GDPR breach assessment.
+
+It is **read-only**: it never changes your database, applies a migration or edits your code. When
+it can only see migrations, it says the live database may differ and lists what it could not
+verify. The report is saved to `docs/compliance/supabase-rls-<date>.md`; to keep it somewhere
+else, ask, or set it in `.vf-founder-kit/config.yaml`:
+
+```yaml
+docs_root: docs                      # where all Founder Kit plugins keep their docs
+compliance:
+  root: docs/some-other/folder       # optional: just this plugin
+```
+
+Not a penetration test, and not legal or security advice.
 
 **Legitimate Interests Assessment** — the `lia` mode of `fk-gdpr`, for the Article 6(1)(f) lawful basis
 ```
@@ -389,11 +420,12 @@ plugins/
   compliance/
     .claude-plugin/plugin.json
     skills/
-      _shared/          # Legislation and cross-cutting knowledge
+      _shared/          # Legislation, cross-cutting knowledge, where reports are saved
       fk-online-safety/ # UK OSA, EU DSA (includes the cra mode)
       fk-gdpr/          # UK/EU GDPR (includes the lia mode)
       fk-application-security/  # OWASP
       fk-dpia/          # Article 35 Data Protection Impact Assessment
+      fk-supabase-rls/  # Supabase row-level security check against the app's queries
   agent-delivery/
     .claude-plugin/plugin.json
     skills/

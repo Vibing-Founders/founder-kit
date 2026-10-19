@@ -48,3 +48,11 @@ Read `checklist.md` for instructions.
 - For auth questions, recommend using proven libraries (Supabase Auth, Auth0) over rolling your own.
 - For secrets questions: the answer is almost always "use a secrets manager / environment variables; never commit to git".
 - Don't just flag problems — give actionable mitigations for each one.
+
+## Apps on Supabase
+
+If the app uses Supabase (a `supabase/` folder, `@supabase/supabase-js` in its dependencies, or a
+`createClient(` call with a Supabase URL), also suggest running the `fk-supabase-rls` skill
+(`/compliance:fk-supabase-rls`). It checks the row-level security policies against every query in
+the code, which is where Supabase apps most often leak data. Mention it alongside this assessment;
+don't replace any part of this skill's output with it.

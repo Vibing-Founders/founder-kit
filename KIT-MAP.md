@@ -38,7 +38,7 @@ founder angle, or advice for a regulated sector the kit says it does not cover.
 | `founder-coach` | Where am I on the way to first revenue, what should I do next, and which tool helps? | `fk-coach` | `docs/founder-coach/` (`founder-profile.md`, `journey.md`) |
 | `core` | How should my project be set up for working with agents, and what is it missing? | `fk-setup` | `CLAUDE.md`, `docs/`, `scripts/`, `.claude/settings.json`, `.gitignore` |
 | `customer-research` | Who is my customer, who else serves them, and can I back up what I say? | `fk-icp`, `fk-competitors`, `fk-fact-check` | `docs/customer-research/` |
-| `compliance` | Which rules apply to what I am building, and where do I fall short? | `fk-online-safety` (modes `assess`, `checklist`, `strategy-check`, `cra`), `fk-gdpr` (modes `assess`, `checklist`, `lia`), `fk-application-security` (modes `assess`, `checklist`), `fk-dpia` | — |
+| `compliance` | Which rules apply to what I am building, and where do I fall short? | `fk-online-safety` (modes `assess`, `checklist`, `strategy-check`, `cra`), `fk-gdpr` (modes `assess`, `checklist`, `lia`), `fk-application-security` (modes `assess`, `checklist`), `fk-dpia`, `fk-supabase-rls` | `docs/compliance/` (`fk-supabase-rls` reports; `fk-dpia` still saves to the project root or `compliance/`) |
 | `site-delivery` | How do I get a change to my website made without writing code? | `fk-onboard`, `fk-orchestrate` | A pull request |
 | `agent-delivery` | How do I hand a planned ticket to a cloud agent and trust the result? | `fk-onboard`, `fk-dispatch` | A pull request, with the ticket closed out |
 
@@ -62,13 +62,17 @@ connect in these ways:
 
 - **One config file.** `.vf-founder-kit/config.yaml` in the founder's project holds a section per
   plugin plus two shared keys: `docs_root` and `tracker`. A skill writes only its own plugin's
-  section. `compliance` does not use it today.
+  section. `compliance` reads only the docs folder keys (`docs_root`, `compliance.root`), for
+  `fk-supabase-rls`.
 - **One ticket stage map.** The shared `tracker` key maps the kit's fixed stages (`brainstormed`
   through `done`) to the project's own board columns or Linear states. `core`'s `fk-setup` writes
   it, with a `CLAUDE.md` rule saying which event moves a ticket; `agent-delivery` and
   `site-delivery` move tickets through the same map, and write it only when it is missing.
 - **One docs convention.** Skills that save files use `docs/<plugin-name>/` unless the config or
   the request says otherwise.
+- **Security checks point to each other.** `fk-application-security` suggests `fk-supabase-rls`
+  for an app on Supabase, and `fk-supabase-rls` points to `fk-gdpr` when a finding exposes
+  personal data.
 - **Research feeds research.** `fk-competitors` uses the ideal customer profile from `fk-icp` when
   one exists; `fk-fact-check` can check a `fk-competitors` report.
 - **Two delivery paths, split by who is driving.** `site-delivery` is the plain-language path for
