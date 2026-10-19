@@ -34,9 +34,10 @@ writes or MCP `apply_migration` / `execute_sql` calls that write. It also does n
 human to review and apply. The reason: a policy change can lock real users out of a live app, or
 open it wider, and the founder (or their builder) has to own that change and test it.
 
-If the founder asks you to "just fix it", explain this in a sentence, give them the SQL in the
-report ready to hand to their builder or paste into the Supabase SQL editor themselves, and tell
-them how to check it worked (see `references/report-format.md`).
+If the founder asks you to "just fix it", explain this in a sentence. Lead with the reason, not
+with whether you happen to have database access: the answer would be the same if you did. Give
+them the SQL in the report ready to hand to their builder or paste into the Supabase SQL editor
+themselves, and tell them how to check it worked (see `references/report-format.md`).
 
 Where a Supabase MCP server is connected, use only its read operations, and suggest the founder
 run it in read-only mode (for example the `--read-only` flag, or `read_only=true` in its URL).

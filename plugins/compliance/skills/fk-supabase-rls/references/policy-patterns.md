@@ -275,8 +275,11 @@ another schema; add it to every `security definer` function.
 
 ## 10. Storage buckets
 
-**Spot it:** `.storage.from('invoices')` or `getPublicUrl` on a bucket created `public = true`
-that holds private files, or storage policies with no check on the file's folder or owner.
+**Spot it:** a bucket created `public = true` that holds private files, or storage policies with
+no check on the file's folder or owner. `getPublicUrl` in the code suggests the bucket is public
+(the URL only works if it is) but does not prove it: the function builds a URL either way. If the
+bucket is not created in the migrations and you cannot see the live database, list whether it is
+public under what could not be verified, and say what the code suggests.
 
 **Severity:** critical for private documents in a public bucket; high for policies any
 logged-in user passes.
