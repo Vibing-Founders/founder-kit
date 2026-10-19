@@ -1,13 +1,14 @@
 {
   "skill_name": "fk-segments",
-  "note": "All founders, problems and businesses are invented. Most prompts need web search; `files` describes any fixture the project folder must contain. The without-skill baseline gets the same prompt and project folder with no skill.",
+  "note": "All founders, problems and businesses are invented. Most prompts need web search; `files` points to the fixture under `evals/files/` that the project folder starts from (an empty list means an empty folder), and `files_description` says what it holds. The without-skill baseline gets the same prompt and project folder with no skill.",
   "evals": [
     {
       "id": 1,
       "name": "vague-problem-one-question",
       "prompt": "I want to build an app that helps people be more productive. Who should I talk to first?",
       "expected_output": "The problem and who has it are too vague to research. Asks exactly one clarifying question (for example which part of productivity hurts and for whom) and stops. Does not produce a segment list, ranking or outreach message yet, and writes no file.",
-      "files": ["an empty project folder"],
+      "files": [],
+      "files_description": ["an empty project folder"],
       "assertions": [
         {"id": "one-question", "text": "The response asks exactly one clarifying question"},
         {"id": "no-premature-list", "text": "The response does not produce a ranked list of segments, profiles or an outreach message before the founder answers"},
@@ -19,7 +20,8 @@
       "name": "clear-problem-full-shortlist",
       "prompt": "Freelancers lose track of unpaid invoices and end up chasing clients weeks late. I think freelance designers and solo developers have this worst. Who should I talk to first, and where do I find them?",
       "expected_output": "Restates the problem and seeds, scans broadly including adjacent groups (e.g. photographers, copywriters, consultants), scores each on pain, willingness to pay and reachability with a table and one-line reasons for dropped groups, shortlists 3 to 6. Profiles each shortlisted segment with real quotes (links, dates, under ~25 words), workaround, triggers, budget, where to reach them with links, and why they might not buy. Ends with who to talk to: how many per segment, exactly where, an outreach message that asks about past behaviour and does not pitch, and what would change the ranking, then interview-script and fk-icp as next steps. Every claim labelled sourced or hypothesis. Saves docs/customer-research/segments.md and states the path.",
-      "files": ["an empty project folder"],
+      "files": [],
+      "files_description": ["an empty project folder"],
       "assertions": [
         {"id": "broad-scan", "text": "The scan includes at least two groups the founder did not name"},
         {"id": "ranking-table", "text": "A ranking table scores groups on pain intensity, willingness to pay and reachability, and each dropped group has a one-line reason"},
@@ -40,7 +42,8 @@
       "name": "favourite-segment-ranks-low",
       "prompt": "Shift workers struggle to plan healthy meals around rotating rotas. I'm pretty sure office workers who do the occasional late night are my best market, they're who I really want to build for. Maybe nurses too. Who should I start talking to?",
       "expected_output": "Ranks segments honestly. Office workers with occasional late nights have a much weaker, less frequent version of the pain than rotating-shift workers (nurses, paramedics, warehouse night staff, care workers), so they rank low. The output says so plainly, explains why, and still lets the founder choose. Ends with who to talk to and an outreach message. No market sizing.",
-      "files": ["an empty project folder"],
+      "files": [],
+      "files_description": ["an empty project folder"],
       "assertions": [
         {"id": "favourite-ranked-honestly", "text": "Office workers with occasional late nights are not ranked first"},
         {"id": "says-so", "text": "The output explicitly tells the founder that their favourite segment ranks lower than others and explains why"},
@@ -54,7 +57,8 @@
       "name": "founder-profile-raises-reach",
       "prompt": "Freelancers lose track of unpaid invoices. My guesses are freelance photographers, freelance designers and solo developers. Who should I talk to first?",
       "expected_output": "Finds and reads docs/founder-coach/founder-profile.md, says it is using it, and raises the reachability of freelance photographers because the founder runs a photography meet-up group of about 60 people. Cites the profile line in the ranking. Uses the meet-up as the first place to find interviewees. Does not edit the founder profile. Saves segments.md.",
-      "files": ["a project folder containing docs/founder-coach/founder-profile.md for an invented founder, Priya, a former agency product designer who did her own freelance bookkeeping, whose 'Audiences and networks she can reach' line reads: 'A photography meet-up group she runs (about 60 people); former agency colleagues'"],
+      "files": ["evals/files/founder-profile-raises-reach/"],
+      "files_description": ["a project folder containing docs/founder-coach/founder-profile.md for an invented founder, Priya, a former agency product designer who did her own freelance bookkeeping, whose 'Audiences and networks she can reach' line reads: 'A photography meet-up group she runs (about 60 people); former agency colleagues'"],
       "assertions": [
         {"id": "reads-profile", "text": "The output says it read or used the founder profile"},
         {"id": "reach-raised", "text": "Freelance photographers get a higher reachability score, with the reason citing the meet-up group from the profile"},
@@ -68,7 +72,8 @@
       "name": "existing-icp-points-to-fk-icp",
       "prompt": "I've got this bookkeeping idea for freelance photographers. Which customer segment should I target?",
       "expected_output": "Finds docs/customer-research/ideal-customer-profile.md built from six interviews with freelance photographers. Tells the founder they are past the point of desk research for this group: the evidence they need comes from more interviews, analysed with fk-icp. Marks freelance photographers as backed by interviews. May offer desk research only on groups the interviews have not covered. Never writes or edits the ICP file.",
-      "files": ["a project folder containing docs/customer-research/ideal-customer-profile.md (B2C, version 0.4, based on 6 interviews with freelance photographers, pain points about chasing late client payments and last-minute tax reconciliation, persona 'Invoice-Chasing Imogen', negative persona 'The Hobby Shooter') and an interviews/ folder with six dated subfolders"],
+      "files": ["evals/files/existing-icp-points-to-fk-icp/"],
+      "files_description": ["a project folder containing docs/customer-research/ideal-customer-profile.md (B2C, version 0.4, based on 6 interviews with freelance photographers, pain points about chasing late client payments and last-minute tax reconciliation, persona 'Invoice-Chasing Imogen', negative persona 'The Hobby Shooter') and an interviews/ folder with six dated subfolders"],
       "assertions": [
         {"id": "reads-icp", "text": "The output says it found and read the existing ICP"},
         {"id": "recommends-fk-icp", "text": "The output tells the founder they are past desk research for freelance photographers and recommends more interviews analysed with fk-icp"},
@@ -81,7 +86,8 @@
       "name": "declines-tam",
       "prompt": "I'm building a tool to help freelance designers chase unpaid invoices. Can you work out the TAM and market size for each segment so I can pick the biggest one?",
       "expected_output": "Declines to estimate TAM or market size, briefly explains why (it does not tell a bootstrapper who to talk to this week, and the numbers would be guesses), and offers the ranking by pain, willingness to pay and reachability instead, ending with who to talk to. No market size figures appear anywhere in the output.",
-      "files": ["an empty project folder"],
+      "files": [],
+      "files_description": ["an empty project folder"],
       "assertions": [
         {"id": "declines", "text": "The output declines to estimate TAM or market size"},
         {"id": "explains-why", "text": "The output explains why market sizing is not useful at this stage"},
