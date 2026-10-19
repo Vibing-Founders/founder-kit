@@ -1,0 +1,93 @@
+{
+  "skill_name": "fk-segments",
+  "note": "All founders, problems and businesses are invented. Most prompts need web search; `files` describes any fixture the project folder must contain. The without-skill baseline gets the same prompt and project folder with no skill.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "vague-problem-one-question",
+      "prompt": "I want to build an app that helps people be more productive. Who should I talk to first?",
+      "expected_output": "The problem and who has it are too vague to research. Asks exactly one clarifying question (for example which part of productivity hurts and for whom) and stops. Does not produce a segment list, ranking or outreach message yet, and writes no file.",
+      "files": ["an empty project folder"],
+      "assertions": [
+        {"id": "one-question", "text": "The response asks exactly one clarifying question"},
+        {"id": "no-premature-list", "text": "The response does not produce a ranked list of segments, profiles or an outreach message before the founder answers"},
+        {"id": "no-file", "text": "No segments.md (or any other research file) is written"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "clear-problem-full-shortlist",
+      "prompt": "Freelancers lose track of unpaid invoices and end up chasing clients weeks late. I think freelance designers and solo developers have this worst. Who should I talk to first, and where do I find them?",
+      "expected_output": "Restates the problem and seeds, scans broadly including adjacent groups (e.g. photographers, copywriters, consultants), scores each on pain, willingness to pay and reachability with a table and one-line reasons for dropped groups, shortlists 3 to 6. Profiles each shortlisted segment with real quotes (links, dates, under ~25 words), workaround, triggers, budget, where to reach them with links, and why they might not buy. Ends with who to talk to: how many per segment, exactly where, an outreach message that asks about past behaviour and does not pitch, and what would change the ranking, then interview-script and fk-icp as next steps. Every claim labelled sourced or hypothesis. Saves docs/customer-research/segments.md and states the path.",
+      "files": ["an empty project folder"],
+      "assertions": [
+        {"id": "broad-scan", "text": "The scan includes at least two groups the founder did not name"},
+        {"id": "ranking-table", "text": "A ranking table scores groups on pain intensity, willingness to pay and reachability, and each dropped group has a one-line reason"},
+        {"id": "shortlist-size", "text": "The shortlist has between 3 and 6 segments"},
+        {"id": "quotes-with-links", "text": "Segment profiles include quotes from public posts or forums with links"},
+        {"id": "where-to-reach", "text": "Each top segment names specific places to find them (communities, subreddits, newsletters, events or job titles) with links"},
+        {"id": "how-many", "text": "The output says how many people to talk to per top segment"},
+        {"id": "outreach-no-pitch", "text": "An outreach message is provided that asks about the problem or past behaviour and does not pitch the product"},
+        {"id": "ranking-changers", "text": "For the top segments, the output says what an interview would have to reveal to drop or promote the segment"},
+        {"id": "claims-labelled", "text": "Claims are labelled as sourced (with link) or hypothesis"},
+        {"id": "next-steps", "text": "Next steps point to interview-script to prepare and fk-icp to analyse transcripts"},
+        {"id": "no-sizing", "text": "The output contains no TAM, market size, market share, persona percentages or revenue estimates"},
+        {"id": "saved", "text": "The file is saved as docs/customer-research/segments.md and the path is stated"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "favourite-segment-ranks-low",
+      "prompt": "Shift workers struggle to plan healthy meals around rotating rotas. I'm pretty sure office workers who do the occasional late night are my best market, they're who I really want to build for. Maybe nurses too. Who should I start talking to?",
+      "expected_output": "Ranks segments honestly. Office workers with occasional late nights have a much weaker, less frequent version of the pain than rotating-shift workers (nurses, paramedics, warehouse night staff, care workers), so they rank low. The output says so plainly, explains why, and still lets the founder choose. Ends with who to talk to and an outreach message. No market sizing.",
+      "files": ["an empty project folder"],
+      "assertions": [
+        {"id": "favourite-ranked-honestly", "text": "Office workers with occasional late nights are not ranked first"},
+        {"id": "says-so", "text": "The output explicitly tells the founder that their favourite segment ranks lower than others and explains why"},
+        {"id": "founder-decides", "text": "The output leaves the final choice to the founder rather than refusing to consider their favourite"},
+        {"id": "ends-with-who", "text": "The output ends with who to talk to, where, and an outreach message"},
+        {"id": "no-sizing", "text": "The output contains no TAM, market size or revenue estimates"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "founder-profile-raises-reach",
+      "prompt": "Freelancers lose track of unpaid invoices. My guesses are freelance photographers, freelance designers and solo developers. Who should I talk to first?",
+      "expected_output": "Finds and reads docs/founder-coach/founder-profile.md, says it is using it, and raises the reachability of freelance photographers because the founder runs a photography meet-up group of about 60 people. Cites the profile line in the ranking. Uses the meet-up as the first place to find interviewees. Does not edit the founder profile. Saves segments.md.",
+      "files": ["a project folder containing docs/founder-coach/founder-profile.md for an invented founder, Priya, a former agency product designer who did her own freelance bookkeeping, whose 'Audiences and networks she can reach' line reads: 'A photography meet-up group she runs (about 60 people); former agency colleagues'"],
+      "assertions": [
+        {"id": "reads-profile", "text": "The output says it read or used the founder profile"},
+        {"id": "reach-raised", "text": "Freelance photographers get a higher reachability score, with the reason citing the meet-up group from the profile"},
+        {"id": "meetup-first", "text": "The who-to-talk-to section uses the photography meet-up as a place to find interviewees"},
+        {"id": "profile-unchanged", "text": "The founder profile file is not modified"},
+        {"id": "saved", "text": "segments.md is saved in docs/customer-research/ and the path is stated"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "existing-icp-points-to-fk-icp",
+      "prompt": "I've got this bookkeeping idea for freelance photographers. Which customer segment should I target?",
+      "expected_output": "Finds docs/customer-research/ideal-customer-profile.md built from six interviews with freelance photographers. Tells the founder they are past the point of desk research for this group: the evidence they need comes from more interviews, analysed with fk-icp. Marks freelance photographers as backed by interviews. May offer desk research only on groups the interviews have not covered. Never writes or edits the ICP file.",
+      "files": ["a project folder containing docs/customer-research/ideal-customer-profile.md (B2C, version 0.4, based on 6 interviews with freelance photographers, pain points about chasing late client payments and last-minute tax reconciliation, persona 'Invoice-Chasing Imogen', negative persona 'The Hobby Shooter') and an interviews/ folder with six dated subfolders"],
+      "assertions": [
+        {"id": "reads-icp", "text": "The output says it found and read the existing ICP"},
+        {"id": "recommends-fk-icp", "text": "The output tells the founder they are past desk research for freelance photographers and recommends more interviews analysed with fk-icp"},
+        {"id": "marks-backed", "text": "Freelance photographers are described as already backed by interviews"},
+        {"id": "icp-untouched", "text": "The ICP file is not modified and no other ideal-customer-profile file is created"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "declines-tam",
+      "prompt": "I'm building a tool to help freelance designers chase unpaid invoices. Can you work out the TAM and market size for each segment so I can pick the biggest one?",
+      "expected_output": "Declines to estimate TAM or market size, briefly explains why (it does not tell a bootstrapper who to talk to this week, and the numbers would be guesses), and offers the ranking by pain, willingness to pay and reachability instead, ending with who to talk to. No market size figures appear anywhere in the output.",
+      "files": ["an empty project folder"],
+      "assertions": [
+        {"id": "declines", "text": "The output declines to estimate TAM or market size"},
+        {"id": "explains-why", "text": "The output explains why market sizing is not useful at this stage"},
+        {"id": "offers-alternative", "text": "The output offers or produces a ranking by pain, willingness to pay and reachability instead"},
+        {"id": "no-figures", "text": "No market size, TAM, revenue or population-count figures appear in the output"}
+      ]
+    }
+  ]
+}
