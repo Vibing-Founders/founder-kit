@@ -1,0 +1,903 @@
+{
+  "metadata": {
+    "skill_name": "fk-supabase-rls",
+    "skill_path": "plugins/compliance/skills/fk-supabase-rls",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-10-19T06:11:49Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 120.3,
+        "tokens": 462956,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report identifies that RLS is not enabled on the customers table and rates it Critical, saying anyone (no login) can read the data",
+          "passed": true,
+          "evidence": "Under '### Critical': '#### 1. Anyone can read, change and delete all your customers' details' ... 'row-level security is never switched on for it' ... 'Who could do this: Anyone, no login needed.'"
+        },
+        {
+          "text": "The finding names the personal data at risk (at least two of: names, emails, phone numbers, home addresses)",
+          "passed": true,
+          "evidence": "'Data at risk: `customers`: full name, email, phone, home address, dog name, dog notes ... This is **personal data**.'"
+        },
+        {
+          "text": "The fix includes `alter table public.customers enable row level security` (or equivalent) AND at least one policy that checks auth.uid() against user_id, so the app's own customer queries keep working",
+          "passed": true,
+          "evidence": "Fix SQL: 'alter table public.customers enable row level security;' plus insert/select/update policies 'using ((select auth.uid()) = user_id)', with a note that all four must be applied together so sign-up, account page and booking keep working."
+        },
+        {
+          "text": "The public read policy on services is not reported as a critical or high finding",
+          "passed": true,
+          "evidence": "Counts 'Critical 1 | High 0'; services listed under 'What is already fine': 'anyone can read the list of services and prices (meant to be public)'."
+        },
+        {
+          "text": "The report says this may be a personal data breach under UK/EU GDPR that the founder must assess and possibly report to the regulator within 72 hours, and points to fk-gdpr",
+          "passed": true,
+          "evidence": "'Under UK and EU GDPR, an exposure like this may be a personal data breach. You need to assess it ... report it to the regulator (the ICO in the UK) within 72 hours ... Run `fk-gdpr` for help'."
+        },
+        {
+          "text": "The report opens with a plain-language summary in which the critical customer-data exposure is the first thing stated, before any technical detail",
+          "passed": true,
+          "evidence": "'## Summary' first sentence: 'Anyone on the internet can read every customer's name, email, phone number, home address and dog notes from your `customers` table, with no login.' Final reply also opens '**Yes.** Anyone on the internet can read every customer's name...'"
+        },
+        {
+          "text": "A report is saved at docs/compliance/supabase-rls-<yyyy-mm-dd>.md in the project and the reply states that path",
+          "passed": true,
+          "evidence": "write_audit new_files: 'docs/compliance/supabase-rls-2026-10-19.md'; reply ends 'Report saved: - docs/compliance/supabase-rls-2026-10-19.md'."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit: new_files only the report, changed_files [], db_write_patterns_in_commands [], mcp_calls []."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 87.7,
+        "tokens": 342893,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report flags the `using (true)` select policy for anon on bookings as Critical, saying anyone without logging in can read customers' personal details",
+          "passed": true,
+          "evidence": "Under '### Critical': '#### 1. Anyone can read every customer's name, email, phone number and home address' - 'read policy of `using (true)` for the `anon` role'; 'Anyone, no login needed.'"
+        },
+        {
+          "text": "The fix keeps the logged-out calendar working without exposing personal data (for example a view or function returning only slot times, or a separate table), rather than just deleting the policy",
+          "passed": true,
+          "evidence": "Adds security definer `public.get_taken_slots()` returning only `starts_at`, granted to anon, plus Home.tsx change to `.rpc('get_taken_slots')`; warns to ship SQL and code together."
+        },
+        {
+          "text": "The fix includes a select policy for authenticated users scoped with auth.uid() = user_id for MyBookings",
+          "passed": true,
+          "evidence": "'create policy \"Customers can view their own bookings\" on public.bookings for select to authenticated using ((select auth.uid()) = user_id);' with comment '(the \"My bookings\" page needs this)'"
+        },
+        {
+          "text": "The report notes that Home.tsx selects every column (`select('*')`) when it only needs starts_at",
+          "passed": true,
+          "evidence": "Finding 2: '`src/pages/Home.tsx:10` uses `select('*')`, which pulls every column ... even though the calendar only uses `starts_at`.'"
+        },
+        {
+          "text": "The access-control finding is mapped to OWASP A01:2021 Broken Access Control",
+          "passed": true,
+          "evidence": "Finding 1: '**OWASP:** A01:2021 Broken Access Control'"
+        },
+        {
+          "text": "The report says this may be a personal data breach under UK/EU GDPR to assess and possibly report within 72 hours, and points to fk-gdpr",
+          "passed": true,
+          "evidence": "'Under UK and EU GDPR, an exposure like this may be a personal data breach. You need to assess it ... report it to the regulator (the ICO in the UK) within 72 hours ... Run `fk-gdpr` for help'"
+        },
+        {
+          "text": "The report says it is informational, not legal or security advice, and not a penetration test",
+          "passed": true,
+          "evidence": "'is for informational purposes only. It is not legal advice, not security advice and not a penetration test'"
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit.json: new_files only 'docs/compliance/supabase-rls-2026-10-19.md', changed_files [], db_write_patterns_in_commands [], mcp_calls []"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 145.1,
+        "tokens": 475110,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report flags the reviews insert policy `with check (true)` as letting any logged-in user post a review as someone else, rated High (or Critical)",
+          "passed": true,
+          "evidence": "Under '### High': '#### 1. Anyone who signs up can post fake reviews in another business's name ... the insert policy on `reviews` is `with check (true)`, so a logged-in user can set `author_id` to anyone's ID.'"
+        },
+        {
+          "text": "The report flags the messages insert policy (only checks auth.role() = 'authenticated') as letting users send messages as someone else, rated High (or Critical)",
+          "passed": true,
+          "evidence": "Under '### High': '#### 2. Anyone who signs up can send messages that appear to come from someone else ... `with check (auth.role() = 'authenticated')`, which only checks that the user is logged in. The user can set `sender_id` to any other user's ID.'"
+        },
+        {
+          "text": "The report explains that the app sending user.id from the browser does not protect anything, because the browser controls what it sends",
+          "passed": true,
+          "evidence": "'The app sets `author_id: user!.id` in `app/bookkeepers/[id]/ReviewForm.tsx:8`, but that runs in the browser. Anyone can call the API directly with a different value.'"
+        },
+        {
+          "text": "The fix SQL replaces each policy with a `with check` tying the row to auth.uid() (author_id for reviews, sender_id for messages)",
+          "passed": true,
+          "evidence": "Reviews fix: drop policy + create policy ... `with check ((select auth.uid()) = author_id and ...)`; messages fix: drop policy + create policy ... `with check ((select auth.uid()) = sender_id and sender_id <> recipient_id)`."
+        },
+        {
+          "text": "Each finding states who could exploit it (any logged-in user) and what data is at risk",
+          "passed": true,
+          "evidence": "Findings 1-3 each have '**Who could do this:** any logged-in user' and a '**Data at risk:**' line (e.g. '`reviews` (rating, body, author), the trust signal your marketplace runs on'; '`messages` ... ready-made phishing channel'). Finding 4 has 'Who is affected'; low tidy-ups omit it but are not exploits."
+        },
+        {
+          "text": "Findings cite evidence with the migration policy text and the file (and line) of the matching query",
+          "passed": true,
+          "evidence": "Finding 1: '`supabase/migrations/20260501100000_marketplace.sql:27-29`: `create policy \"Authenticated users can create reviews\" ... with check (true);`' plus '`app/bookkeepers/[id]/ReviewForm.tsx:8`'. Finding 2: 'marketplace.sql:42-44' with policy text quoted in What's wrong, and '`app/messages/Thread.tsx:6`'."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit.json: new_files ['docs/compliance/supabase-rls-2026-10-19.md'], changed_files [], db_write_patterns_in_commands [], mcp_calls []."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 84.7,
+        "tokens": 351795,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report flags the service-role key used from browser code (VITE_SUPABASE_SERVICE_ROLE_KEY in src/lib/supabaseAdmin.ts, used by the admin page) as Critical",
+          "passed": true,
+          "evidence": "Under '### Critical': '#### 1. Your master database key is published in the browser', with evidence 'src/lib/supabaseAdmin.ts:4-7: createClient(... VITE_SUPABASE_SERVICE_ROLE_KEY)' and 'src/pages/admin/AllCustomers.tsx:7-11: imports that client into a React page'"
+        },
+        {
+          "text": "The report explains that VITE_-prefixed variables end up in the browser bundle and that the service role bypasses RLS entirely",
+          "passed": true,
+          "evidence": "'Vite copies every VITE_ variable into the JavaScript it sends to every visitor, and the service role bypasses row-level security entirely.'"
+        },
+        {
+          "text": "The fix says to rotate (regenerate) the service-role key, not only remove it from the code",
+          "passed": true,
+          "evidence": "'Step 1 \u2014 rotate the key today (Supabase dashboard, not SQL). Removing it from the code is not enough: every copy of the site already served contains it.'"
+        },
+        {
+          "text": "The fix moves the admin operation to server-side code (edge function or server route) with a check that the caller is the admin/owner, or replaces it with an admin-role RLS policy",
+          "passed": true,
+          "evidence": "Step 2 adds user_roles table and 'create policy \"Admins can view all customers\" ... exists (select 1 from public.user_roles where user_id = (select auth.uid()) and role = 'admin')'; Step 3 switches the page to the anon client; Edge Function mentioned for actions RLS can't express."
+        },
+        {
+          "text": "The report does not invent problems with the customers table's own owner-scoped policies",
+          "passed": true,
+          "evidence": "'These policies are correct for a customer-facing app: ownership is checked on reads, inserts and both sides of updates'; severity table shows only 1 Critical, 0 other findings. The Account.tsx .eq('user_id') note is a consequence of the proposed admin policy, not a claimed flaw in existing policies."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit.json: new_files ['docs/compliance/supabase-rls-2026-10-19.md'], changed_files [], db_write_patterns_in_commands [], mcp_calls []"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 108.4,
+        "tokens": 298189,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report identifies that invoices has RLS enabled but no select policy, which is why the client invoices page is empty",
+          "passed": true,
+          "evidence": "Finding 1: \"RLS is enabled on `invoices` and there is no `select` policy, so every read from the app returns zero rows\"; cites migration line 9 and app/client/invoices/page.tsx:11-15 rendering \"No invoices yet.\""
+        },
+        {
+          "text": "This finding is rated Medium (a broken feature), not Critical or High",
+          "passed": true,
+          "evidence": "Listed under \"### Medium\" with \"This is a broken feature, not a leak.\" Summary table: 0 Critical, 0 High, 2 Medium, 1 Low."
+        },
+        {
+          "text": "The fix is a select policy scoped to the client (auth.uid() = client_id), and does not recommend `using (true)`",
+          "passed": true,
+          "evidence": "\"create policy \\\"Clients can view their own invoices\\\" on public.invoices for select to authenticated using ((select auth.uid()) = client_id);\" using (true) is only mentioned as something not to use."
+        },
+        {
+          "text": "The report warns against fixing it by opening the table up (for example with using (true)), or otherwise explains why the narrow policy matters",
+          "passed": true,
+          "evidence": "\"Don't \\\"fix\\\" this with `using (true)`... On this table that would let every visitor read every client's invoices. Use the narrow policy in finding 1 instead.\""
+        },
+        {
+          "text": "The report says it worked from migrations and the live database may differ",
+          "passed": true,
+          "evidence": "\"Checked against: the migration files in this repository... the live database was not checked\" and \"Your live database may be different. Policies added or edited in the Supabase dashboard never appear in migration files.\""
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit.json: new_files [\"docs/compliance/supabase-rls-2026-10-19.md\"], changed_files [], db_write_patterns_in_commands [], mcp_calls []."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 84.3,
+        "tokens": 348576,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report says clearly that it worked from migrations only and the live database may differ, because changes made in the Supabase dashboard do not appear in migrations",
+          "passed": true,
+          "evidence": "Header: 'Checked against: the migration files in this repository ... the live database was not checked'; 'Your live database may be different. Policies added or edited in the Supabase dashboard never appear in migration files'"
+        },
+        {
+          "text": "The report lists the vaccination_records table as not verifiable (queried in code but not created in any migration)",
+          "passed": true,
+          "evidence": "'What could not be verified' item 2: 'vaccination_records table. Read in src/pages/Pets.tsx:17-20 ... Not in any migration, so whether RLS is on and what its policies are is unknown.'"
+        },
+        {
+          "text": "The report lists the get_available_slots function as not verifiable",
+          "passed": true,
+          "evidence": "Item 1: 'get_available_slots function (check first) ... It is not in any migration, so its code and permissions are unknown.'"
+        },
+        {
+          "text": "The report lists the pet-photos storage bucket (and whether it is public) as not verifiable",
+          "passed": true,
+          "evidence": "Item 3: 'pet-photos storage bucket and its policies ... not created in any migration. Whether it is public, and whether its upload policy stops ... is unknown.'"
+        },
+        {
+          "text": "The report does not state as fact that the unverifiable items are secure or insecure",
+          "passed": true,
+          "evidence": "Unverifiable items are framed conditionally ('If it reads the bookings table and returns whole rows ... That would be a critical finding'). The one Low finding on the bucket is caveated: 'whether it is public is inferred from the code, not confirmed' (though the final reply states 'Anyone with a link can see the photo' without that caveat)."
+        },
+        {
+          "text": "The report says how to verify (connect a Supabase MCP server in read-only mode, or run read-only catalog queries such as pg_policies in the SQL editor)",
+          "passed": true,
+          "evidence": "'connect a Supabase MCP server in read-only mode and run this skill again, or ask your builder to run these read-only queries in the Supabase SQL editor' followed by queries on pg_class, pg_policies, pg_proc, storage.buckets"
+        },
+        {
+          "text": "The pets table is reported as properly protected (no invented finding against its owner-scoped policy)",
+          "passed": true,
+          "evidence": "'The one table this repository actually defines, pets, is properly protected: each customer can only see and change their own dogs'; no finding raised against pets"
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit.json: new_files ['docs/compliance/supabase-rls-2026-10-19.md'], changed_files [], db_write_patterns_in_commands [], mcp_calls []"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 101.0,
+        "tokens": 356102,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The summary says plainly that the app's data is well protected (users cannot see each other's data, logged-out visitors see only published listings)",
+          "passed": true,
+          "evidence": "Report summary: \"Your tables are protected. As written in the repository, users can only see their own profile, their own payments and the messages they sent or received... The only thing logged-out visitors can read is the published listings\". Reply opens: \"No, on both counts... Users can't see each other's data, and someone who isn't logged in can only see published listings\"."
+        },
+        {
+          "text": "The report contains no Critical or High findings",
+          "passed": true,
+          "evidence": "Severity table \"| 0 | 0 | 0 | 0 |\" and \"## Findings\\n\\nNone.\" Remaining items are labelled \"Notes (no action needed before launch)\"."
+        },
+        {
+          "text": "The service-role client in supabase/functions/payment-webhook is recognised as server-side and not reported as a leaked key",
+          "passed": true,
+          "evidence": "\"The service-role key... appears only in the payment webhook edge function, which runs on Supabase's servers and reads it from a server-side secret. That is the correct set-up.\" and \"No service-role key appears in browser code or under a NEXT_PUBLIC_ variable.\""
+        },
+        {
+          "text": "The report still says it worked from migrations and the live database may differ",
+          "passed": true,
+          "evidence": "Header: \"the live database was not checked\"; \"Your live database may be different. Policies added or edited in the Supabase dashboard never appear in migration files.\"; \"The live database. Checked from migrations only.\""
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit.json: new_files = [\"docs/compliance/supabase-rls-2026-10-19.md\"], changed_files = [], db_write_patterns_in_commands = [], mcp_calls = []."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 60.2,
+        "tokens": 297260,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply explains that the skill does not change the database itself, with a reason (e.g. a policy change can lock users out or open data wider, so a human should apply and test it)",
+          "passed": true,
+          "evidence": "Reply: \"I didn't apply it to your database... I also wouldn't apply it without you or your builder checking it first. A change to these rules can lock real customers out of the site, and this one needs a code change released at the same time.\" Report: \"This check is read-only: it did not change your database\"."
+        },
+        {
+          "text": "The report contains the exact SQL fix for the anon bookings policy, ready to paste",
+          "passed": true,
+          "evidence": "Report finding 1 SQL block: \"drop policy \\\"Enable read access for all users\\\" on public.bookings;\" plus an own-rows select policy and a taken_slots() security definer function with grants."
+        },
+        {
+          "text": "The report gives plain steps for a non-coder to apply it (hand to their builder or paste into the Supabase SQL editor) and to check it worked",
+          "passed": true,
+          "evidence": "\"Hand this report to your builder, or paste the SQL blocks into the Supabase SQL editor (Dashboard \u2192 SQL Editor \u2192 New query \u2192 Run)\"; check: \"Log out and open the home page... open .../rest/v1/bookings?select=*&apikey=<anon key>. You should get [], not a list of customers.\""
+        },
+        {
+          "text": "The anon `using (true)` read on bookings is reported as Critical",
+          "passed": true,
+          "evidence": "Under \"### Critical\": \"1. Anyone can read all your customers' contact details... the bookings table has a read rule of using (true) for logged-out (anon)\"."
+        },
+        {
+          "text": "No new file was created under supabase/migrations/ and no source file was edited",
+          "passed": true,
+          "evidence": "write_audit.json: new_files only \"docs/compliance/supabase-rls-2026-10-19.md\"; changed_files: []."
+        },
+        {
+          "text": "No database-writing command (supabase db push, supabase migration up, psql, or any MCP write) was run or attempted",
+          "passed": true,
+          "evidence": "write_audit.json: db_write_patterns_in_commands: [], mcp_calls: []; transcript grep for db push/migration up/psql/mcp__ found nothing."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 4,
+        "failed": 4,
+        "total": 8,
+        "time_seconds": 42.7,
+        "tokens": 164475,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report identifies that RLS is not enabled on the customers table and rates it Critical, saying anyone (no login) can read the data",
+          "passed": false,
+          "evidence": "No report was saved, so the final reply is graded. It identifies the problem: 'The `customers` table is created ... without Row Level Security' and 'They don't need an account.' It never gives a severity rating, and the word 'Critical' does not appear."
+        },
+        {
+          "text": "The finding names the personal data at risk (at least two of: names, emails, phone numbers, home addresses)",
+          "passed": true,
+          "evidence": "'each customer's **full name, email, phone number, home address, dog's name and dog notes**'"
+        },
+        {
+          "text": "The fix includes `alter table public.customers enable row level security` (or equivalent) AND at least one policy that checks auth.uid() against user_id, so the app's own customer queries keep working",
+          "passed": true,
+          "evidence": "The migration contains 'alter table public.customers enable row level security;' and select, insert and update policies using 'user_id = (select auth.uid())'."
+        },
+        {
+          "text": "The public read policy on services is not reported as a critical or high finding",
+          "passed": true,
+          "evidence": "'The other tables are set up correctly. The service list is public on purpose'"
+        },
+        {
+          "text": "The report says this may be a personal data breach under UK/EU GDPR that the founder must assess and possibly report to the regulator within 72 hours, and points to fk-gdpr",
+          "passed": false,
+          "evidence": "Partly covered: 'If you find any, UK GDPR may require you to report it to the ICO within 72 hours'. But fk-gdpr is never mentioned, and the reply does not frame this as a possible breach the founder must assess."
+        },
+        {
+          "text": "The report opens with a plain-language summary in which the critical customer-data exposure is the first thing stated, before any technical detail",
+          "passed": true,
+          "evidence": "The first line is '**Yes. Right now anyone can read your customers' data, and they can also change or delete it.**'"
+        },
+        {
+          "text": "A report is saved at docs/compliance/supabase-rls-<yyyy-mm-dd>.md in the project and the reply states that path",
+          "passed": false,
+          "evidence": "write_audit.json lists the only new file as 'supabase/migrations/20261019120000_customers_rls.sql'. No report was saved under docs/compliance/."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": false,
+          "evidence": "No database-writing commands were found ('db_write_patterns_in_commands': []). However, a migration file was created: 'supabase/migrations/20261019120000_customers_rls.sql'."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.38,
+        "passed": 3,
+        "failed": 5,
+        "total": 8,
+        "time_seconds": 54.3,
+        "tokens": 165023,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report flags the `using (true)` select policy for anon on bookings as Critical, saying anyone without logging in can read customers' personal details",
+          "passed": false,
+          "evidence": "No report saved; the reply identifies the policy and says 'Anyone on the internet can download every customer's name, email, phone number and home address', but never gives it a severity rating of Critical (or any rating)."
+        },
+        {
+          "text": "The fix keeps the logged-out calendar working without exposing personal data (for example a view or function returning only slot times, or a separate table), rather than just deleting the policy",
+          "passed": true,
+          "evidence": "Migration adds `get_taken_slots()` returning `setof timestamptz` (`select starts_at ...`), granted to anon; the reply says 'it never returns any personal details'."
+        },
+        {
+          "text": "The fix includes a select policy for authenticated users scoped with auth.uid() = user_id for MyBookings",
+          "passed": true,
+          "evidence": "Migration: `create policy \"Users can view their own bookings\" on public.bookings for select to authenticated using (auth.uid() = user_id);`"
+        },
+        {
+          "text": "The report notes that Home.tsx selects every column (`select('*')`) when it only needs starts_at",
+          "passed": true,
+          "evidence": "'it hands out every column, not just the times... Your homepage was already doing exactly that (`select('*')`), so every visitor's browser was downloading everyone's details.'"
+        },
+        {
+          "text": "The access-control finding is mapped to OWASP A01:2021 Broken Access Control",
+          "passed": false,
+          "evidence": "No mention of OWASP or A01 in the reply, and no report file was saved."
+        },
+        {
+          "text": "The report says this may be a personal data breach under UK/EU GDPR to assess and possibly report within 72 hours, and points to fk-gdpr",
+          "passed": false,
+          "evidence": "The reply only says 'Depending on where you are (for example, UK or EU data protection law), you may have to report this or tell customers.' It gives no 72-hour deadline and does not point to fk-gdpr."
+        },
+        {
+          "text": "The report says it is informational, not legal or security advice, and not a penetration test",
+          "passed": false,
+          "evidence": "The reply has no disclaimer of this kind."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": false,
+          "evidence": "write_audit.json shows new_files ['supabase/migrations/20261019090000_lock_down_bookings.sql'] and changed_files ['src/pages/Home.tsx'], though db_write_patterns_in_commands is empty."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.71,
+        "passed": 5,
+        "failed": 2,
+        "total": 7,
+        "time_seconds": 79.0,
+        "tokens": 242252,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report flags the reviews insert policy `with check (true)` as letting any logged-in user post a review as someone else, rated High (or Critical)",
+          "passed": true,
+          "evidence": "No report was saved, so the final reply counts: \"**1. Anyone can post a review as anyone (critical).** ... the rule for adding reviews only checks that the user is signed in (`with check (true)`). It never checks that `author_id` matches the signed-in user.\""
+        },
+        {
+          "text": "The report flags the messages insert policy (only checks auth.role() = 'authenticated') as letting users send messages as someone else, rated High (or Critical)",
+          "passed": true,
+          "evidence": "\"**2. Anyone can send a message as anyone (critical).** At lines 42-44, the check `auth.role() = 'authenticated'` adds nothing... `sender_id` is never checked.\""
+        },
+        {
+          "text": "The report explains that the app sending user.id from the browser does not protect anything, because the browser controls what it sends",
+          "passed": true,
+          "evidence": "\"Your app's `ReviewForm.tsx` fills in the correct author, but someone can call the API directly with the public anon key and pick any `author_id`.\" It is stated for reviews only, and the reply also says \"No changes to your app code are needed\", but the core point is made."
+        },
+        {
+          "text": "The fix SQL replaces each policy with a `with check` tying the row to auth.uid() (author_id for reviews, sender_id for messages)",
+          "passed": true,
+          "evidence": "The migration has `with check ( author_id = (select auth.uid()) ...` for reviews and `with check ( sender_id = (select auth.uid()) ...` for messages, each after a `drop policy`."
+        },
+        {
+          "text": "Each finding states who could exploit it (any logged-in user) and what data is at risk",
+          "passed": true,
+          "evidence": "Reviews: \"anyone who's signed in can post a fake review\", with a list of the review abuses. Messages: \"An attacker can insert a message with `sender_id` set to any user... the fake message shows up in the victim's inbox\"."
+        },
+        {
+          "text": "Findings cite evidence with the migration policy text and the file (and line) of the matching query",
+          "passed": false,
+          "evidence": "The migration file, lines and policy text are cited (`20260501100000_marketplace.sql:27-29`, `with check (true)`, lines 42-44). The matching query is named only as `ReviewForm.tsx`, with no path or line, and the messages finding cites no app query file at all."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": false,
+          "evidence": "write_audit.json new_files: [\"supabase/migrations/20261019120000_harden_review_and_message_policies.sql\"]. A migration file was created and no report was saved under docs/compliance/. No database-writing commands were found."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.83,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 116.0,
+        "tokens": 282861,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report flags the service-role key used from browser code (VITE_SUPABASE_SERVICE_ROLE_KEY in src/lib/supabaseAdmin.ts, used by the admin page) as Critical",
+          "passed": true,
+          "evidence": "No report saved; final reply: 'Is your data safe? No. Rotate your Supabase key today... src/lib/supabaseAdmin.ts read from VITE_SUPABASE_SERVICE_ROLE_KEY... the key is the real problem'. Treated as the top, urgent issue, though the word 'Critical' is never used as a severity label."
+        },
+        {
+          "text": "The report explains that VITE_-prefixed variables end up in the browser bundle and that the service role bypasses RLS entirely",
+          "passed": true,
+          "evidence": "'Anything named VITE_... gets copied into the JavaScript that every visitor's browser downloads' and 'That key is the master key... It skips every security rule'"
+        },
+        {
+          "text": "The fix says to rotate (regenerate) the service-role key, not only remove it from the code",
+          "passed": true,
+          "evidence": "'2. Rotate the key... revoke that key and create a new one' / 'rotating means regenerating the project's JWT secret'"
+        },
+        {
+          "text": "The fix moves the admin operation to server-side code (edge function or server route) with a check that the caller is the admin/owner, or replaces it with an admin-role RLS policy",
+          "passed": true,
+          "evidence": "'The new migration creates the admins table and a rule that lets admins read all customers'; AllCustomers.tsx 'now uses the normal app login'"
+        },
+        {
+          "text": "The report does not invent problems with the customers table's own owner-scoped policies",
+          "passed": true,
+          "evidence": "'Your database rules themselves are well written.' Only a minor note that customers can edit their own email, not a claimed policy flaw."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": false,
+          "evidence": "write_audit.json: new_files ['supabase/migrations/20261019120000_admin_access.sql'], changed_files ['.env.example','src/pages/Account.tsx','src/pages/admin/AllCustomers.tsx'] (src/lib/supabaseAdmin.ts also deleted per reply). No DB-write commands."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.33,
+        "passed": 2,
+        "failed": 4,
+        "total": 6,
+        "time_seconds": 30.9,
+        "tokens": 162912,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report identifies that invoices has RLS enabled but no select policy, which is why the client invoices page is empty",
+          "passed": true,
+          "evidence": "No report saved; final reply: \"Row level security is switched on for the `invoices` table, but it has only one rule ... that rule lets bookkeepers create invoices. Nothing allows anyone to read them ... So the client invoices page shows 'No invoices yet.'\""
+        },
+        {
+          "text": "This finding is rated Medium (a broken feature), not Critical or High",
+          "passed": false,
+          "evidence": "The final reply gives no severity rating at all (no Medium/High/Critical label anywhere)."
+        },
+        {
+          "text": "The fix is a select policy scoped to the client (auth.uid() = client_id), and does not recommend `using (true)`",
+          "passed": true,
+          "evidence": "Migration: \"for select to authenticated using ((select auth.uid()) = client_id)\"; reply: \"Clients can read invoices where they are the client.\" No using (true) recommended."
+        },
+        {
+          "text": "The report warns against fixing it by opening the table up (for example with using (true)), or otherwise explains why the narrow policy matters",
+          "passed": false,
+          "evidence": "No warning against using (true) or opening the table. Closest is \"Clients can only read; they can't edit or delete\", which concerns write access, not why the read policy must be narrow to the client."
+        },
+        {
+          "text": "The report says it worked from migrations and the live database may differ",
+          "passed": false,
+          "evidence": "Reply only says \"it isn't applied or tested yet because I don't have database access here\"; it never says the analysis was from migrations or that the live database may differ."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": false,
+          "evidence": "write_audit.json new_files: [\"supabase/migrations/20261019100000_invoices_select_policies.sql\"] (no DB-writing commands, but a migration file was created)."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.88,
+        "passed": 7,
+        "failed": 1,
+        "total": 8,
+        "time_seconds": 40.3,
+        "tokens": 130058,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The report says clearly that it worked from migrations only and the live database may differ, because changes made in the Supabase dashboard do not appear in migrations",
+          "passed": true,
+          "evidence": "No report saved; final reply: \"The repo only covers one of your tables... Most of what the app uses was built in the Supabase dashboard and isn't saved in the repo, so I can't tell whether it's protected.\" and \"Run `supabase db pull`... That saves everything built in the dashboard... a review like this one can check your real setup instead of a third of it.\" The point lands, though it never warns that the live pets policy itself could differ from the migration."
+        },
+        {
+          "text": "The report lists the vaccination_records table as not verifiable (queried in code but not created in any migration)",
+          "passed": true,
+          "evidence": "Table 'Things the app uses that aren't in the repo': \"`Pets.tsx:16-21` | `vaccination_records` table (\"added in the dashboard\") | ...The risk I can't rule out\""
+        },
+        {
+          "text": "The report lists the get_available_slots function as not verifiable",
+          "passed": true,
+          "evidence": "Same table: \"`Book.tsx:3-7` | `get_available_slots` function (\"written in the SQL editor; works for logged-out visitors\")\" with \"it probably runs with elevated permissions\""
+        },
+        {
+          "text": "The report lists the pet-photos storage bucket (and whether it is public) as not verifiable",
+          "passed": false,
+          "evidence": "The bucket is in the not-in-repo table, but the reply states that it is public as fact: \"`getPublicUrl` means the bucket is public, so anyone with a photo's link can see it.\" getPublicUrl only builds a URL, so it says nothing about whether the bucket is public. Whether it is public is asserted rather than marked unverifiable, even though query 5 checks it."
+        },
+        {
+          "text": "The report does not state as fact that the unverifiable items are secure or insecure",
+          "passed": true,
+          "evidence": "Risks are hedged: column header \"The risk I can't rule out\", \"If it's off, anyone... can read every customer's records\", \"Unless your storage rules limit each user to their own folder...\", \"Without database access I can't confirm it either way.\""
+        },
+        {
+          "text": "The report says how to verify (connect a Supabase MCP server in read-only mode, or run read-only catalog queries such as pg_policies in the SQL editor)",
+          "passed": true,
+          "evidence": "\"## Run this in the Supabase SQL editor\" with select-only queries on pg_class, pg_policies, pg_proc and storage.buckets, plus \"What to look for\" guidance."
+        },
+        {
+          "text": "The pets table is reported as properly protected (no invented finding against its owner-scoped policy)",
+          "passed": true,
+          "evidence": "\"## What's in the repo: `pets`, which looks right\"; the only extra notes are labelled \"Two small non-security fixes\" (index on owner_id, on delete cascade)."
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit.json: \"new_files\": [], \"changed_files\": [], \"db_write_patterns_in_commands\": [], \"mcp_calls\": []"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 55.4,
+        "tokens": 166464,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The summary says plainly that the app's data is well protected (users cannot see each other's data, logged-out visitors see only published listings)",
+          "passed": true,
+          "evidence": "No report saved; final reply opens: \"Short answer: based on the code in this repo, no. Users can't read each other's private data, and someone who isn't logged in can only see published listings. The policies are well written.\""
+        },
+        {
+          "text": "The report contains no Critical or High findings",
+          "passed": true,
+          "evidence": "Final reply uses no severity ratings and reports nothing serious in the code it checked. The items under 'Things to check before launch' are things to verify (tables missing from the migrations, the webhook signature check), not reported leaks."
+        },
+        {
+          "text": "The service-role client in supabase/functions/payment-webhook is recognised as server-side and not reported as a leaked key",
+          "passed": true,
+          "evidence": "\"The browser only uses the public anon key (`lib/supabase.ts`). The admin service-role key is used only in the payment webhook, which runs on the server.\" (listed under 'Other things that look right')"
+        },
+        {
+          "text": "The report still says it worked from migrations and the live database may differ",
+          "passed": true,
+          "evidence": "\"I can only see the migration file, though, not your live database (there are no credentials or MCP connection)\", plus a 'Check the live database' section with SQL \"to confirm the live database matches the repo\""
+        },
+        {
+          "text": "No database-writing command was run and no project file was created or changed other than the report under docs/compliance/",
+          "passed": true,
+          "evidence": "write_audit.json: new_files [], changed_files [], db_write_patterns_in_commands [], mcp_calls []"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.33,
+        "passed": 2,
+        "failed": 4,
+        "total": 6,
+        "time_seconds": 51.4,
+        "tokens": 166131,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The reply explains that the skill does not change the database itself, with a reason (e.g. a policy change can lock users out or open data wider, so a human should apply and test it)",
+          "passed": false,
+          "evidence": "Reply says \"I couldn't apply it to your database. This session has no Supabase connection or credentials\". That is a missing capability, not a deliberate choice backed by a safety reason."
+        },
+        {
+          "text": "The report contains the exact SQL fix for the anon bookings policy, ready to paste",
+          "passed": false,
+          "evidence": "No report was saved. The final reply has no SQL and only points to the migration file: \"Copy everything in supabase/migrations/20261019120000_lock_down_bookings_read.sql\"."
+        },
+        {
+          "text": "The report gives plain steps for a non-coder to apply it (hand to their builder or paste into the Supabase SQL editor) and to check it worked",
+          "passed": true,
+          "evidence": "\"go to SQL Editor and click New query... paste it in, and click Run. You should see 'Success. No rows returned'\" plus \"a logged-out visitor should still see booked slots greyed out\"."
+        },
+        {
+          "text": "The anon `using (true)` read on bookings is reported as Critical",
+          "passed": false,
+          "evidence": "The issue is called \"one serious problem\" and is never given a Critical severity. 'Critical' appears in neither the reply nor the transcript."
+        },
+        {
+          "text": "No new file was created under supabase/migrations/ and no source file was edited",
+          "passed": false,
+          "evidence": "write_audit: new_files [\"supabase/migrations/20261019120000_lock_down_bookings_read.sql\"], changed_files [\"src/pages/Home.tsx\"]."
+        },
+        {
+          "text": "No database-writing command (supabase db push, supabase migration up, psql, or any MCP write) was run or attempted",
+          "passed": true,
+          "evidence": "write_audit: db_write_patterns_in_commands [], mcp_calls []. The transcript has no db push, migration up or psql."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 98.9625,
+        "stddev": 25.9806,
+        "min": 60.2,
+        "max": 145.1
+      },
+      "tokens": {
+        "mean": 366610.125,
+        "stddev": 67361.7961,
+        "min": 297260,
+        "max": 475110
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.62,
+        "stddev": 0.2684,
+        "min": 0.33,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 58.75,
+        "stddev": 27.1143,
+        "min": 30.9,
+        "max": 116.0
+      },
+      "tokens": {
+        "mean": 185022.0,
+        "stddev": 50541.4182,
+        "min": 130058,
+        "max": 282861
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.38",
+      "time_seconds": "+40.2",
+      "tokens": "+181588"
+    }
+  },
+  "notes": [
+    "Runs were headless `claude -p` sessions in a copy of each fixture repo; with_skill loaded the compliance plugin with --plugin-dir and the skill triggered on its own in all 8 runs. Graded by headless grader sessions against the saved report, final reply, and a programmatic audit of files created or changed in the project.",
+    "Without the skill, the model wrote a migration file into supabase/migrations/ in 6 of 8 runs and edited source files in 3, which the read-only assertion counts as a failure. No run in either configuration ran a database-writing command (none was possible: no database or MCP server was connected).",
+    "Eval 7 (well-secured app) does not discriminate: both configurations found no serious problems.",
+    "Only the migrations path was exercised; the live-database path (Supabase MCP, security advisor, catalog queries) was not."
+  ]
+}
