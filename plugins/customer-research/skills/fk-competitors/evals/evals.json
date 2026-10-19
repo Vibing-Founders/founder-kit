@@ -1,6 +1,6 @@
 {
   "skill_name": "fk-competitors",
-  "note": "All businesses and ideas are invented. Prompts need web search; `files` describes any fixture the project folder must contain. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "note": "All businesses and ideas are invented. Prompts need web search; `files` describes any fixture the project folder must contain.",
   "evals": [
     {
       "id": 1,
@@ -42,7 +42,7 @@
         {"id": "pricing-dated", "text": "Pricing is given with the date it was checked or flagged as possibly stale"},
         {"id": "every-claim-cited", "text": "Every competitor claim has a source link, and there is a sources section"},
         {"id": "no-market-sizing", "text": "The output contains no market-size, revenue, valuation or funding speculation"},
-        {"id": "decisions-not-strategy", "text": "The output ends by naming decisions for the founder and research gaps, rather than referring them to another tool or agent"},
+        {"id": "decisions-not-strategy", "text": "The output ends by naming decisions for the founder and research gaps itself, rather than choosing the strategy or handing those decisions to another tool or agent (pointing to fk-icp for the follow-up customer conversations is fine)"},
         {"id": "default-location", "text": "The report is saved to docs/customer-research/competitors/ and the path is stated"}
       ]
     }
