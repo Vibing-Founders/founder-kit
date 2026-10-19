@@ -1,13 +1,14 @@
 {
   "skill_name": "fk-coach",
-  "note": "All founders, businesses and conversations are invented. Where a prompt depends on existing coaching files, `files` describes the fixture the project folder must contain.",
+  "note": "All founders, businesses and conversations are invented. Where a prompt depends on existing coaching files, `files` points to the fixture under `evals/files/` that the project folder starts from (an empty list means an empty folder), and `files_description` says what it holds.",
   "evals": [
     {
       "id": 1,
       "name": "first-conversation-no-files",
       "prompt": "Coach me. I'm a former product designer, I work three days a week at an agency, and I've got an idea for a bookkeeping tool for freelance photographers. Not sure where to start.",
       "expected_output": "Finds no coaching files, works out the coaching folder (docs/founder-coach/ by default), and starts from the founder rather than the idea. Reflects back what it heard, then asks exactly one question (for example about hours, runway, who she can reach, or what she wants the business to be) rather than a list. Places her at stage 1 (problem not yet validated, no profile). Creates founder-profile.md with what is known (designer background, three days a week at an agency, designer founder type with its time sinks) and unknowns marked as not asked yet, and journey.md at stage 1 with exit criteria marked not yet. Shows the founder what was written and lists both file paths. Does not run any other skill.",
-      "files": ["an empty project folder with no docs/founder-coach/ and no .vf-founder-kit/config.yaml"],
+      "files": [],
+      "files_description": ["an empty project folder with no docs/founder-coach/ and no .vf-founder-kit/config.yaml"],
       "assertions": [
         {"id": "one-question", "text": "The response asks exactly one question of the founder, not a list of questions"},
         {"id": "reflects-back", "text": "The response reflects back what the founder said (designer, part-time, photographers' bookkeeping) before asking"},
@@ -22,7 +23,8 @@
       "name": "stage-2-prompted-evidence",
       "prompt": "Where am I? I've done six interviews now and everyone said they'd use it. Can I start building?",
       "expected_output": "Reads both files. Keeps the founders at stage 2: the interviews exist but the journey evidence shows the pain was only described when asked and 'would use it' answers are opinions, not evidence of pain or willingness to pay. Shows the stage 2 scorecard with each criterion not yet met and the evidence. Says kindly that building now skips the offer test. Agrees up to three dated next actions aimed at unprompted pain and willingness-to-pay evidence. Recommends fk-icp to analyse the transcripts (with /plugin install customer-research@founder-kit) and interview-script from pm-skills to prepare better interviews, warning to drop its hypothetical questions. Updates journey.md and lists it.",
-      "files": [
+      "files": ["evals/files/stage-2-prompted-evidence/"],
+      "files_description": [
         "docs/founder-coach/founder-profile.md for two nurses, Aisha and Tom, building a meal-planning app for shift workers, both domain experts",
         "docs/founder-coach/journey.md at stage 2 (validate the problem), with six interviews logged as evidence and a note that the pain came up only when the interviewer asked about it; both stage 2 criteria not yet met"
       ],
@@ -41,7 +43,8 @@
       "name": "sanity-check-designer-logo",
       "prompt": "Should I redo my logo? A couple of people I interviewed said it looks a bit amateur.",
       "expected_output": "Reads the profile (designer founder type, with rebranding after feedback listed as a time sink) and journey (stage 2, problem not yet validated). Says plainly and kindly that a new logo does not move any stage 2 exit criterion, and names it as a designer time sink (rebranding after feedback). Notes the logo comments are not evidence about the problem. Offers the smallest move that would help instead, such as more interviews focused on the last time the pain happened. Leaves the decision to the founder and logs it if one is made. Does not start designing a logo.",
-      "files": [
+      "files": ["evals/files/sanity-check-designer-logo/"],
+      "files_description": [
         "docs/founder-coach/founder-profile.md for Priya, a former product designer building a bookkeeping tool for freelance photographers, founder type designer, time sinks including rebranding after feedback",
         "docs/founder-coach/journey.md at stage 2 with three interviews and no unprompted pain evidence yet"
       ],
@@ -58,7 +61,8 @@
       "name": "check-in-offer-test-failed",
       "prompt": "Check-in: the pre-order page for the meal-planning app was live for three weeks. 240 visitors, 31 joined the waitlist, nobody paid the £5 pre-order.",
       "expected_output": "Reads both files. Walks the loop (learn, bet, test, sell/measure, decide) and holds the result against the bet's kill criteria (at least five pre-orders by the review date), which were not met. Points out that waitlist sign-ups are not demand. Helps the founders decide; if they agree, moves the stage back from 3 to 2, framed as normal. Records a decision log entry (date, decision, why, stage change 3 → 2), updates the criteria, and agrees up to three dated next actions, such as interviews with the waitlist sign-ups about the last time planning meals on shift went wrong. Lists the files changed.",
-      "files": [
+      "files": ["evals/files/check-in-offer-test-failed/"],
+      "files_description": [
         "docs/founder-coach/founder-profile.md for two nurses, Aisha and Tom, building a meal-planning app for shift workers",
         "docs/founder-coach/journey.md at stage 3 (validate the offer), current bet: a pre-order page at £5, kill criteria 'fewer than five pre-orders by the review date means go back and re-check the problem', review date today"
       ],
@@ -76,7 +80,8 @@
       "name": "two-founder-profile-update",
       "prompt": "Update my profile: my friend Tom is joining as co-founder. He's a nurse too, but he's the one who can build things, he's made a few apps with no-code tools. He can do about ten hours a week.",
       "expected_output": "Reads the existing single-founder profile for Aisha. Adds a separate section for Tom with what was said (nurse, builds no-code apps, about ten hours a week) and unknowns marked as not asked yet, asking one follow-up question at a time for the rest. Suggests a founder type for Tom only from evidence (some engineer/hacker traits) or asks, and records the time sinks to watch. Updates the team section (who does what, combined hours). Shows before and after, says how the change affects the plan (for example, building capacity for stage 4, and the risk of building before the offer is tested), and lists the files changed.",
-      "files": [
+      "files": ["evals/files/two-founder-profile-update/"],
+      "files_description": [
         "docs/founder-coach/founder-profile.md with one section for Aisha, a nurse and domain expert building a meal-planning app for shift workers, 12 hours a week, and a team section saying solo",
         "docs/founder-coach/journey.md at stage 2"
       ],
