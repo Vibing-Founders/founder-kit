@@ -1,7 +1,7 @@
 {
   "name": "compliance",
-  "version": "0.0.3",
-  "description": "Online safety, GDPR, and application security compliance for platform builders. Covers UK OSA, EU DSA, UK/EU GDPR, Children's Code, COPPA, and OWASP.",
+  "version": "0.1.0",
+  "description": "Online safety, GDPR, application security and Supabase data access compliance for platform builders. Covers UK OSA, EU DSA, UK/EU GDPR, Children's Code, COPPA, OWASP, and whether a Supabase app's row-level security protects its customers' data.",
   "author": {
     "name": "Vibing Founders",
     "url": "https://github.com/Vibing-Founders"
@@ -9,6 +9,6 @@
   "homepage": "https://github.com/Vibing-Founders/founder-kit",
   "repository": "https://github.com/Vibing-Founders/founder-kit",
   "license": "MIT",
-  "keywords": ["compliance", "online-safety", "gdpr", "privacy", "platform-builders"],
+  "keywords": ["compliance", "online-safety", "gdpr", "privacy", "platform-builders", "supabase", "row-level-security"],
   "skills": ["./skills/"]
 }
