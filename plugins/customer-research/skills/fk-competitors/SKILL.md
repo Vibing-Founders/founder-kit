@@ -56,12 +56,15 @@ produce what you can from the ICP and their own knowledge, clearly marked as unv
 
 Before writing it up, check that:
 
-- every claim about a competitor has a source link;
+- every claim about a competitor has a source link, including one-line mentions in the
+  landscape (a competitor you cannot link goes under research gaps, not in the report);
 - verified facts and inferences are labelled differently;
 - anything older than about 12 months (pricing pages, reviews, feature lists) is flagged
   as possibly stale;
 - the "do nothing / spreadsheet" alternative is covered;
 - customer complaints come from real reviews, forums or social posts, with links;
+- where an ICP exists, every "where a bootstrapper can win" point names the ICP pain point
+  or persona it serves (move one that serves none to research gaps, or drop it);
 - no market-size, revenue or valuation estimates slipped in.
 
 Fix or remove anything that fails.

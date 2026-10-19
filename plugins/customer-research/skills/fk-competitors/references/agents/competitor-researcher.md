@@ -91,7 +91,8 @@ shallow list. Mention the rest in a line each.
 Rows are the things the target customer cares about (use the ICP pain points if given).
 
 ## Where a bootstrapper can win
-- Gap: … Evidence: … (links). Why a small team can own it: …
+- Gap: … ICP pain point or persona it serves: … (if an ICP was given). Evidence: … (links).
+  Why a small team can own it: …
 
 ## Could not find
 - …
