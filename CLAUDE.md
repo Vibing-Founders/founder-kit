@@ -9,7 +9,7 @@ See [KIT-MAP.md](./KIT-MAP.md) for who the kit is for, what belongs in it and ho
 When using `/skill-creator` on a skill in this repo:
 
 - Eval prompts/assertions: `skills/<skill>/evals/evals.json` (sibling to that skill's `SKILL.md`). For a subcommand without its own directory (e.g. `cra` lives in `fk-online-safety/cra.md`), namespace the file: `fk-online-safety/evals/cra-evals.json`.
-- Fixtures (files an eval's project folder starts from): commit them in `skills/<skill>/evals/files/<eval-name>/` and list that path in the eval's `files`; `"files": []` for an empty folder.
+- Fixtures (files an eval's project folder starts from): commit them in `skills/<skill>/evals/files/<fixture-name>/` (evals may share one) and list that path in the eval's `files`; `"files": []` for an empty folder.
 - Raw run output (`iteration-N/`, transcripts, timing/grading): `<skill-name>-workspace/` as a sibling of the skill directory. Matched by `.gitignore` (`*-workspace`) — never commit this, it's large and reproducible.
 - Latest benchmark summary: after an iteration finishes, copy `benchmark.json`/`benchmark.md` from the workspace into `skills/<skill>/evals/`, overwriting the previous snapshot, so `git log` on that file shows how the skill's scores changed over time.
 
