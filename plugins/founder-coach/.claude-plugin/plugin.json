@@ -1,7 +1,7 @@
 {
   "name": "founder-coach",
-  "version": "0.1.0",
-  "description": "A coach for bootstrapping founders: works out where you are on the journey from idea to first revenue and beyond, what done looks like for that stage, what to do next and which tool helps, and keeps your founder profile and progress between sessions.",
+  "version": "0.2.0",
+  "description": "A coach for bootstrapping founders: works out where you are on the journey from idea to first revenue and beyond, what done looks like for that stage, what to do next and which tool helps, helps you make the big strategic choices (who to serve first, your wedge and bets, what not to do yet), and keeps your founder profile, progress and strategy between sessions.",
   "author": {
     "name": "Vibing Founders",
     "url": "https://github.com/Vibing-Founders"
@@ -9,6 +9,6 @@
   "homepage": "https://github.com/Vibing-Founders/founder-kit",
   "repository": "https://github.com/Vibing-Founders/founder-kit",
   "license": "MIT",
-  "keywords": ["coaching", "bootstrapping", "founder-journey", "validation", "first-revenue", "founder-profile", "next-steps"],
+  "keywords": ["coaching", "bootstrapping", "founder-journey", "validation", "first-revenue", "founder-profile", "next-steps", "strategy", "wedge"],
   "skills": ["./skills/"]
 }

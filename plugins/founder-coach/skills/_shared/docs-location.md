@@ -1,9 +1,10 @@
 # Where the coaching files live
 
-The coach keeps two files, `founder-profile.md` and `journey.md`, in one **coaching
-folder**. Work it out before reading or writing anything, and use the same folder for both
-files. All paths are relative to the project root (the folder the founder is working in).
-Never write to an absolute path.
+This plugin keeps three files in one **coaching folder**: `founder-profile.md` and
+`journey.md` (written by `fk-coach`) and `strategy.md` (written by `fk-strategy`). Work it out
+before reading or writing anything, and use the same folder for all three. All paths are
+relative to the project root (the folder the founder is working in). Never write to an
+absolute path.
 
 ## Working out the coaching folder
 
@@ -31,8 +32,8 @@ key, and fall back to the next step rather than guessing.
 
 ## Files already somewhere else
 
-Before creating `founder-profile.md` or `journey.md` in a coaching folder that has neither,
-look for them elsewhere in the project (skip dependency and build folders such as
+Before creating `founder-profile.md`, `journey.md` or `strategy.md` in a coaching folder that
+has none of them, look for them elsewhere in the project (skip dependency and build folders such as
 `node_modules`). A founder may have moved them, or set a folder on another machine.
 
 If you find them, do not start a second copy. Tell the founder where they are and offer
@@ -57,10 +58,13 @@ are" above. When you do:
 
 Never move existing files as a side effect of changing the setting. Offer to move them.
 
-## Other skills reading the profile
+## Who writes what
 
-Other Founder Kit skills may read `founder-profile.md` from this folder to tailor their
-advice. Only this plugin writes it.
+- `founder-profile.md` and `journey.md`: only `fk-coach` writes them.
+- `strategy.md`: only `fk-strategy` writes it.
+
+Each skill may read the others' files. Other Founder Kit skills may read `founder-profile.md`
+(and `strategy.md`) from this folder to tailor their advice; only this plugin writes them.
 
 ## Telling the founder
 
