@@ -102,6 +102,9 @@ Newest first.
 ## Section notes
 
 - **Last updated:** today's date on every write.
+- **Goals (optional):** if the founder has goals ("£10k a month by June", "replace my salary"),
+  put them in a short `## Goals` section after the title line, labelled as where they want to
+  be, not how. A goal never goes in the guiding policy (see `strategy-kernel.md`).
 - **Diagnosis, guiding policy, coherent actions:** see `strategy-kernel.md`. Three to five
   coherent actions.
 - **Wedge:** one customer, one problem, one hero use case: the single situation where the
