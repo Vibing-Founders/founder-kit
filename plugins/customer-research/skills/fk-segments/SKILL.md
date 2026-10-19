@@ -25,9 +25,11 @@ the founder uses the shortlist to book conversations, then brings the transcript
 
 ## Rules that apply throughout
 
-- **Label every claim.** Each one is **sourced** (with a link and the date seen) or
-  **hypothesis**. Nothing in this skill's output is evidence about the founder's customers
-  until someone has been interviewed, so say that plainly in the file.
+- **Label every claim.** Each one is **sourced** (with its own link and the date seen) or
+  **hypothesis**. Sourced means you read the page and it says this: a headline you could not
+  open, a site named without a link, or a pattern drawn from one post is a hypothesis.
+  Nothing in this skill's output is evidence about the founder's customers until someone has
+  been interviewed, so say that plainly in the file.
 - **No market sizing.** No TAM, market share, persona percentages, number-of-customers
   guesses or revenue estimates. They give a bootstrapper false confidence and do not change
   who to call this week. If the founder asks for them, decline in a sentence, say why, and
@@ -93,16 +95,23 @@ segment.
   per shortlisted segment, **in parallel**, each seeded with that file's full contents and
   its "Brief" section filled in for that segment. Each runs in its own context and returns
   a compact profile, which keeps long search results out of this conversation.
-- **Otherwise**, follow that prompt yourself, inline, one segment at a time.
+- **Otherwise**, follow that prompt yourself, inline, one segment at a time. Do the same for
+  any segment whose subagent could not start (hosts often limit how many run at once), and
+  say which segments were researched which way.
 
 It needs web search. If none is available, tell the founder, then write the profiles from
 what you know with **every** point marked **hypothesis**, and say the quotes still need
 finding.
 
 When the profiles come back, check them: every quote has a link and date and is no more
-than about 25 words; facts and hypotheses are labelled; "where to reach them" names
-specific places with links; nothing sizes the market. Fix or drop what fails. If the
-research changes the ranking, re-rank and say why.
+than about 25 words (trim longer ones); facts and hypotheses are labelled as defined above;
+"where to reach them" names specific places with links; nothing sizes the market. Fix or
+drop what fails.
+
+Then revisit the scores. If the research changes a score, re-rank and say why. If a segment
+came back with little or no first-hand evidence, keep its scores marked hypothesis and say
+so next to its rank, so the founder can see when a higher-ranked group rests on less
+evidence than a lower one.
 
 ## 5. Cross-segment view
 

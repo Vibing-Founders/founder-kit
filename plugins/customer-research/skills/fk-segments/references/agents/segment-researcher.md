@@ -43,8 +43,16 @@ If the brief is empty or unclear, stop and return a list of what is missing.
 
 ## Rules
 
-- **Label every point** **sourced** (you saw it; give the link and date) or **hypothesis**
-  (your reading, with the reasoning in a few words). No link, no "sourced".
+- **Label every point** **sourced** (you read it on the page; give that page's link and
+  date) or **hypothesis** (your reading, with the reasoning in a few words). No link, no
+  "sourced". A headline you could not open, or a pattern seen in one post, is a hypothesis.
+- **First-hand voices for the pain.** Quotes come from people in the segment (posts,
+  reviews, comments), not from articles or studies about them. Studies can support context,
+  labelled as such.
+- **Keep it proportionate.** About 10 to 15 searches is usually enough for one segment.
+  When a site cannot be fetched, try another kind of place (a trade forum, app reviews, a
+  newsletter's comments) rather than repeating the search. Stop when you have two to four
+  good quotes and named places to reach them.
 - **Real quotes only.** If you cannot find genuine quotes for this segment, say so; that is
   a finding in itself (the pain may be weaker, or discussed elsewhere). Never invent one.
 - **Flag old evidence.** Posts older than about two years are marked **possibly stale**.

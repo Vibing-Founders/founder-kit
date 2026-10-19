@@ -1,0 +1,614 @@
+{
+  "metadata": {
+    "skill_name": "fk-segments",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-10-19T06:20:40Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 12,
+        "failed": 0,
+        "total": 12,
+        "time_seconds": 431.9,
+        "tokens": 107593,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The scan includes at least two groups the founder did not name",
+          "passed": true,
+          "evidence": "Translators and writers ranked 1-2, neither named; plus video editors, illustrators etc."
+        },
+        {
+          "text": "A ranking table scores groups on pain intensity, willingness to pay and reachability, and each dropped group has a one-line reason",
+          "passed": true,
+          "evidence": "segments.md table scores Pain/Pay/Reach for 13 groups; each dropped row has a 'Dropped: ...' reason"
+        },
+        {
+          "text": "The shortlist has between 3 and 6 segments",
+          "passed": true,
+          "evidence": "Shortlist of 6: translators, writers, designers, video editors, illustrators, solo developers"
+        },
+        {
+          "text": "Segment profiles include quotes from public posts or forums with links",
+          "passed": true,
+          "evidence": "Verbatim quotes with URLs, e.g. TranslatorsCafe forumthread32278, GDF t/34665, Logik forum, HN item links"
+        },
+        {
+          "text": "Each top segment names specific places to find them (communities, subreddits, newsletters, events or job titles) with links",
+          "passed": true,
+          "evidence": "Top 3 each have linked places: TranslatorsCafe forum, ProZ, r/freelanceWriters, Freelancing for Journalists, Graphic Design Forum, r/freelance, plus LinkedIn titles"
+        },
+        {
+          "text": "The output says how many people to talk to per top segment",
+          "passed": true,
+          "evidence": "'Aim for 5 conversations per segment, 15 in total'"
+        },
+        {
+          "text": "An outreach message is provided that asks about the problem or past behaviour and does not pitch the product",
+          "passed": true,
+          "evidence": "'I'm researching how freelance [..] keep track ... I'm not selling anything ... about the last time a client paid late?'"
+        },
+        {
+          "text": "For the top segments, the output says what an interview would have to reveal to drop or promote the segment",
+          "passed": true,
+          "evidence": "Per-segment 'What would change the ranking: drop if ... promote if ...' for translators, writers, designers"
+        },
+        {
+          "text": "Claims are labelled as sourced (with link) or hypothesis",
+          "passed": true,
+          "evidence": "Every profile line tagged [sourced] with link or [hypothesis]; table 'Why' column labels each claim"
+        },
+        {
+          "text": "Next steps point to interview-script to prepare and fk-icp to analyse transcripts",
+          "passed": true,
+          "evidence": "Next steps: interview-script from pm-skills, then /customer-research:fk-icp analyse this interview"
+        },
+        {
+          "text": "The output contains no TAM, market size, market share, persona percentages or revenue estimates",
+          "passed": true,
+          "evidence": "No TAM/market size/revenue figures; only '50% up front' deposit practice and a quoted '90% chance' from a post"
+        },
+        {
+          "text": "The file is saved as docs/customer-research/segments.md and the path is stated",
+          "passed": true,
+          "evidence": "File exists at project/docs/customer-research/segments.md; response ends 'Files written: docs/customer-research/segments.md'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 712.3,
+        "tokens": 102975,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output declines to estimate TAM or market size",
+          "passed": true,
+          "evidence": "'I'm not going to work out TAM or market size for each segment.'"
+        },
+        {
+          "text": "The output explains why market sizing is not useful at this stage",
+          "passed": true,
+          "evidence": "'guesses built on guesses ... wouldn't tell you who to call this week ... a huge group you can't reach in three months is worth less'"
+        },
+        {
+          "text": "The output offers or produces a ranking by pain, willingness to pay and reachability instead",
+          "passed": true,
+          "evidence": "Ranks groups 1-3 on pain, willingness to pay and reach (table in segments.md, summary in response)"
+        },
+        {
+          "text": "No market size, TAM, revenue or population-count figures appear in the output",
+          "passed": true,
+          "evidence": "No TAM, market size, revenue or population figures in response or segments.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 27.3,
+        "tokens": 52327,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output says it found and read the existing ICP",
+          "passed": true,
+          "evidence": "'I checked your research folder ... You've talked to six photographers ... your ideal customer profile is at version 0.4'"
+        },
+        {
+          "text": "The output tells the founder they are past desk research for freelance photographers and recommends more interviews analysed with fk-icp",
+          "passed": true,
+          "evidence": "'you're already past the point where a desk-research shortlist would help'; recommends 3-5 more interviews then /customer-research:fk-icp"
+        },
+        {
+          "text": "Freelance photographers are described as already backed by interviews",
+          "passed": true,
+          "evidence": "'Target: full-time freelance photographers ... This is backed by interviews.'"
+        },
+        {
+          "text": "The ICP file is not modified and no other ideal-customer-profile file is created",
+          "passed": true,
+          "evidence": "ICP unchanged (verified fixture); no segments.md or other profile file written ('No files written')"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 457.6,
+        "tokens": 106476,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Office workers with occasional late nights are not ranked first",
+          "passed": true,
+          "evidence": "Office workers ranked 10th of 15; nurses 1st"
+        },
+        {
+          "text": "The output explicitly tells the founder that their favourite segment ranks lower than others and explains why",
+          "passed": true,
+          "evidence": "'office workers with occasional late nights rank low, 10th out of the 15 groups' with reason: an occasional late night isn't a rota"
+        },
+        {
+          "text": "The output leaves the final choice to the founder rather than refusing to consider their favourite",
+          "passed": true,
+          "evidence": "'You can still choose them. Just do it knowing the evidence points elsewhere'; optional test of 3 office workers"
+        },
+        {
+          "text": "The output ends with who to talk to, where, and an outreach message",
+          "passed": true,
+          "evidence": "'Who to talk to first' (nurses, paramedics, police with Mumsnet board, r/NursingUK, LinkedIn) and an outreach message, followed by next steps"
+        },
+        {
+          "text": "The output contains no TAM, market size or revenue estimates",
+          "passed": true,
+          "evidence": "No TAM, market size or revenue figures"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 948.4,
+        "tokens": 107663,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output says it read or used the founder profile",
+          "passed": true,
+          "evidence": "'I used your founder profile. It changed the reach scores for two groups'"
+        },
+        {
+          "text": "Freelance photographers get a higher reachability score, with the reason citing the meet-up group from the profile",
+          "passed": true,
+          "evidence": "Commercial/event photographers Reach 3 vs developers 2, reason 'you run a photography meet-up of about 60 people'. Designers also boosted to 3 via colleagues"
+        },
+        {
+          "text": "The who-to-talk-to section uses the photography meet-up as a place to find interviewees",
+          "passed": true,
+          "evidence": "'Ask at your meet-up who does this kind of work'; segments.md 'start with your photography meet-up'"
+        },
+        {
+          "text": "The founder profile file is not modified",
+          "passed": true,
+          "evidence": "Fixture verified unchanged"
+        },
+        {
+          "text": "segments.md is saved in docs/customer-research/ and the path is stated",
+          "passed": true,
+          "evidence": "project/docs/customer-research/segments.md exists; 'Files written: docs/customer-research/segments.md'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 23.0,
+        "tokens": 48931,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response asks exactly one clarifying question",
+          "passed": true,
+          "evidence": "One bolded question (what moment productivity breaks down and for whom), with examples; no other questions"
+        },
+        {
+          "text": "The response does not produce a ranked list of segments, profiles or an outreach message before the founder answers",
+          "passed": true,
+          "evidence": "No list, profiles or outreach; only promises a shortlist after the answer"
+        },
+        {
+          "text": "No segments.md (or any other research file) is written",
+          "passed": true,
+          "evidence": "No project/ directory or files written"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.42,
+        "passed": 5,
+        "failed": 7,
+        "total": 12,
+        "time_seconds": 46.4,
+        "tokens": 48150,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The scan includes at least two groups the founder did not name",
+          "passed": true,
+          "evidence": "Adds copywriters/content writers and video editors/motion designers"
+        },
+        {
+          "text": "A ranking table scores groups on pain intensity, willingness to pay and reachability, and each dropped group has a one-line reason",
+          "passed": false,
+          "evidence": "No table or scores; groups described in prose, skip list has reasons but no pain/WTP/reach scoring"
+        },
+        {
+          "text": "The shortlist has between 3 and 6 segments",
+          "passed": true,
+          "evidence": "Four groups on the shortlist"
+        },
+        {
+          "text": "Segment profiles include quotes from public posts or forums with links",
+          "passed": false,
+          "evidence": "No quotes from public posts and no links"
+        },
+        {
+          "text": "Each top segment names specific places to find them (communities, subreddits, newsletters, events or job titles) with links",
+          "passed": false,
+          "evidence": "Names r/freelance, r/graphic_design etc., LinkedIn, Dribbble, but no links"
+        },
+        {
+          "text": "The output says how many people to talk to per top segment",
+          "passed": true,
+          "evidence": "'Aim for 5\u20138 conversations with freelance designers ... 2\u20133 solo devs and 2\u20133 copywriters'"
+        },
+        {
+          "text": "An outreach message is provided that asks about the problem or past behaviour and does not pitch the product",
+          "passed": true,
+          "evidence": "'I'm looking into how freelance designers keep track of who owes them money, and I'm not selling anything'"
+        },
+        {
+          "text": "For the top segments, the output says what an interview would have to reveal to drop or promote the segment",
+          "passed": false,
+          "evidence": "Only a generic 'If designers keep saying it happens, but it's fine, move on'; no per-segment drop/promote criteria"
+        },
+        {
+          "text": "Claims are labelled as sourced (with link) or hypothesis",
+          "passed": false,
+          "evidence": "No sourced/hypothesis labelling of claims"
+        },
+        {
+          "text": "Next steps point to interview-script to prepare and fk-icp to analyse transcripts",
+          "passed": false,
+          "evidence": "No mention of interview-script or fk-icp"
+        },
+        {
+          "text": "The output contains no TAM, market size, market share, persona percentages or revenue estimates",
+          "passed": true,
+          "evidence": "No TAM or market-size figures"
+        },
+        {
+          "text": "The file is saved as docs/customer-research/segments.md and the path is stated",
+          "passed": false,
+          "evidence": "No file written"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 36.0,
+        "tokens": 47182,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output declines to estimate TAM or market size",
+          "passed": false,
+          "evidence": "'I can put rough numbers on this' and then gives a 'Very rough TAM' section"
+        },
+        {
+          "text": "The output explains why market sizing is not useful at this stage",
+          "passed": true,
+          "evidence": "'TAM answers could this ever be a big business? It doesn't answer who will pay me first?' plus reasons"
+        },
+        {
+          "text": "The output offers or produces a ranking by pain, willingness to pay and reachability instead",
+          "passed": true,
+          "evidence": "Table compares segments on pain, ease of reach and ability to pay"
+        },
+        {
+          "text": "No market size, TAM, revenue or population-count figures appear in the output",
+          "passed": false,
+          "evidence": "'roughly 250-300k people work as graphic designers (BLS)', 'tens of millions of dollars a year', '550 paying customers for $100k a year'"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 26.0,
+        "tokens": 47619,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output says it found and read the existing ICP",
+          "passed": true,
+          "evidence": "Cites ideal-customer-profile.md v0.4, last updated 15 June, its persona and exclusions"
+        },
+        {
+          "text": "The output tells the founder they are past desk research for freelance photographers and recommends more interviews analysed with fk-icp",
+          "passed": false,
+          "evidence": "Recommends narrowing to wedding photographers and more interviews, but never mentions fk-icp and does not frame it as past desk research"
+        },
+        {
+          "text": "Freelance photographers are described as already backed by interviews",
+          "passed": true,
+          "evidence": "'Six conversations is a good start'; refers to Sam's and Omar's quotes backing the pains"
+        },
+        {
+          "text": "The ICP file is not modified and no other ideal-customer-profile file is created",
+          "passed": true,
+          "evidence": "ICP unchanged (verified fixture); no other profile file created (only offered to edit)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 31.6,
+        "tokens": 46446,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Office workers with occasional late nights are not ranked first",
+          "passed": true,
+          "evidence": "Starts with nurses; office workers placed after nurses and other shift workers"
+        },
+        {
+          "text": "The output explicitly tells the founder that their favourite segment ranks lower than others and explains why",
+          "passed": true,
+          "evidence": "'I'd start with nurses, not office workers ... here's why I'd still put them second' with the rota reasoning"
+        },
+        {
+          "text": "The output leaves the final choice to the founder rather than refusing to consider their favourite",
+          "passed": true,
+          "evidence": "Suggests 2-3 office-worker interviews as a fair test and asks what draws the founder to them"
+        },
+        {
+          "text": "The output ends with who to talk to, where, and an outreach message",
+          "passed": true,
+          "evidence": "Who: 5-8 rotating-shift nurses; where: Facebook groups, subreddits, NHS networks; outreach line given inline"
+        },
+        {
+          "text": "The output contains no TAM, market size or revenue estimates",
+          "passed": true,
+          "evidence": "No TAM, market size or revenue figures"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 27.2,
+        "tokens": 46856,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output says it read or used the founder profile",
+          "passed": true,
+          "evidence": "'I read your founder profile (docs/founder-coach/founder-profile.md)'"
+        },
+        {
+          "text": "Freelance photographers get a higher reachability score, with the reason citing the meet-up group from the profile",
+          "passed": false,
+          "evidence": "Ranks photographers first because of the meet-up, but there is no reachability score at all"
+        },
+        {
+          "text": "The who-to-talk-to section uses the photography meet-up as a place to find interviewees",
+          "passed": true,
+          "evidence": "'Talk to 8\u201310 photographers from your group'"
+        },
+        {
+          "text": "The founder profile file is not modified",
+          "passed": true,
+          "evidence": "Fixture verified unchanged"
+        },
+        {
+          "text": "segments.md is saved in docs/customer-research/ and the path is stated",
+          "passed": false,
+          "evidence": "No segments.md written"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 25.8,
+        "tokens": 45695,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response asks exactly one clarifying question",
+          "passed": true,
+          "evidence": "Single bolded question: 'What made you want to build this? ...'"
+        },
+        {
+          "text": "The response does not produce a ranked list of segments, profiles or an outreach message before the founder answers",
+          "passed": true,
+          "evidence": "Gives example narrow groups as illustration but no ranking, profiles or outreach message"
+        },
+        {
+          "text": "No segments.md (or any other research file) is written",
+          "passed": true,
+          "evidence": "No project/ directory or files written"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 433.4167,
+        "stddev": 367.952,
+        "min": 23.0,
+        "max": 948.4
+      },
+      "tokens": {
+        "mean": 87660.8333,
+        "stddev": 28755.4931,
+        "min": 48931,
+        "max": 107663
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.7117,
+        "stddev": 0.249,
+        "min": 0.42,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 32.1667,
+        "stddev": 8.0104,
+        "min": 25.8,
+        "max": 46.4
+      },
+      "tokens": {
+        "mean": 46991.3333,
+        "stddev": 868.2179,
+        "min": 45695,
+        "max": 48150
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.29",
+      "time_seconds": "+401.2",
+      "tokens": "+40670"
+    }
+  },
+  "notes": []
+}
