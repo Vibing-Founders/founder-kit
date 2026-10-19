@@ -7,7 +7,7 @@
       "name": "first-draft-stage-2",
       "prompt": "Help me with my strategy. I keep going back and forth on what I'm actually building and for who.",
       "expected_output": "Reads the founder profile and the stage 2 journey before asking anything, and says what it read. Because the files give enough to start, writes a first draft of docs/founder-coach/strategy.md (status draft) in the documented format: diagnosis grounded in the interview evidence and Priya's 15 hours a week, guiding policy, coherent actions, a narrow wedge (e.g. freelance wedding/event photographers who chase late payments), value proposition, 3 to 5 bets each with testable kill criteria (number, date or observed behaviour), at least one hard 'not doing yet' choice, phased path, prioritised open questions and a change log. No market sizing, TAM or investor framing. Runs the critical review. Ends by asking exactly one question (the most important open question). Does not write journey.md or founder-profile.md.",
-      "files": ["evals/fixtures/photographer-stage-2"],
+      "files": ["evals/files/photographer-stage-2/"],
       "assertions": [
         {"id": "reads-context", "text": "The response shows it read the founder profile and journey (refers to details such as 15 hours a week, the meet-up group, or the 4 of 7 unprompted interviews) rather than re-asking them"},
         {"id": "one-question", "text": "The response asks the founder exactly one question, not a list of questions"},
@@ -23,7 +23,7 @@
       "name": "goals-dressed-as-strategy",
       "prompt": "Here's our strategy, can you write it up properly? Our strategy is to become the #1 finance platform for freelance photographers, hit £10k MRR by next June, and leverage AI to empower creatives to take control of their money.",
       "expected_output": "Does not simply write up the statement as a strategy. Says warmly and specifically that it is a goal (and some fluff) rather than a strategy, naming Rumelt's hallmarks (mistaking goals for strategy, fluff, not facing the challenge), quoting the lines. Explains what is missing (a diagnosis of the real challenge, a guiding policy, coherent actions) and uses the profile and journey (15 hours a week, stage 2, interviews) to show the real challenge. Keeps the goal as a goal. Offers a better version or asks one question to get to the diagnosis. Does not adopt '#1 platform' as the strategy, and does not do market sizing.",
-      "files": ["evals/fixtures/photographer-goals"],
+      "files": ["evals/files/photographer-stage-2/"],
       "assertions": [
         {"id": "flags-bad-strategy", "text": "The response says the statement is a goal (or goals) rather than a strategy, i.e. flags it as bad strategy"},
         {"id": "names-hallmarks", "text": "The response names at least two specific problems from Rumelt's list, such as mistaking goals for strategy, fluff (e.g. 'leverage AI to empower') or failing to face the challenge, quoting the founder's words"},
@@ -38,7 +38,7 @@
       "name": "choose-between-segments",
       "prompt": "Should we focus on small agencies or solo consultants first? I need to decide this week.",
       "expected_output": "Reads the profile (Marcus, operator, full time, six months' runway, network of about 40 agency owners, none among solo consultants), the journey and the ideal customer profile. Lays out both options against constraints and evidence in a comparison (evidence, reach, fit, speed to first payment, what they use today, biggest risk). Makes the trade-offs explicit ('if you pick agencies, you are not doing solo consultants for now, because…'). Recommends one (very likely agencies, given reach and willingness to pay) with kill criteria that have a number and a date. Leaves the decision to Marcus and asks him to choose; does not record the choice as decided in strategy.md before he does. No market sizing.",
-      "files": ["evals/fixtures/onboarding-tool-two-segments"],
+      "files": ["evals/files/onboarding-tool-two-segments/"],
       "assertions": [
         {"id": "uses-evidence", "text": "The comparison uses evidence from the files: e.g. agency owners paying a VA, the 'lose the first month's margin' quote, solo consultants spending nothing, Marcus's network of agency owners"},
         {"id": "both-options-laid-out", "text": "Both options are laid out side by side against the founder's constraints and evidence (a table or equivalent structure)"},
@@ -53,7 +53,7 @@
       "name": "update-from-interviews-changes-wedge",
       "prompt": "Update our strategy with this week's interviews, notes are in interview-notes-2026-10-18.md. We're going to focus on home care workers instead of nurses.",
       "expected_output": "Reads strategy.md, the journey, the profile and the notes. Extracts the strategic changes, quoting the notes: care workers raised the pain unprompted (4 of 4), spend money on it already (£60 a week, a £30 batch-cooking box) and asked for it, while nurses did not. Since the founders stated the decision, updates the wedge (customer, problem: eating in the car on split shifts, hero use case tied to the agency rota), diagnosis/policy/actions and bets as needed (B1 rewritten or killed and replaced; B3's channel bet changes because the nurses' groups no longer reach the customer), moves 'nurses' or the old focus into not doing yet, adds a change log entry (date, what changed, why, from the interview notes), and updates open questions (e.g. how to reach care workers beyond one agency). Notes that the current bet in journey.md (Tests strategic bet: B1, nurses) is now out of date and suggests a coach check-in, without editing journey.md. Lists files written and says journey.md was not changed.",
-      "files": ["evals/fixtures/meal-planner-strategy"],
+      "files": ["evals/files/meal-planner-strategy/"],
       "assertions": [
         {"id": "wedge-changed", "text": "strategy.md's wedge now names home care workers (not nurses) as the customer, with a problem and hero use case that reflect the notes (e.g. split shifts, eating in the car, agency rota)"},
         {"id": "quotes-input", "text": "The response or change log cites specific evidence from the interview notes (e.g. 4 of 4 care workers unprompted, £60 a week, paid batch-cooking box)"},
@@ -68,7 +68,7 @@
       "name": "review-no-not-doing",
       "prompt": "Can you review my strategy? I think it's pretty solid.",
       "expected_output": "Reads strategy.md, the profile and the journey. Runs the critical review (coherence, reality, resources, differentiation, focus, testable bets) with a verdict and evidence for each. Flags clearly that there is no 'not doing yet' choice (focus fails) and that the wedge ('creative freelancers') is far too broad. Flags untestable kill criteria ('if it doesn't get traction', 'if accountants aren't interested'), only two bets, the resources problem (build app + launch + partnerships + video channel on 15 hours a week while at stage 2), contradictions (building the app vs done-for-you; stage 2 evidence about late payments vs a generic 'enjoyable bookkeeping' value proposition), and the diagnosis ignoring the interview evidence. Lists the most important open questions and asks one. Does not rewrite strategy.md (offers specific edits instead). May recommend strategy-red-team from pm-skills with install commands.",
-      "files": ["evals/fixtures/photographer-review"],
+      "files": ["evals/files/photographer-review/"],
       "assertions": [
         {"id": "flags-no-not-doing", "text": "The review says explicitly that the strategy has no 'not doing' choices and that this is a focus problem"},
         {"id": "flags-kill-criteria", "text": "The review flags the kill criteria 'if it doesn't get traction' and/or 'if accountants aren't interested' as not testable and says what a testable version needs (number, date or behaviour)"},
