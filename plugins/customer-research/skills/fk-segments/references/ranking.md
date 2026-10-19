@@ -13,8 +13,10 @@ are hypotheses; that is fine, as long as it is said.
 | **Willingness and ability to pay**: budget, who decides, what they pay for today | They already pay for tools or help in this area and decide on the spend themselves | Some budget, but someone else signs off, or spend is irregular | Little spare money, or the buyer is not the person with the problem |
 | **Reachability within about three months**: where they gather, and whether the founder has a way in | Gather in named, active places the founder can join or already belongs to; the founder can get 5 conversations within weeks | Findable, but scattered or behind gatekeepers | Hard to find, or reachable only through paid channels or slow partnerships |
 
-Add the three for a total out of 9. Break ties on **pain intensity**: a group in real pain
-will make time for a conversation.
+Add the three for a total out of 9. Break ties on **pain intensity**, then on **reach**: a
+group in real pain will make time for a conversation, and one you can reach gets you there
+sooner. Apply the same tie-break wherever the shortlist is cut, and if two groups are still
+level, say so rather than ordering them silently.
 
 ### Raising reach from the founder profile
 
