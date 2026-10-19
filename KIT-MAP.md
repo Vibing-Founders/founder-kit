@@ -37,7 +37,7 @@ founder angle, or advice for a regulated sector the kit says it does not cover.
 |---|---|---|---|
 | `founder-coach` | Where am I on the way to first revenue, what should I do next, and which tool helps? | `fk-coach` | `docs/founder-coach/` (`founder-profile.md`, `journey.md`) |
 | `core` | How should my project be set up for working with agents, and what is it missing? | `fk-setup` | `CLAUDE.md`, `docs/`, `scripts/`, `.claude/settings.json`, `.gitignore` |
-| `customer-research` | Who is my customer, who else serves them, and can I back up what I say? | `fk-icp`, `fk-competitors`, `fk-fact-check` | `docs/customer-research/` |
+| `customer-research` | Who should I talk to first, who is my customer, who else serves them, and can I back up what I say? | `fk-segments`, `fk-icp`, `fk-competitors`, `fk-fact-check` | `docs/customer-research/` |
 | `compliance` | Which rules apply to what I am building, and where do I fall short? | `fk-online-safety` (modes `assess`, `checklist`, `strategy-check`, `cra`), `fk-gdpr` (modes `assess`, `checklist`, `lia`), `fk-application-security` (modes `assess`, `checklist`), `fk-dpia` | — |
 | `site-delivery` | How do I get a change to my website made without writing code? | `fk-onboard`, `fk-orchestrate` | A pull request |
 | `agent-delivery` | How do I hand a planned ticket to a cloud agent and trust the result? | `fk-onboard`, `fk-dispatch` | A pull request, with the ticket closed out |
@@ -65,7 +65,10 @@ connect in these ways:
   does not use it today.
 - **One docs convention.** Skills that save files use `docs/<plugin-name>/` unless the config or
   the request says otherwise.
-- **Research feeds research.** `fk-competitors` uses the ideal customer profile from `fk-icp` when
+- **Research feeds research.** `fk-segments` shortlists who to talk to from desk research;
+  the founder interviews them and `fk-icp` turns the transcripts into evidence, reading
+  `segments.md` to know which hypotheses are being tested. `fk-segments` never writes the ICP.
+  `fk-competitors` uses the ideal customer profile from `fk-icp` when
   one exists; `fk-fact-check` can check a `fk-competitors` report.
 - **Two delivery paths, split by who is driving.** `site-delivery` is the plain-language path for
   a founder who does not code, from brief to pull request. `agent-delivery` is the path for a

@@ -82,6 +82,11 @@ is (or whether one exists yet) before going further.
 
 For an interview or piece of feedback:
 
+If `segments.md` exists in the research folder (written by the `fk-segments` skill), read it
+first: it lists the segments these interviews are testing and what would change their
+ranking. Say which segment this conversation speaks to. It is a list of hypotheses, not
+evidence; do not copy anything from it into the ICP unless the customer said it.
+
 1. **Identify the conversation.** Get the customer's name (ask if missing; a first name
    or a pseudonym is fine) and date (use today's date if none is given). Save the raw
    input exactly as provided, after offering to replace surnames and contact details
