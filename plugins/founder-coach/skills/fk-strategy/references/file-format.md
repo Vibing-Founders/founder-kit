@@ -18,6 +18,10 @@ Rules:
 
 ## Template (with an invented example)
 
+The example shows the shape and the level of detail, not content to reuse. Never copy its
+specifics (a country, a price, a group size, a channel) into a founder's file: every detail in
+their `strategy.md` must come from their own files, research or words, or be labelled a guess.
+
 ```markdown
 # Strategy
 
