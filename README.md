@@ -75,7 +75,7 @@ Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-d
 
 | Plugin | Description | Skills |
 |--------|-------------|--------|
-| `founder-coach` | Start here: a coach that works out where you are on the journey to first revenue, what done looks like for that stage, what to do next and which tool helps, and remembers your progress between sessions | `fk-coach` |
+| `founder-coach` | Start here: a coach that works out where you are on the journey to first revenue, what done looks like for that stage, what to do next and which tool helps, and remembers your progress between sessions; plus a short living strategy for the big choices (who to serve first, your wedge, your bets, what not to do yet) | `fk-coach`, `fk-strategy` |
 | `core` | Sets a project up with a baseline for working with Claude Code agents, and checks an existing project for gaps whenever you re-run it | `fk-setup` |
 | `compliance` | Online safety, GDPR, and application security compliance for platform builders | `fk-online-safety` (+ `cra` mode), `fk-gdpr` (+ `lia` mode), `fk-application-security`, `fk-dpia` |
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `fk-onboard`, `fk-dispatch` |
@@ -327,7 +327,7 @@ The front door to Founder Kit. For bootstrapping founders (solo or two-person te
 /plugin install founder-coach@founder-kit
 ```
 
-You do not need the slash command: plain requests such as "coach me", "where am I?", "what should I do next?" or "should I be building this?" trigger it.
+You do not need the slash commands: plain requests such as "coach me", "where am I?", "what should I do next?" or "should I be building this?" trigger the coach, and "what's my wedge?", "who should I target first?" or "review my strategy" trigger the strategy skill.
 
 ### Skills
 
@@ -342,10 +342,21 @@ You do not need the slash command: plain requests such as "coach me", "where am 
 
 Four modes: **where am I / what next** (the default), **update my profile**, **check-in** (what happened, what you learned, and whether to persevere, pivot, stop or move on) and **sanity check** (is this the right thing to spend time on at this stage?). It knows five common founder types (engineer, designer, hustler, domain expert, operator) and the time sinks each tends to fall into.
 
-**The two files.** The coach keeps these in `docs/founder-coach/` by default, creates them the first time, and updates them at the end of every conversation, always telling you which changed:
+**`/founder-coach:fk-strategy`** — the big choices, kept in one short living document
+```
+/founder-coach:fk-strategy help me with my strategy
+/founder-coach:fk-strategy who should I target first: agencies or solo consultants?
+/founder-coach:fk-strategy update our strategy: we're dropping agencies, here are my interview notes
+/founder-coach:fk-strategy review my strategy and tell me what we should say no to
+```
+
+Builds on the strategy kernel from Richard Rumelt's book *Good Strategy / Bad Strategy*: a **diagnosis** of the real challenge, a **guiding policy** for dealing with it, and **coherent actions** that carry it out. Adds the product direction a bootstrapper needs: the **wedge** (who you serve first, the problem they own, the use case where you are most obviously worth paying for), the value proposition, **3 to 5 strategic bets** each with what must be true and testable **kill or pivot criteria**, a phased path, and the things you are deliberately **not doing yet**. Four modes: **draft** (reads your profile, journey and customer research first, so it doesn't re-ask), **update** from new notes, interviews or decisions (with a change log), **review** (checks coherence, evidence, whether you have the time and skills, differentiation and focus, and flags goals dressed up as strategy), and **choose** between options with the trade-offs spelled out and a recommendation you decide on. No market sizing or investor framing. It never decides for you.
+
+**The three files.** The coach keeps the first two in `docs/founder-coach/` by default, creates them the first time, and updates them at the end of every conversation, always telling you which changed; the strategy skill keeps the third in the same folder:
 
 - `founder-profile.md`: one section per founder (background, skills, audiences you can reach, hours, runway, what you want the business to be, founder type and time sinks to watch) and a short team section. Other Founder Kit skills may read it to tailor their advice.
-- `journey.md`: your current stage, each goal for that stage marked met or not yet with the evidence, your current bet and what result would make you stop, up to three next actions, and a log of decisions.
+- `journey.md`: your current stage, each goal for that stage marked met or not yet with the evidence, your current bet (and which strategic bet it tests) and what result would make you stop, up to three next actions, and a log of decisions.
+- `strategy.md` (written by `fk-strategy`, two pages at most): diagnosis, guiding policy, coherent actions, wedge, value proposition, strategic bets with kill criteria, not doing yet, phased path, open questions only you can answer, and a change log. The coach reads it; the strategy skill never edits your profile or journey, and suggests a coach check-in when a strategy change affects your stage or current bet.
 
 To keep them somewhere else, ask ("keep my coaching notes in docs/my-idea from now on") or set it in `.vf-founder-kit/config.yaml`:
 
@@ -367,6 +378,19 @@ founder-coach:
 8. Choose your future (keep it, grow it or sell it)
 
 Every stage runs the same loop: learn, make a bet with kill criteria, test it, sell or measure, decide. Moving back a stage is normal. Alongside the stages run two tracks: building an audience, and founder operations (money, legal, time and energy).
+
+### Works well with
+
+These free skills from [pm-skills](https://github.com/phuryn/pm-skills) by Paweł Huryn go further where `fk-strategy` stops on purpose:
+
+- **`strategy-red-team`**: attacks a finished `strategy.md`'s load-bearing assumptions and returns the cheapest test and kill criterion for each.
+- **`opportunity-solution-tree`**: maps opportunities to solutions and experiments once your wedge is chosen.
+
+```
+/plugin marketplace add phuryn/pm-skills
+/plugin install pm-execution@pm-skills           # strategy-red-team
+/plugin install pm-product-discovery@pm-skills   # opportunity-solution-tree
+```
 
 ---
 
@@ -411,6 +435,7 @@ plugins/
     skills/
       _shared/          # Where the coaching files live (docs-location rules)
       fk-coach/         # Journey stages, founder types, failure modes, toolkit
+      fk-strategy/      # Strategy kernel, bets and kill criteria, review checklist
 ```
 
 ---

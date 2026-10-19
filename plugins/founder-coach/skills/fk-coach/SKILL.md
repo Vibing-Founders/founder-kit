@@ -7,7 +7,8 @@ description: >
   to the tool that helps. Keeps a founder profile and a journey file so coaching carries
   across sessions. Also sanity-checks plans against the current stage and the founder's
   typical time sinks. Use whenever a founder asks for coaching, direction or a sense of
-  progress, or starts talking about a new idea. Triggers on: "coach me", "where am I?",
+  progress, or starts talking about a new idea. Big strategic choices (which segment, what
+  wedge, "should we do X or Y") go to fk-strategy instead. Triggers on: "coach me", "where am I?",
   "what should I do next?", "what's next", "I've got an idea", "should I be building
   this?", "should I raise money", "should I redo my logo", "am I ready to build",
   "check in", "here's what happened this week", "update my profile",
@@ -52,8 +53,12 @@ Work out the **coaching folder** by following `../_shared/docs-location.md` (by 
 - `journey.md`: the current stage, each exit criterion as met / not yet with evidence,
   the current bet, up to three next actions, and a decision log.
 
-Formats are in `references/file-formats.md`. Read both files at the start of every
-conversation if they exist. Create them the first time, show the founder what you wrote,
+The same folder may also hold `strategy.md`, written by the `fk-strategy` skill: the
+diagnosis, the wedge, the full set of strategic bets (`B1`, `B2`…) and what the founder is not
+doing yet. The coach reads it and never writes it.
+
+Formats are in `references/file-formats.md`. Read the profile, the journey and `strategy.md`
+(if there is one) at the start of every conversation. Create them the first time, show the founder what you wrote,
 and update them at the end of every coaching conversation. Record only what the founder
 said or showed you; mark anything unknown as unknown. Always end with the list of files
 written or changed.
@@ -68,6 +73,7 @@ If it is unclear which the founder wants, default to **Where am I**.
 | describes a change in themselves or the team | **Update profile** |
 | reports what happened since last time | **Check-in** |
 | asks "should I build / raise / redo …?" | **Sanity check** |
+| asks "which segment?", "what's our wedge?", "what's our strategy?", "should we do X or Y?" | **Strategy question** |
 
 ### Where am I (default)
 
@@ -82,7 +88,10 @@ If it is unclear which the founder wants, default to **Where am I**.
    evidence. Be honest about gaps; "not yet" is normal.
 4. **Agree up to three next actions**, each small, dated and aimed at an unmet criterion.
    Where there is an open question, help shape it as a bet (hypothesis, smallest test,
-   kill criteria, date). Inside stages 1 to 4, use the finer steps in `references/journey.md`.
+   kill criteria, date). If `strategy.md` exists, the current bet should test one of its
+   strategic bets: name it in `journey.md` ("Tests strategic bet: B2"). If none fits, say so
+   and suggest updating the strategy. Inside stages 1 to 4, use the finer steps in
+   `references/journey.md`.
 5. **Recommend a tool** for the next action from `references/toolkit.md`, with its
    install command. Never assume it is installed, and never run it yourself. If the
    project has not been set up yet (no `.vf-founder-kit/config.yaml`), also recommend
@@ -105,6 +114,8 @@ sinks. A second founder gets their own section, built one question at a time.
    pivot, kill, or milestone met. Moving back a stage is normal; say so plainly.
 3. Record the decision in the log (date, decision, why, stage change), update the
    criteria and the stage, and agree the next actions.
+4. If the result confirms or kills a strategic bet in `strategy.md`, say so and suggest
+   `fk-strategy` to update the strategy. Do not edit `strategy.md` yourself.
 
 ### Sanity check
 
@@ -115,7 +126,22 @@ would move the stage forward instead. If it genuinely helps (for example, compli
 the founder actually needs now), say so. The founder decides; log the decision if they
 make one.
 
+### Strategy question
+
+Choosing who to serve first, the wedge, the big bets, what to say no to, or between two
+options ("agencies or solo consultants?") is `fk-strategy`'s job, especially in stages 1 to 3.
+Say so in a sentence, give the founder the command, and do not work the strategy through
+yourself:
+
+```
+/founder-coach:fk-strategy <their question>
+```
+
+`fk-strategy` is in this plugin, so no install is needed. If the founder only needs to know
+how the question fits their stage, answer that briefly; the coach still owns the stage and the
+current bet.
+
 ## Other Founder Kit skills
 
 Other skills may read `founder-profile.md` to tailor their advice. Only this skill writes
-it or `journey.md`.
+it or `journey.md`; only `fk-strategy` writes `strategy.md`.

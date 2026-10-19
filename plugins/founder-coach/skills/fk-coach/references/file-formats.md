@@ -2,7 +2,8 @@
 
 Two Markdown files in the coaching folder (see `../../_shared/docs-location.md`). Keep them
 short and readable: the founder should be able to open them and see where they are at a
-glance.
+glance. A third file there, `strategy.md`, belongs to the `fk-strategy` skill; its format is in
+that skill's `references/file-format.md`. The coach reads it and never writes it.
 
 Rules for both:
 
@@ -69,6 +70,7 @@ Last updated: 2026-09-30
 
 ## Current bet
 
+- **Tests strategic bet:** B1 (from `strategy.md`), or "none" if there is no strategy yet.
 - **Hypothesis:** Freelance photographers who do their own books lose at least a weekend a
   year matching late client payments, and already pay someone to fix it.
 - **Test:** Five more interviews asking about the last tax return, no mention of the idea.
@@ -92,7 +94,9 @@ Newest first.
 ```
 
 - **Next actions:** at most three, each with a date, each aimed at an unmet criterion.
-- **Current bet:** one at a time. If there is no bet yet, write "None yet".
+- **Current bet:** one at a time. If there is no bet yet, write "None yet". When
+  `strategy.md` exists, name the strategic bet the current bet tests (`B1`, `B2`…); the full
+  set of bets lives there, not here.
 - **Decision log:** one row per decision: persevere, pivot, kill or milestone met. Record
   stage moves in both directions, for example `3 → 2`.
 - If the founder is working on more than one idea, keep one journey per idea only if they

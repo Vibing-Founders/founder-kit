@@ -35,7 +35,7 @@ founder angle, or advice for a regulated sector the kit says it does not cover.
 
 | Plugin | The founder's question | Skills | Saves to |
 |---|---|---|---|
-| `founder-coach` | Where am I on the way to first revenue, what should I do next, and which tool helps? | `fk-coach` | `docs/founder-coach/` (`founder-profile.md`, `journey.md`) |
+| `founder-coach` | Where am I on the way to first revenue, what should I do next, which tool helps, and what are my big strategic choices? | `fk-coach`, `fk-strategy` | `docs/founder-coach/` (`founder-profile.md`, `journey.md`, `strategy.md`) |
 | `core` | How should my project be set up for working with agents, and what is it missing? | `fk-setup` | `CLAUDE.md`, `docs/`, `scripts/`, `.claude/settings.json`, `.gitignore` |
 | `customer-research` | Who is my customer, who else serves them, and can I back up what I say? | `fk-icp`, `fk-competitors`, `fk-fact-check` | `docs/customer-research/` |
 | `compliance` | Which rules apply to what I am building, and where do I fall short? | `fk-online-safety` (modes `assess`, `checklist`, `strategy-check`, `cra`), `fk-gdpr` (modes `assess`, `checklist`, `lia`), `fk-application-security` (modes `assess`, `checklist`), `fk-dpia` | — |
@@ -59,6 +59,13 @@ connect in these ways:
   use belong in `core`; anything tied to one problem area belongs in that area's plugin.
 - **One founder profile.** `fk-coach` writes `founder-profile.md`; any skill may read it to tailor
   its advice, and none other writes it.
+- **Strategy and journey, split by time span.** `fk-strategy` writes `strategy.md`: the
+  diagnosis, the wedge, the full set of 3 to 5 strategic bets and what the founder is not doing
+  yet. `fk-coach` writes `journey.md`: the stage, the *current* bet (naming the strategic bet it
+  tests), next actions and decisions. Each reads the other's file and never writes it; the coach
+  routes strategy questions to `fk-strategy`, and `fk-strategy` suggests a coach check-in when a
+  strategy change implies a new stage or current bet. `fk-strategy` also reads customer research
+  from `customer-research` when it exists.
 
 - **One config file.** `.vf-founder-kit/config.yaml` in the founder's project holds a section per
   plugin plus the shared `docs_root`. A skill writes only its own plugin's section. `compliance`
