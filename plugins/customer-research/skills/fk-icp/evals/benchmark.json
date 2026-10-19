@@ -1,0 +1,989 @@
+{
+  "metadata": {
+    "skill_name": "fk-icp",
+    "skill_path": "plugins/customer-research/skills/fk-icp",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-10-19T06:14:18Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 8,
+        "failed": 0,
+        "total": 8,
+        "time_seconds": 142.2,
+        "tokens": 70680,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The analysis explicitly flags 'isn't it a real pain keeping track of receipts' as a leading question, quoting it",
+          "passed": true,
+          "evidence": "analysis.md: \"Leading question: \\\"So, isn't it a real pain keeping track of receipts for every shoot?\\\"\" ; same in chat table"
+        },
+        {
+          "text": "The analysis flags the suggested answer about automatic categorisation and the interviewer's own opinion about spreadsheets",
+          "passed": true,
+          "evidence": "\"Suggested answer / pitch\" (auto-categorise) and \"Interviewer opinion: \\\"I always found spreadsheets awful...\\\"\" flagged"
+        },
+        {
+          "text": "Receipts-tracking, auto-categorisation and willingness to pay \u00a312 are labelled prompted (or equivalent) and given less weight than the tax-return story",
+          "passed": true,
+          "evidence": "Receipts pain marked \"Prompted (weak)\", auto-categorising and \u00a312 marked Prompted/weak; tax-return pains spontaneous/high and ranked first"
+        },
+        {
+          "text": "The output does not present '\u00a312 a month' as validated willingness to pay",
+          "passed": true,
+          "evidence": "\"\\\"Probably, yeah\\\" to a made-up offer isn't willingness to pay\"; ICP Budget: \"Prompted and hypothetical: weak\""
+        },
+        {
+          "text": "At least two pain points from the tax-return story carry word-for-word quotes from Marcus",
+          "passed": true,
+          "evidence": "Year-end scramble (\"Oh god. January...\", \"I swore I'd do it monthly...\") and client-matching (\"...which lens hire was for which client...\") quoted verbatim"
+        },
+        {
+          "text": "Each pain point has a section headed 'Possible Solutions'",
+          "passed": true,
+          "evidence": "Every pain in analysis.md and ICP has a bold \"Possible Solutions\" heading; chat uses \"*Possible Solutions:*\""
+        },
+        {
+          "text": "The output suggests at least one open, story-based question to replace a flagged question",
+          "passed": true,
+          "evidence": "\"Try instead\" column: e.g. \"Walk me through what happens to a receipt after a shoot.\""
+        },
+        {
+          "text": "The response ends with research gaps (what to ask next) and lists the files written with relative paths under docs/customer-research/",
+          "passed": true,
+          "evidence": "Ends with \"What to ask next (research gaps)\" then \"Files written:\" with docs/customer-research/... paths"
+        }
+      ],
+      "notes": [
+        "Classified a solo freelancer as B2B (defensible; skill reference covers freelancers)",
+        "Write tool refused analysis.md; files written via Bash heredoc"
+      ]
+    },
+    {
+      "eval_id": 10,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 32.2,
+        "tokens": 52455,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response names the existing customer-research/ideal-customer-profile.md",
+          "passed": true,
+          "evidence": "\"customer-research/ideal-customer-profile.md (version 0.2, built from Marcus 2026-04-14 and Sam 2026-06-20)\""
+        },
+        {
+          "text": "No new ideal-customer-profile.md is created under docs/customer-research/",
+          "passed": true,
+          "evidence": "Project unchanged vs fixture; no docs/ created"
+        },
+        {
+          "text": "The founder is offered both moving the research and recording its current location in .vf-founder-kit/config.yaml",
+          "passed": true,
+          "evidence": "Option 1 \"Move it\" to docs/customer-research/; option 2 \"Keep it where it is\" recording customer-research.root: customer-research in .vf-founder-kit/config.yaml"
+        },
+        {
+          "text": "No files are written or moved before the founder chooses",
+          "passed": true,
+          "evidence": "\"Nothing has been written or moved yet.\"; diff -r against fixture is empty"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 249.9,
+        "tokens": 76729,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output states this is a two-sided marketplace and names both sides",
+          "passed": true,
+          "evidence": "\"Your idea is a marketplace: it serves two groups... Dog owners (Aisha) buy walks... Dog walkers (Tom) supply walks\""
+        },
+        {
+          "text": "A master ideal-customer-profile.md and two segment files, one per side, are written",
+          "passed": true,
+          "evidence": "ideal-customer-profile.md (master), ideal-customer-profile-dog-owners.md, ideal-customer-profile-dog-walkers.md all written"
+        },
+        {
+          "text": "Segment files are named after who the people are (e.g. dog-owners, dog-walkers), not side-a/side-b or supply/demand",
+          "passed": true,
+          "evidence": "Segments named dog-owners / dog-walkers"
+        },
+        {
+          "text": "The master file links to both segment files and each segment file links back to the master",
+          "passed": true,
+          "evidence": "Master overview table links both segment files; each segment header: \"master file: [ideal-customer-profile.md](ideal-customer-profile.md)\""
+        },
+        {
+          "text": "Owner-only pains are in the owners file, walker-only pains are in the walkers file, and the shared need for consistent repeat pairings is in the master file, with no pain duplicated across files",
+          "passed": true,
+          "evidence": "Repeat-pairing pain only in master \"Cross-side pain points\"; segment files link to it; no-show/long shifts in owners, payment/rescheduling/commission in walkers"
+        },
+        {
+          "text": "The output treats owners as B2C and walkers as B2B (or explains a different choice with evidence)",
+          "passed": true,
+          "evidence": "Owners B2C, walkers \"B2B, very small business (sole trader)\" with reasoning"
+        },
+        {
+          "text": "The output notes that each side rests on a single conversation and lists research gaps per side",
+          "passed": true,
+          "evidence": "\"one conversation per side. Balanced, but very thin\"; research gaps split Both sides / Owners / Walkers in chat and in each segment file"
+        }
+      ],
+      "notes": [
+        "Interviewer questions absent from notes, so findings labelled \"spontaneous (provisional)\"; \"vetted\" marked as founder assumption"
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 126.4,
+        "tokens": 64791,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output states the business is B2C and gives evidence from the note",
+          "passed": true,
+          "evidence": "\"This is a consumer (B2C) product... She talks about \\\"my flatmate\\\", \\\"my days off\\\" and \\\"I spent about forty quid on meal kits\\\"\""
+        },
+        {
+          "text": "The ICP uses an individual/customer profile (life situation, routines), not a company profile with industry or company size",
+          "passed": true,
+          "evidence": "ICP \"1. Customer profile\": situation, rota, household, planning habits; no industry/company size"
+        },
+        {
+          "text": "Every pain point carries a word-for-word quote from Nadia",
+          "passed": true,
+          "evidence": "Each of 3 pains in ICP and chat has verbatim blockquote attributed \"(Nadia, 2026-06-02)\""
+        },
+        {
+          "text": "Each pain point has a section headed 'Possible Solutions'",
+          "passed": true,
+          "evidence": "Each pain has bold \"Possible Solutions\" heading in ICP (italic in chat)"
+        },
+        {
+          "text": "Any persona created has a descriptive name, not 'Persona A', 'Primary' or similar",
+          "passed": true,
+          "evidence": "Persona \"Rota-Wrecked Nadia\" (descriptive, though it reuses the real customer's first name)"
+        },
+        {
+          "text": "The output contains no market-size, revenue or lifetime-value estimates",
+          "passed": true,
+          "evidence": "No market-size/revenue/LTV figures; only Nadia's own \u00a340 spend"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 157.2,
+        "tokens": 71995,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output states this conversation is B2B and uses a company profile (studio size, headcount, volume of work, tools)",
+          "passed": true,
+          "evidence": "\"The big change: this is a B2B product\"; ICP \"Company profile\": small studio, owner + 2 associates + part-time admin, \"about sixty weddings a year\", tools section"
+        },
+        {
+          "text": "The decision-making process is captured: Lena decides and pays, Jo can block adoption",
+          "passed": true,
+          "evidence": "ICP Decision-making: \"the owner decides and pays, and the admin who does the work can veto: \\\"Anything new, I decide, but if Jo hates it, it's dead.\\\"\""
+        },
+        {
+          "text": "Buyer personas are framed as roles within the company (owner, admin), with memorable names",
+          "passed": true,
+          "evidence": "Personas \"Delegating Studio-Owner Lena\" (owner) and \"Two-Days-a-Week Admin Jo\" (admin)"
+        },
+        {
+          "text": "Updates go to the existing docs/customer-research/ideal-customer-profile.md, with a new version-log entry citing this conversation",
+          "passed": true,
+          "evidence": "Existing ICP updated to v0.2, version-log row cites interviews/lena-2026-06-09"
+        },
+        {
+          "text": "The output notes this studio differs from the earlier sole-trader evidence and turns it into a decision or research gap rather than silently merging",
+          "passed": true,
+          "evidence": "Notes Lena is \"a poor fit for the old ICP\"; \"What you need to decide: ... solo photographers ... small studios ... Which will you sell to first?\"; gaps added"
+        }
+      ],
+      "notes": [
+        "Reclassified Marcus (sole trader) as B2B too and restructured the whole ICP without asking; merged Marcus and Lena year-end pains into one (told the founder)",
+        "Write tool refused analysis.md; used Bash heredoc"
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 118.8,
+        "tokens": 59549,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Only the Night-Shift Nadia persona is changed; other personas and sections are left as they were",
+          "passed": true,
+          "evidence": "Diff: only Night-Shift Nadia body, Last updated and version-log row changed; other personas untouched"
+        },
+        {
+          "text": "The output shows the persona text before and after the change",
+          "passed": true,
+          "evidence": "\"Before\" / \"After\" blockquotes of the persona text in chat"
+        },
+        {
+          "text": "The mobile-first change is tied to the two nurse conversations, and the skill asks for their quotes or notes if they are not in the project",
+          "passed": true,
+          "evidence": "Evidence line cites \"founder report of two more nurses\"; asks for first name, date and \"what they said, as close to their own words as you can remember\" to save under interviews/"
+        },
+        {
+          "text": "The 'budget-conscious' change is not added as fact: it is either held pending confirmation or labelled as a founder assumption not yet evidenced",
+          "passed": true,
+          "evidence": "Budget change not made: \"not changed yet, needs your OK... I'll add it... marked founder assumption, not yet evidenced\""
+        },
+        {
+          "text": "A new version-log entry records what changed, the date and the source",
+          "passed": true,
+          "evidence": "v0.3 | 2026-10-19 | mobile-first change | \"Founder report of two more nurses, 2026-10-19\""
+        },
+        {
+          "text": "No pain points are written into the persona; any pain referenced links to the ICP pain point section",
+          "passed": true,
+          "evidence": "Persona keeps \"Pains: see \\\"Food wasted when the rota changes\\\"...\" references by name; no pain text added"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 61.9,
+        "tokens": 55693,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The answer is drawn from the existing ICP file and cites its quotes or conversations",
+          "passed": true,
+          "evidence": "\"I've answered this from your ideal customer profile (docs/customer-research/ideal-customer-profile.md, v0.4...)\"; quotes with name/date for each pain"
+        },
+        {
+          "text": "The answer states how many conversations support each pain and a confidence level",
+          "passed": true,
+          "evidence": "\"4 of 5... Confidence: fairly high\", \"3 of 5... medium\", \"2 of 5... low\""
+        },
+        {
+          "text": "The pain supported only by prompted evidence is identified as weaker",
+          "passed": true,
+          "evidence": "\"\\\"Wanting receipts categorised automatically\\\" came from a leading question... That's agreement, not evidence\""
+        },
+        {
+          "text": "No pain point or customer characteristic appears that is not in the ICP file",
+          "passed": true,
+          "evidence": "All pains, quotes and names match the fixture ICP; version-log-only pain flagged as missing, not invented"
+        },
+        {
+          "text": "The response ends with research gaps",
+          "passed": true,
+          "evidence": "Final section \"What to ask in your next conversations\", then \"No files were written or changed\" closing note"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 74.0,
+        "tokens": 60233,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Flags the generic persona names and suggests replacing them with descriptive ones",
+          "passed": true,
+          "evidence": "Gap 5: \"\\\"Primary Persona\\\" and \\\"Secondary Persona\\\" are easy to forget... Something like \\\"The Desk-Lunch Lifter\\\"\""
+        },
+        {
+          "text": "Flags pain points living inside personas instead of the ICP pain point section",
+          "passed": true,
+          "evidence": "Gap 4: \"All pains should live in one pain point section in the ICP, and each persona should just name the pains\""
+        },
+        {
+          "text": "Flags missing word-for-word quotes and missing Possible Solutions sections",
+          "passed": true,
+          "evidence": "Gap 4 lists \"at least one word-for-word quote\" and \"a Possible Solutions section. None of the five pains has any of these.\""
+        },
+        {
+          "text": "Flags the \u00a340m addressable-market estimate as unsupported by customer evidence",
+          "passed": true,
+          "evidence": "Gap 2: \"Nothing in your customer conversations backs this up, and it doesn't belong in an ICP\""
+        },
+        {
+          "text": "Flags the absence of negative personas and of a version log",
+          "passed": true,
+          "evidence": "Gap 6 \"No negative personas\"; gap 8 \"No header or version log\""
+        },
+        {
+          "text": "Gaps are ranked and paired with questions to ask in the next customer conversations",
+          "passed": true,
+          "evidence": "\"ranked by how much it could mislead you\"; \"What to ask in your next conversations\" maps each question to a gap number"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 8,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 43.3,
+        "tokens": 55038,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output lists the ICP's research gaps as the priority questions",
+          "passed": true,
+          "evidence": "\"What to find out next (your research gaps)\": both ICP gaps listed and marked \"(already listed in your profile)\", alongside four inferred gaps (one ranked above them)"
+        },
+        {
+          "text": "The skill does not produce a full interview script itself",
+          "passed": true,
+          "evidence": "\"I don't write full interview scripts\"; gives per-gap questions only, no opening/warm-up/wrap-up; no file written"
+        },
+        {
+          "text": "The output suggests pm-skills' interview-script and gives the install commands",
+          "passed": true,
+          "evidence": "Suggests interview-script from pm-skills with \"/plugin marketplace add phuryn/pm-skills\" and \"/plugin install pm-product-discovery@pm-skills\""
+        },
+        {
+          "text": "The output warns that hypothetical questions give weak evidence and suggests past-behaviour questions instead",
+          "passed": true,
+          "evidence": "\"Answers to those are weak evidence... swap them for \\\"Tell me about the last time\u2026\\\" questions\""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 73.9,
+        "tokens": 61973,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "All files are written under research/customers/",
+          "passed": true,
+          "evidence": "4 files, all under research/customers/ (ICP + interviews/sam-2026-06-20/{raw,analysis,insights}.md); config untouched"
+        },
+        {
+          "text": "Nothing is written under docs/customer-research/",
+          "passed": true,
+          "evidence": "No docs/ folder created"
+        },
+        {
+          "text": "The response lists the written paths relative to the project, under research/customers/",
+          "passed": true,
+          "evidence": "\"Files written:\" lists research/customers/... relative paths"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.62,
+        "passed": 5,
+        "failed": 3,
+        "total": 8,
+        "time_seconds": 59.5,
+        "tokens": 49774,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The analysis explicitly flags 'isn't it a real pain keeping track of receipts' as a leading question, quoting it",
+          "passed": true,
+          "evidence": "Quotes \"Isn't it a real pain keeping track of receipts...?\" ; file table types it \"Leading (assumes the pain)\""
+        },
+        {
+          "text": "The analysis flags the suggested answer about automatic categorisation and the interviewer's own opinion about spreadsheets",
+          "passed": true,
+          "evidence": "\"pitches your solution and asks him to agree\" and \"You gave your own opinion, then asked a hypothetical price question\""
+        },
+        {
+          "text": "Receipts-tracking, auto-categorisation and willingness to pay \u00a312 are labelled prompted (or equivalent) and given less weight than the tax-return story",
+          "passed": true,
+          "evidence": "Equivalent: \"I'd throw those three answers out\"; tax-return story called \"the real interview\" / \"Strong\""
+        },
+        {
+          "text": "The output does not present '\u00a312 a month' as validated willingness to pay",
+          "passed": true,
+          "evidence": "\"They don't show ... that \u00a312 a month is a price he'll pay.\""
+        },
+        {
+          "text": "At least two pain points from the tax-return story carry word-for-word quotes from Marcus",
+          "passed": false,
+          "evidence": "Tax-return findings are paraphrased; only \"I swore I'd do it monthly this year. I haven't.\" is quoted verbatim; matching-payments pain has no exact quote"
+        },
+        {
+          "text": "Each pain point has a section headed 'Possible Solutions'",
+          "passed": false,
+          "evidence": "No \"Possible Solutions\" sections anywhere"
+        },
+        {
+          "text": "The output suggests at least one open, story-based question to replace a flagged question",
+          "passed": true,
+          "evidence": "Suggests \"Walk me through the last time a client paid late...\" and \"Have you ever paid anyone to help with your books... What did that cost?\" in place of hypothetical/price questions (not explicitly framed as replacements)"
+        },
+        {
+          "text": "The response ends with research gaps (what to ask next) and lists the files written with relative paths under docs/customer-research/",
+          "passed": false,
+          "evidence": "Ends with \"I've saved ... to research/interviews/2026-04-14-marcus.md\"; nothing under docs/customer-research/, no files-written list"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 10,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 39.7,
+        "tokens": 48187,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response names the existing customer-research/ideal-customer-profile.md",
+          "passed": true,
+          "evidence": "Updates and names \"customer-research/ideal-customer-profile.md, now version 0.3\""
+        },
+        {
+          "text": "No new ideal-customer-profile.md is created under docs/customer-research/",
+          "passed": true,
+          "evidence": "No docs/ folder created; worked in legacy folder"
+        },
+        {
+          "text": "The founder is offered both moving the research and recording its current location in .vf-founder-kit/config.yaml",
+          "passed": false,
+          "evidence": "No offer to move the research or record its location in config"
+        },
+        {
+          "text": "No files are written or moved before the founder chooses",
+          "passed": false,
+          "evidence": "Wrote customer-research/interviews/jo-2026-07-01/raw.md and updated the ICP to v0.3 without asking"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.29,
+        "passed": 2,
+        "failed": 5,
+        "total": 7,
+        "time_seconds": 58.8,
+        "tokens": 50322,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output states this is a two-sided marketplace and names both sides",
+          "passed": true,
+          "evidence": "\"Because this is a two-sided marketplace, there are two profiles, one for each side\" (owners / walkers)"
+        },
+        {
+          "text": "A master ideal-customer-profile.md and two segment files, one per side, are written",
+          "passed": false,
+          "evidence": "Only docs/icp.md (single file covering both segments); no master + segment files"
+        },
+        {
+          "text": "Segment files are named after who the people are (e.g. dog-owners, dog-walkers), not side-a/side-b or supply/demand",
+          "passed": false,
+          "evidence": "No segment files exist; segments are sections \"Segment A\"/\"Segment B\" (demand/supply side)"
+        },
+        {
+          "text": "The master file links to both segment files and each segment file links back to the master",
+          "passed": false,
+          "evidence": "No separate files, so no cross-links"
+        },
+        {
+          "text": "Owner-only pains are in the owners file, walker-only pains are in the walkers file, and the shared need for consistent repeat pairings is in the master file, with no pain duplicated across files",
+          "passed": false,
+          "evidence": "All pains sit in one file, so the per-file split cannot hold"
+        },
+        {
+          "text": "The output treats owners as B2C and walkers as B2B (or explains a different choice with evidence)",
+          "passed": false,
+          "evidence": "No B2B/B2C classification for either side (\"self-employed\" mentioned only descriptively)"
+        },
+        {
+          "text": "The output notes that each side rests on a single conversation and lists research gaps per side",
+          "passed": true,
+          "evidence": "\"This rests on one person per side\"; per-side \"Open questions to follow up\" in each interview note, referenced from icp.md"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.33,
+        "passed": 2,
+        "failed": 4,
+        "total": 6,
+        "time_seconds": 53.4,
+        "tokens": 48205,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output states the business is B2C and gives evidence from the note",
+          "passed": false,
+          "evidence": "Never states B2C/consumer"
+        },
+        {
+          "text": "The ICP uses an individual/customer profile (life situation, routines), not a company profile with industry or company size",
+          "passed": false,
+          "evidence": "No ICP produced at all (only research/feedback/2026-06-02-nadia.md); a one-line \"Who:\" description is not an ICP profile"
+        },
+        {
+          "text": "Every pain point carries a word-for-word quote from Nadia",
+          "passed": false,
+          "evidence": "Post-night-shift eating pain is paraphrased (\"Cereal, or her flatmate's leftovers\") with no exact quote; quotes are in a separate \"Key quotes\" list, not on each pain"
+        },
+        {
+          "text": "Each pain point has a section headed 'Possible Solutions'",
+          "passed": false,
+          "evidence": "No \"Possible Solutions\" sections"
+        },
+        {
+          "text": "Any persona created has a descriptive name, not 'Persona A', 'Primary' or similar",
+          "passed": true,
+          "evidence": "Vacuous: no persona created, so none is badly named"
+        },
+        {
+          "text": "The output contains no market-size, revenue or lifetime-value estimates",
+          "passed": true,
+          "evidence": "No market-size/revenue/LTV estimates; \u00a340 is Nadia's own spend"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 99.8,
+        "tokens": 53739,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output states this conversation is B2B and uses a company profile (studio size, headcount, volume of work, tools)",
+          "passed": true,
+          "evidence": "\"B. Small studios with staff (B2B)\"; Segment B profile: owner + associates + part-time admin, ~60 weddings/yr, existing accounting software and accountant"
+        },
+        {
+          "text": "The decision-making process is captured: Lena decides and pays, Jo can block adoption",
+          "passed": true,
+          "evidence": "Buying group table: Lena \"Makes the final decision\", Jo \"Can kill it\""
+        },
+        {
+          "text": "Buyer personas are framed as roles within the company (owner, admin), with memorable names",
+          "passed": true,
+          "evidence": "Personas \"Studio-Owner Lena (segment B, buyer)\" and \"Admin Jo (segment B, user with veto)\" - role-based; names are plain but not generic"
+        },
+        {
+          "text": "Updates go to the existing docs/customer-research/ideal-customer-profile.md, with a new version-log entry citing this conversation",
+          "passed": true,
+          "evidence": "docs/customer-research/ideal-customer-profile.md updated; v0.2 row cites interviews/lena-2026-06-09"
+        },
+        {
+          "text": "The output notes this studio differs from the earlier sole-trader evidence and turns it into a decision or research gap rather than silently merging",
+          "passed": true,
+          "evidence": "\"Business type: Not settled. Two segments\"; research gap \"Segment choice: sole traders or studios with staff?... One conversation each is not enough\""
+        }
+      ],
+      "notes": [
+        "Write tool refused analysis.md; analysis folded into ICP and chat"
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.67,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 58.3,
+        "tokens": 49878,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Only the Night-Shift Nadia persona is changed; other personas and sections are left as they were",
+          "passed": false,
+          "evidence": "Also edited the \"Goals, decision-making, budget, digital habits\" section (new mobile-planning bullet), Research gaps, and \"Based on\" count 4->6"
+        },
+        {
+          "text": "The output shows the persona text before and after the change",
+          "passed": false,
+          "evidence": "No before/after text shown; only \"That replaces the old line saying she plans at home on her laptop\""
+        },
+        {
+          "text": "The mobile-first change is tied to the two nurse conversations, and the skill asks for their quotes or notes if they are not in the project",
+          "passed": true,
+          "evidence": "Logged as from \"2 more nurse conversations, reported by founder\"; asks for names/dates \"so I can cite them properly\" and suggests adding notes to interviews/"
+        },
+        {
+          "text": "The 'budget-conscious' change is not added as fact: it is either held pending confirmation or labelled as a founder assumption not yet evidenced",
+          "passed": true,
+          "evidence": "Persona line: \"Hypothesis, not yet evidenced: budget-conscious\"; asks whether founder wants it as fact"
+        },
+        {
+          "text": "A new version-log entry records what changed, the date and the source",
+          "passed": true,
+          "evidence": "v0.3 | 2026-10-19 | change described | source \"2 more nurse conversations, reported by founder\""
+        },
+        {
+          "text": "No pain points are written into the persona; any pain referenced links to the ICP pain point section",
+          "passed": true,
+          "evidence": "No pain text added to persona"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 6,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 41.3,
+        "tokens": 48991,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The answer is drawn from the existing ICP file and cites its quotes or conversations",
+          "passed": true,
+          "evidence": "\"I took this from docs/customer-research/ideal-customer-profile.md\"; quotes cited per pain"
+        },
+        {
+          "text": "The answer states how many conversations support each pain and a confidence level",
+          "passed": true,
+          "evidence": "\"4 of 5... fairly sure\", \"3 of 5... moderately sure\", \"2 of 5... not sure yet\""
+        },
+        {
+          "text": "The pain supported only by prompted evidence is identified as weaker",
+          "passed": true,
+          "evidence": "\"This isn't evidence at all. Marcus said \\\"Sure, that sounds good\\\" after a leading question\""
+        },
+        {
+          "text": "No pain point or customer characteristic appears that is not in the ICP file",
+          "passed": true,
+          "evidence": "Nothing beyond the file (profile description \"wedding, event or portrait\" comes from the ICP)"
+        },
+        {
+          "text": "The response ends with research gaps",
+          "passed": true,
+          "evidence": "Ends with \"Next steps\" listing questions for the next 3-5 conversations (plus an offer to draft a guide)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 7,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.17,
+        "passed": 1,
+        "failed": 5,
+        "total": 6,
+        "time_seconds": 64.9,
+        "tokens": 49467,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Flags the generic persona names and suggests replacing them with descriptive ones",
+          "passed": false,
+          "evidence": "Never mentions the \"Primary Persona\"/\"Secondary Persona\" names; critiques breadth only"
+        },
+        {
+          "text": "Flags pain points living inside personas instead of the ICP pain point section",
+          "passed": false,
+          "evidence": "Does not flag pains sitting inside personas"
+        },
+        {
+          "text": "Flags missing word-for-word quotes and missing Possible Solutions sections",
+          "passed": false,
+          "evidence": "Asks for evidence \"ideally in their own words\" but never mentions Possible Solutions"
+        },
+        {
+          "text": "Flags the \u00a340m addressable-market estimate as unsupported by customer evidence",
+          "passed": true,
+          "evidence": "\"The \u00a340m figure also has no source... source the \u00a340m figure or delete it\" (but suggests replacing it with a bottom-up market estimate, which the skill forbids in an ICP)"
+        },
+        {
+          "text": "Flags the absence of negative personas and of a version log",
+          "passed": false,
+          "evidence": "\"Who isn't a fit. Exclusions\" covers negative personas, but only asks for a \"last updated\" date, not a version log"
+        },
+        {
+          "text": "Gaps are ranked and paired with questions to ask in the next customer conversations",
+          "passed": false,
+          "evidence": "Gaps are ordered \"most important first\", but not paired with interview questions; only a generic \"Ask about what they do today, what it costs\""
+        }
+      ],
+      "notes": [
+        "Named UK competitors and an illustrative \u00a36-10 meal price from general knowledge (unverified)"
+      ]
+    },
+    {
+      "eval_id": 8,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 58.5,
+        "tokens": 48848,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output lists the ICP's research gaps as the priority questions",
+          "passed": true,
+          "evidence": "\"Close your two research gaps: how often and how late invoices get paid, and whether they've ever paid for bookkeeping software\" with questions for each"
+        },
+        {
+          "text": "The skill does not produce a full interview script itself",
+          "passed": false,
+          "evidence": "Wrote a full script to docs/customer-research/interview-script.md (Qualify / Pain / Spending / Close sections)"
+        },
+        {
+          "text": "The output suggests pm-skills' interview-script and gives the install commands",
+          "passed": false,
+          "evidence": "No mention of pm-skills or interview-script install commands"
+        },
+        {
+          "text": "The output warns that hypothetical questions give weak evidence and suggests past-behaviour questions instead",
+          "passed": true,
+          "evidence": "\"Ask what they did last time, not what they would do. \\\"Would you use an app that\u2026\\\" gets you polite yeses.\""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 9,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 39.5,
+        "tokens": 47769,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "All files are written under research/customers/",
+          "passed": true,
+          "evidence": "Only file written: research/customers/interviews/2026-06-20-sam.md"
+        },
+        {
+          "text": "Nothing is written under docs/customer-research/",
+          "passed": true,
+          "evidence": "No docs/ folder created"
+        },
+        {
+          "text": "The response lists the written paths relative to the project, under research/customers/",
+          "passed": true,
+          "evidence": "\"I saved the analysis there: research/customers/interviews/2026-06-20-sam.md\" (stated at the top, not the end)"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 107.98,
+        "stddev": 65.453,
+        "min": 32.2,
+        "max": 249.9
+      },
+      "tokens": {
+        "mean": 62913.6,
+        "stddev": 8028.5189,
+        "min": 52455,
+        "max": 76729
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.608,
+        "stddev": 0.3089,
+        "min": 0.17,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 57.37,
+        "stddev": 17.5477,
+        "min": 39.5,
+        "max": 99.8
+      },
+      "tokens": {
+        "mean": 49518.0,
+        "stddev": 1697.7814,
+        "min": 47769,
+        "max": 53739
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.39",
+      "time_seconds": "+50.6",
+      "tokens": "+13396"
+    }
+  },
+  "notes": [
+    "One run per configuration (with skill / without skill), so there is no variance estimate: \u00b1 is the spread across evals, not across repeated runs.",
+    "Founder turn-taking was simulated: analyse evals (1-4, 9) got one scripted reply ('Go ahead. No need to anonymise anything.'); evals 5-8 and 10 were single turns.",
+    "Evals 4, 6 and 9 do not discriminate: the baseline also passes, because the fixture ICP or config already shows the expected format or location.",
+    "Without the skill, runs paraphrased quotes, skipped Possible Solutions sections, kept marketplaces in one file, wrote a full interview script, and wrote files without asking when research lived in a legacy folder."
+  ]
+}

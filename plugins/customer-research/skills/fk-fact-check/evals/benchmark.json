@@ -1,0 +1,594 @@
+{
+  "metadata": {
+    "skill_name": "fk-fact-check",
+    "skill_path": "plugins/customer-research/skills/fk-fact-check",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-10-19T06:14:18Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 9,
+        "failed": 0,
+        "total": 9,
+        "time_seconds": 287.4,
+        "tokens": 83379,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "'Beautifully simple bookkeeping' is not treated as a claim to check",
+          "passed": true,
+          "evidence": "Listed under 'Left out' as puffery; 'Not checked' section in report."
+        },
+        {
+          "text": "The claim list is shown to the founder before any research is done",
+          "passed": true,
+          "evidence": "Numbered list of 4 tagged claims, 'Do you want to add, drop or narrow...' before the FOUNDER line."
+        },
+        {
+          "text": "The 31 January claim is not marked Supported as written: the report says the 31 January online deadline is right but 'must file ... online' overstates the rule (paper returns are allowed, due 31 October), cites an official GOV.UK or HMRC source with link and the date it was checked, and suggests a rewrite that keeps the correct online deadline",
+          "passed": true,
+          "evidence": "Marked Contradicted: 'the 31 January online deadline itself is correct' but paper returns are allowed (due 31 October) and those earning \u00a31,000 or less usually need not file. Sources: GOV.UK deadlines / who must send a return / sending a return, regulator, checked 2026-10-19. Rewrite keeps 'the online deadline is 31 January after the tax year ends'. (Regraded after the assertion was corrected: the original expected Supported, which was wrong for this wording.)"
+        },
+        {
+          "text": "'Over 90% of UK freelancers are photographers' is marked Contradicted with a one-sentence reason and a source",
+          "passed": true,
+          "evidence": "Contradicted; one-sentence reason citing IPSE 2.07m freelancers / ~81,300 photographers (~4%); IPSE and Statista sources."
+        },
+        {
+          "text": "'Saves you 5 hours a week' and '500 photographers' are marked Unsubstantiated with 'needs your own evidence', not Contradicted, and each says what would substantiate it",
+          "passed": true,
+          "evidence": "Both 'Unsubstantiated: needs your own evidence'; timed test/beta quotes for 5 hours, dated sign-up/active-user records for 500."
+        },
+        {
+          "text": "Every Contradicted or Unsubstantiated claim has a suggested rewrite that says only what the evidence supports",
+          "passed": true,
+          "evidence": "Rewrites for all four claims (remove number, safer deadline wording, remove 90% stat, waitlist/beta wording)."
+        },
+        {
+          "text": "The report says advertising claims should be ones you can back up, and that it is not legal advice",
+          "passed": true,
+          "evidence": "'Advertising claims should be ones you can back up ... This report helps with that; it is not legal advice.'"
+        },
+        {
+          "text": "The report has a summary with counts by status, then per claim: status, reason, evidence, sources with link, date and reliability, and confidence",
+          "passed": true,
+          "evidence": "Summary table with counts; per claim Status/Reason/Evidence/Sources/Confidence. Per-claim Sources give date+reliability but URLs only in the final Sources list (accepted)."
+        },
+        {
+          "text": "The report is saved under docs/customer-research/fact-checks/ with a dated, hyphenated filename and the path is stated",
+          "passed": true,
+          "evidence": "docs/customer-research/fact-checks/2026-10-19-landing-page.md exists and stated under 'Files written'."
+        }
+      ],
+      "notes": [
+        "Analyst subagent hit concurrent-subagent limit; analyst run inline.",
+        "Deadline claim judged Contradicted, conflicting with assertion 3; run is defensible.",
+        "Inline analyst"
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 285.8,
+        "tokens": 74668,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The skill treats the content as a competitor's, not the founder's own, and does not mark claims 'needs your own evidence'",
+          "passed": true,
+          "evidence": "'They're a competitor's claims, so I'll judge them only on public evidence and won't suggest rewrites'; no needs-own-evidence tags."
+        },
+        {
+          "text": "'#1 meal planner for NHS staff' is flagged as a superlative needing evidence",
+          "passed": true,
+          "evidence": "Claim 1 tagged '(competitor's claim; superlative: \"#1\" needs evidence like any other claim)'."
+        },
+        {
+          "text": "The award claim is Supported only if a source names that exact award and PlateShift as winner; otherwise it is Unsubstantiated or Contradicted with a reason",
+          "passed": true,
+          "evidence": "Unsubstantiated: 'No award with this exact name was found, and none of the similarly named 2025 awards lists PlateShift'."
+        },
+        {
+          "text": "Where no reliable evidence was found, the report says what was searched for",
+          "passed": true,
+          "evidence": "States App Store UK/US, Google Play, press, NHS sources searched; iTunes/Google Play search URLs listed; Trustpilot noted as not searched."
+        },
+        {
+          "text": "The report points out which unsupported competitor claims matter for positioning rather than suggesting rewrites of the competitor's copy",
+          "passed": true,
+          "evidence": "'What this means for your positioning' section; no rewrites of competitor copy."
+        },
+        {
+          "text": "Every source carries a reliability note (official, regulator, established publication, review site or self-published)",
+          "passed": true,
+          "evidence": "Every source in per-claim and final lists tagged (official platform, self-published, official registry, established publication, etc.)."
+        }
+      ],
+      "notes": [
+        "No PlateShift product matching the copy was found; caveat that claims 2,3,5 would be Contradicted if it is the iOS recipe app."
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 431.5,
+        "tokens": 82097,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "'the only', 'the fastest' and 'guaranteed 100% accurate' are each listed and marked as superlatives or absolutes needing evidence",
+          "passed": true,
+          "evidence": "All three listed and tagged 'superlative'."
+        },
+        {
+          "text": "The research looks for other bookkeeping apps aimed at photographers as possible counter-examples to 'the only'",
+          "passed": true,
+          "evidence": "Found Sprout Studio, Pocket Receipt, ShootQ, Light Blue, Wurthy (spot-checked Sprout and Pocket Receipt: quotes confirmed)."
+        },
+        {
+          "text": "Each superlative that is not Supported says what evidence would be needed to make it",
+          "passed": true,
+          "evidence": "Each has 'What it would need to be Supported' / 'What would back it up'."
+        },
+        {
+          "text": "Each unsupported superlative gets a rewrite that drops or qualifies the absolute wording",
+          "passed": true,
+          "evidence": "'bookkeeping built specifically for photographers'; drop 'fastest' until timings; conditional guarantee with terms."
+        },
+        {
+          "text": "The output says advertising claims should be ones you can back up, and that it is not legal advice",
+          "passed": true,
+          "evidence": "'Claims in a pitch or an ad should be ones you can back up ... it is not legal advice.'"
+        }
+      ],
+      "notes": [
+        "Region not given; checked UK and US.",
+        "Notes say research was dispatched before the simulated founder reply was recorded - an ordering slip, though the transcript shows the list-then-stop sequence."
+      ]
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 271.2,
+        "tokens": 79285,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output says it is using the existing ideal customer profile or interviews",
+          "passed": true,
+          "evidence": "'I found your ideal customer profile ... and one interview folder ... I'll use it as evidence'."
+        },
+        {
+          "text": "The report cites Marcus's quote, with who said it and when or which file, as evidence for the claim about leaving books until the deadline",
+          "passed": true,
+          "evidence": "Marcus (2026-04-14, interviews/marcus-2026-04-14/raw.md) quote cited in claim 1 evidence."
+        },
+        {
+          "text": "The verdict notes that a handful of interviews supports 'some' or 'many photographers we spoke to', not 'most', and does not mark the claim Supported as written",
+          "passed": true,
+          "evidence": "Unsubstantiated; 'one of three conversations fits the claim. That supports \"some photographers\", not \"most\"'."
+        },
+        {
+          "text": "A rewrite is suggested that matches what the interviews show",
+          "passed": true,
+          "evidence": "'Some of the photographers I've spoken to leave their books until the tax deadline' and Marcus story rewrite."
+        },
+        {
+          "text": "'Shutterbooks does it as you go' is not marked Contradicted",
+          "passed": true,
+          "evidence": "'Unsubstantiated: needs your own evidence'."
+        },
+        {
+          "text": "The report is saved under docs/customer-research/fact-checks/ and the path is stated",
+          "passed": true,
+          "evidence": "docs/customer-research/fact-checks/2026-10-19-photographer-sales-email.md written and stated."
+        }
+      ],
+      "notes": [
+        "Region assumed UK.",
+        "Executor changed analyst's 'Plenty of' rewrite to 'Some of' to follow skill rule."
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 33.0,
+        "tokens": 56713,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The claims are shown as a numbered list with their original wording",
+          "passed": true,
+          "evidence": "Numbered 1-4 with 'Original:' lines."
+        },
+        {
+          "text": "'3,000 nurses' is tagged as needing the founder's own data and 'the UK's first' as a superlative",
+          "passed": true,
+          "evidence": "Claim 3 tagged 'needs your own data'; claim 4 tagged 'superlative (\"first\")'."
+        },
+        {
+          "text": "The batch-cooking claim is not in the list of claims to check",
+          "passed": true,
+          "evidence": "Under 'Dropped, as you asked'; not in claims to check."
+        },
+        {
+          "text": "The 1 in 10 claim is listed in its narrowed form (night-shift workers in England) with the original wording alongside",
+          "passed": true,
+          "evidence": "'Night-shift workers in England make up about 1 in 10 employees.' with Original UK wording."
+        },
+        {
+          "text": "The founder is asked whether to add, drop or narrow anything else before research",
+          "passed": true,
+          "evidence": "'Is this list right, or do you want to add, drop or narrow anything else?'"
+        },
+        {
+          "text": "No web research, research agent or verdicts appear before the founder replies",
+          "passed": true,
+          "evidence": "Notes: no web searches, no subagents; no verdicts in response."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.56,
+        "passed": 5,
+        "failed": 4,
+        "total": 9,
+        "time_seconds": 46.5,
+        "tokens": 52068,
+        "tool_calls": 3,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "'Beautifully simple bookkeeping' is not treated as a claim to check",
+          "passed": true,
+          "evidence": "Listed as #5 but verdict 'Fine. It's opinion, not a factual claim' - not researched. Borderline: response says 'checked all five claims'."
+        },
+        {
+          "text": "The claim list is shown to the founder before any research is done",
+          "passed": false,
+          "evidence": "No claim list or pause; went straight to verdicts ('Didn't stop to confirm the claim list first')."
+        },
+        {
+          "text": "The 31 January claim is not marked Supported as written: the report says the 31 January online deadline is right but 'must file ... online' overstates the rule (paper returns are allowed, due 31 October), cites an official GOV.UK or HMRC source with link and the date it was checked, and suggests a rewrite that keeps the correct online deadline",
+          "passed": false,
+          "evidence": "Says 'Mostly right, but worded wrongly', explains paper returns (31 October) and gives a rewrite keeping the online deadline, but no source carries a checked date and no per-claim status/source line is given, so the source-with-date part is not met. (Regraded after the assertion was corrected: the original expected Supported, which was wrong for this wording.)"
+        },
+        {
+          "text": "'Over 90% of UK freelancers are photographers' is marked Contradicted with a one-sentence reason and a source",
+          "passed": true,
+          "evidence": "'False. Remove it.' with IPSE figures and links; reason is a paragraph rather than one sentence (accepted on substance)."
+        },
+        {
+          "text": "'Saves you 5 hours a week' and '500 photographers' are marked Unsubstantiated with 'needs your own evidence', not Contradicted, and each says what would substantiate it",
+          "passed": true,
+          "evidence": "'Needs your evidence' / 'Only true if your own numbers say so'; timed beta users / real current count named. Not Contradicted."
+        },
+        {
+          "text": "Every Contradicted or Unsubstantiated claim has a suggested rewrite that says only what the evidence supports",
+          "passed": true,
+          "evidence": "Rewrites for 1, 2, 3 (delete/qualitative), 4 (waitlist/[N])."
+        },
+        {
+          "text": "The report says advertising claims should be ones you can back up, and that it is not legal advice",
+          "passed": true,
+          "evidence": "'UK advertising rules ... expect you to hold evidence for it before you publish' and 'This is a fact check, not tax or legal advice.'"
+        },
+        {
+          "text": "The report has a summary with counts by status, then per claim: status, reason, evidence, sources with link, date and reliability, and confidence",
+          "passed": false,
+          "evidence": "Summary table has no counts by status; no confidence, no source dates or reliability."
+        },
+        {
+          "text": "The report is saved under docs/customer-research/fact-checks/ with a dated, hyphenated filename and the path is stated",
+          "passed": false,
+          "evidence": "No file written."
+        }
+      ],
+      "notes": [
+        "IPSE figures from search summaries, not fetched pages."
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.83,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 55.0,
+        "tokens": 55346,
+        "tool_calls": 7,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The skill treats the content as a competitor's, not the founder's own, and does not mark claims 'needs your own evidence'",
+          "passed": true,
+          "evidence": "Treated as competitor; no needs-own-evidence."
+        },
+        {
+          "text": "'#1 meal planner for NHS staff' is flagged as a superlative needing evidence",
+          "passed": true,
+          "evidence": "'\"#1\" with no source behind it is a classic unsupported superlative.'"
+        },
+        {
+          "text": "The award claim is Supported only if a source names that exact award and PlateShift as winner; otherwise it is Unsubstantiated or Contradicted with a reason",
+          "passed": true,
+          "evidence": "'Unverified' with reason: no award with that name, similar awards don't mention PlateShift."
+        },
+        {
+          "text": "Where no reliable evidence was found, the report says what was searched for",
+          "passed": true,
+          "evidence": "'I couldn't find PlateShift on the App Store or Google Play'; 'No ranking, NHS listing or survey supports this'; lists awards searched."
+        },
+        {
+          "text": "The report points out which unsupported competitor claims matter for positioning rather than suggesting rewrites of the competitor's copy",
+          "passed": true,
+          "evidence": "'What this means for you' positioning advice; no rewrites."
+        },
+        {
+          "text": "Every source carries a reliability note (official, regulator, established publication, review site or self-published)",
+          "passed": false,
+          "evidence": "Sources list has links only, no reliability notes."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 56.2,
+        "tokens": 53718,
+        "tool_calls": 5,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "'the only', 'the fastest' and 'guaranteed 100% accurate' are each listed and marked as superlatives or absolutes needing evidence",
+          "passed": true,
+          "evidence": "'All three claims are absolute (\"only\", \"fastest\", \"guaranteed 100%\")' and each discussed as needing proof."
+        },
+        {
+          "text": "The research looks for other bookkeeping apps aimed at photographers as possible counter-examples to 'the only'",
+          "passed": true,
+          "evidence": "Found Hivebooks, Pandle, ShootQ, Studiocloud, Wave."
+        },
+        {
+          "text": "Each superlative that is not Supported says what evidence would be needed to make it",
+          "passed": false,
+          "evidence": "'Fastest' names a timed test, but 'the only' (false) and 'guaranteed 100%' do not state what evidence would make them true."
+        },
+        {
+          "text": "Each unsupported superlative gets a rewrite that drops or qualifies the absolute wording",
+          "passed": true,
+          "evidence": "Rewrites drop 'only', replace 'fastest' with measured [X] minutes, qualify guarantee."
+        },
+        {
+          "text": "The output says advertising claims should be ones you can back up, and that it is not legal advice",
+          "passed": false,
+          "evidence": "Mentions FTC/ASA require evidence, but no 'not legal advice' statement."
+        }
+      ],
+      "notes": [
+        "TurboTax/ShootQ details from search summaries."
+      ]
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.83,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 66.2,
+        "tokens": 55797,
+        "tool_calls": 7,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output says it is using the existing ideal customer profile or interviews",
+          "passed": true,
+          "evidence": "'I checked the email against your customer research in docs/customer-research/'."
+        },
+        {
+          "text": "The report cites Marcus's quote, with who said it and when or which file, as evidence for the claim about leaving books until the deadline",
+          "passed": true,
+          "evidence": "Quotes Marcus with file path interviews/marcus-2026-04-14/raw.md."
+        },
+        {
+          "text": "The verdict notes that a handful of interviews supports 'some' or 'many photographers we spoke to', not 'most', and does not mark the claim Supported as written",
+          "passed": true,
+          "evidence": "'One out of three can't support \"most\"'; verdict 'not supported'. Does not explicitly offer 'some' (accepted on substance)."
+        },
+        {
+          "text": "A rewrite is suggested that matches what the interviews show",
+          "passed": true,
+          "evidence": "Story-led rewrite matches Marcus's interview; but option 2 'Plenty of freelance photographers' overreaches the evidence."
+        },
+        {
+          "text": "'Shutterbooks does it as you go' is not marked Contradicted",
+          "passed": true,
+          "evidence": "'I can't verify this from the project' - not Contradicted."
+        },
+        {
+          "text": "The report is saved under docs/customer-research/fact-checks/ and the path is stated",
+          "passed": false,
+          "evidence": "No file written."
+        }
+      ],
+      "notes": [
+        "Offers 'Plenty of freelance photographers' rewrite, unsupported by 1/3 interviews."
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 3,
+        "failed": 3,
+        "total": 6,
+        "time_seconds": 137.5,
+        "tokens": 73280,
+        "tool_calls": 11,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The claims are shown as a numbered list with their original wording",
+          "passed": true,
+          "evidence": "Numbered table with original wording."
+        },
+        {
+          "text": "'3,000 nurses' is tagged as needing the founder's own data and 'the UK's first' as a superlative",
+          "passed": false,
+          "evidence": "'3,000 nurses' marked 'your own data', but 'UK's first' not tagged as a superlative."
+        },
+        {
+          "text": "The batch-cooking claim is not in the list of claims to check",
+          "passed": true,
+          "evidence": "Row marked 'Dropped, not checked'."
+        },
+        {
+          "text": "The 1 in 10 claim is listed in its narrowed form (night-shift workers in England) with the original wording alongside",
+          "passed": true,
+          "evidence": "Original wording shown with 'Checking, England only' status (narrowing indicated, not restated as a sentence)."
+        },
+        {
+          "text": "The founder is asked whether to add, drop or narrow anything else before research",
+          "passed": false,
+          "evidence": "Never asked; went straight to research."
+        },
+        {
+          "text": "No web research, research agent or verdicts appear before the founder replies",
+          "passed": false,
+          "evidence": "8 WebSearch + 3 WebFetch and verdicts in the same turn."
+        }
+      ],
+      "notes": [
+        "TUC figures from snippets; England total self-computed.",
+        "NCBI API used to bypass PMC reCAPTCHA"
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 261.78,
+        "stddev": 143.5856,
+        "min": 33.0,
+        "max": 431.5
+      },
+      "tokens": {
+        "mean": 75228.4,
+        "stddev": 10876.5807,
+        "min": 56713,
+        "max": 83379
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.664,
+        "stddev": 0.1557,
+        "min": 0.5,
+        "max": 0.83
+      },
+      "time_seconds": {
+        "mean": 72.28,
+        "stddev": 37.1227,
+        "min": 46.5,
+        "max": 137.5
+      },
+      "tokens": {
+        "mean": 58041.8,
+        "stddev": 8644.2284,
+        "min": 52068,
+        "max": 73280
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.34",
+      "time_seconds": "+189.5",
+      "tokens": "+17187"
+    }
+  },
+  "notes": [
+    "One run per configuration (with skill / without skill), so there is no variance estimate: \u00b1 is the spread across evals, not across repeated runs.",
+    "Tokens and time are the executor agent's own; with-skill runs that dispatched research subagents do not include those subagents' tokens, so their real cost is higher. Some with-skill runs hit a concurrent-subagent limit and ran the research or analyst prompt inline, as the skill's fallback allows.",
+    "Founder turn-taking was simulated: evals 1-4 got one scripted reply ('Go ahead, check them all.') after the claim list; eval 5 was a single turn that should stop at the list.",
+    "Eval 1 'deadline-supported' was replaced by 'deadline-checked' after grading: the claim as worded ('must file ... online by 31 January') overstates the rule, since paper returns due 31 October are allowed, so expecting Supported was wrong. The with-skill run marked it Contradicted with that reason and was regraded as a pass.",
+    "Without the skill, runs mostly skipped the pause before research, wrote no report file, and gave no counts by status, confidence or source reliability."
+  ]
+}
