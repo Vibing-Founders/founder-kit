@@ -1,0 +1,4 @@
+docs_root: docs
+
+customer-research:
+  root: research/customers

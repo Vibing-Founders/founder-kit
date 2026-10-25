@@ -1,0 +1,370 @@
+{
+  "metadata": {
+    "skill_name": "fk-competitors",
+    "skill_path": "plugins/customer-research/skills/fk-competitors",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-10-19T06:24:57Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 617.7,
+        "tokens": 86078,
+        "tool_calls": 66,
+        "errors": 25
+      },
+      "expectations": [
+        {
+          "text": "The output says it is using the existing ICP and reflects its target customer and pain points",
+          "passed": true,
+          "evidence": "Response opens 'I found your ideal customer profile (docs/customer-research/ideal-customer-profile.md) and I'll use it'; restates sole-trader photographer, persona January-Panic Marcus, both pain points (deadline reconciliation, losing track of who has paid), and excludes The Hobby Shooter. Report header lists ICP v0.1 and both pain points."
+        },
+        {
+          "text": "The landscape includes do-nothing / by-hand alternatives, including spreadsheets and paying a bookkeeper",
+          "passed": true,
+          "evidence": "Landscape 'Do nothing, do it by hand, or hire someone': 'a shared Google Sheet for mileage, Word for invoices, then \u00a3200 to a relative who is a bookkeeper'; also GOV.UK penalty costs and the 55p mileage-rate risk for homemade sheets."
+        },
+        {
+          "text": "At least two competitor profiles include customer complaints quoted from reviews, forums or social posts, with links",
+          "passed": true,
+          "evidence": "FreeAgent, Coconut, QuickBooks and HoneyBook profiles each quote named, dated Trustpilot reviews with links to the review pages (e.g. 'Used to be amazing, now just shitty bots'). All Trustpilot; no forum/Reddit (disclosed)."
+        },
+        {
+          "text": "The comparison table's rows reflect the ICP's pain points rather than a generic feature list",
+          "passed": true,
+          "evidence": "Rows: 'Link a cost (lens hire) to a client job (last-minute reconciliation)', 'See who has paid, with reminders (losing track of who has paid)', 'Helps do the books monthly (ICP goal)', mileage (ICP's shared mileage sheet), price incl. \u00a3200 bookkeeper. Columns include Google Sheet + Word."
+        },
+        {
+          "text": "Each 'where a bootstrapper can win' point is tied to evidence and to a named ICP pain point or persona",
+          "passed": true,
+          "evidence": "All 4 points have a 'Serves:' line naming the pain point and/or persona: (1) reconciliation + Marcus, links to Light Blue/HoneyBook/Dubsado; (2) 'do the books monthly' goal + reconciliation pain, linked review quotes and GOV.UK; (3) Marcus + reconciliation pain, evidence is 'quotes in the profiles' (cross-reference, not inline links); (4) Marcus + \u00a3200 budget, linked QuickBooks/Coconut quotes. Point 3's tie to the reconciliation pain is a stretch (ICP says nothing about support), but it names the persona, which the assertion allows."
+        },
+        {
+          "text": "Claims are labelled as verified or inference, and older information is flagged as possibly stale",
+          "passed": true,
+          "evidence": "Legend for [Verified]/[Inference]; profiles, summary and win points labelled throughout; Feb 2025 Coconut review marked 'possibly stale'. Landscape one-liners carry no labels (minor gap). Spot-check: Light Blue accounting page confirms no direct accounting integration and export to MTD bridging tool / accountant, but the quoted words 'MTD bridging tools or provide it to accountants' are a paraphrase, not verbatim."
+        },
+        {
+          "text": "The report is saved under docs/customer-research/competitors/ with a dated, hyphenated filename and the path is stated",
+          "passed": true,
+          "evidence": "docs/customer-research/competitors/2026-10-19-photographer-bookkeeping.md exists; path stated twice in response."
+        }
+      ],
+      "notes": [
+        "Review quotes passed through WebFetch summariser and may be shortened",
+        "No web search (3 refused); ~22 of 62 fetches failed",
+        "Light Blue quote is a paraphrase in quote marks",
+        "Subagent launched before scoping message; simulated reply did not change the brief",
+        "Region assumed UK from ICP"
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 19.8,
+        "tokens": 49538,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The skill checks for an existing ICP before asking questions",
+          "passed": true,
+          "evidence": "'I looked for a customer profile in your project (docs/customer-research/ideal-customer-profile.md) and there isn't one yet'."
+        },
+        {
+          "text": "The skill asks who the app is for before doing the research",
+          "passed": true,
+          "evidence": "Question 1: 'Who is it for?' asked; no research done (notes: no web searches)."
+        },
+        {
+          "text": "Missing scope questions are asked together in one short message",
+          "passed": true,
+          "evidence": "All four questions (who, what, known competitors/workarounds, region) in one message with a short intro; reasonably concise."
+        },
+        {
+          "text": "The skill does not produce a competitor list before the target customer is known",
+          "passed": true,
+          "evidence": "Only example app names inside the 'who do you already know about' question; no competitor landscape produced."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.83,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 523.4,
+        "tokens": 73717,
+        "tool_calls": 58,
+        "errors": 10
+      },
+      "expectations": [
+        {
+          "text": "Direct, indirect and do-nothing alternatives are each covered",
+          "passed": true,
+          "evidence": "Landscape: 'Direct (built for shift workers and food): none found' with closest neighbour Timeshifter; indirect meal-planning apps, trackers, recipe boxes, ready meals; 'Do nothing / by hand' covers NHS 24/7 hospital food, 20-minute break, bring food / buy whatever is open."
+        },
+        {
+          "text": "Pricing is given with the date it was checked or flagged as possibly stale",
+          "passed": true,
+          "evidence": "Header 'Checked 2026-10-19'; profiles say 'Checked 2026-10-19' (Timeshifter, Mealime, Gousto, HelloFresh); Sources 'All checked 2026-10-19'; 2022 NHS and 2024 HSE docs flagged possibly stale."
+        },
+        {
+          "text": "Every competitor claim has a source link, and there is a sources section",
+          "passed": false,
+          "evidence": "Sources section exists and every landscape one-liner has a link. But the comparison table states 'Mealime: Partly (scales portions)', a competitor claim that appears nowhere else in the report and has no source. The Summary's competitor claims (Mealime closing / 2,100+ ratings, Gousto/HelloFresh/Mindful Chef fixed weekly boxes, HelloFresh NHS discount) have no inline links either; they restate linked body claims, so that part alone would be borderline, but under a strict reading the unsourced table claim fails it. The chat response also gives 'recipe boxes (about \u00a34 a portion)' unlinked. Spot-check: Mealime closing notice confirms 21 Oct 2026 closure, data deletion, Albertsons Meals Hub redirect, nothing on non-US users."
+        },
+        {
+          "text": "The output contains no market-size, revenue, valuation or funding speculation",
+          "passed": true,
+          "evidence": "Grep for market size/billion/million/funding/valuation/revenue/TAM finds nothing; only review counts and app ratings."
+        },
+        {
+          "text": "The output ends by naming decisions for the founder and research gaps itself, rather than choosing the strategy or handing those decisions to another tool or agent (pointing to fk-icp for the follow-up customer conversations is fine)",
+          "passed": true,
+          "evidence": "Response ends with 'What to decide next' (four questions: which gap, price anchor, act on Mealime, which group first) then 'What the web couldn't answer' and a pointer to fk-icp for conversations. Win points framed as hypotheses; no strategy chosen. Note: the report file itself has research gaps but no decisions section; decisions are only in the chat."
+        },
+        {
+          "text": "The report is saved to docs/customer-research/competitors/ and the path is stated",
+          "passed": true,
+          "evidence": "docs/customer-research/competitors/2026-10-19-shift-worker-meal-planning.md exists; stated under 'Files written'."
+        }
+      ],
+      "notes": [
+        "No web search at all; 'no direct competitor' unconfirmed (prominently disclosed)",
+        "Quotes via WebFetch summariser",
+        "Unsourced 'scales portions' claim for Mealime in comparison table",
+        "Did not ask a scoping question; founder message deemed sufficient",
+        "Unloadable competitors moved to research gaps"
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.29,
+        "passed": 2,
+        "failed": 5,
+        "total": 7,
+        "time_seconds": 93.6,
+        "tokens": 64039,
+        "tool_calls": 11,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The output says it is using the existing ICP and reflects its target customer and pain points",
+          "passed": true,
+          "evidence": "'I read your ICP (docs/customer-research/ideal-customer-profile.md)... Marcus... two pains: reconciling at the January deadline, and losing track of who has paid.'"
+        },
+        {
+          "text": "The landscape includes do-nothing / by-hand alternatives, including spreadsheets and paying a bookkeeper",
+          "passed": true,
+          "evidence": "'Status-quo competitors': spreadsheet + Word invoices; paying an accountant or relative bookkeeper (\u00a3200)."
+        },
+        {
+          "text": "At least two competitor profiles include customer complaints quoted from reviews, forums or social posts, with links",
+          "passed": false,
+          "evidence": "No customer complaints or review quotes for any competitor; only vendor/listicle facts."
+        },
+        {
+          "text": "The comparison table's rows reflect the ICP's pain points rather than a generic feature list",
+          "passed": false,
+          "evidence": "Tables are per-product (Price / Photographer angle / Notes); no comparison table with ICP pain points as rows."
+        },
+        {
+          "text": "Each 'where a bootstrapper can win' point is tied to evidence and to a named ICP pain point or persona",
+          "passed": false,
+          "evidence": "'Where there may be a gap' maps to the two ICP pains, but evidence is unlinked assertion ('nobody positions on...'); no complaint pattern or cited evidence per gap, and point 2 is explicitly not a gap."
+        },
+        {
+          "text": "Claims are labelled as verified or inference, and older information is flagged as possibly stale",
+          "passed": false,
+          "evidence": "No verified/inference labels; no stale flags beyond a general 'check prices' note."
+        },
+        {
+          "text": "The report is saved under docs/customer-research/competitors/ with a dated, hyphenated filename and the path is stated",
+          "passed": false,
+          "evidence": "Saved as docs/customer-research/competitors.md - not in a competitors/ folder, no dated filename."
+        }
+      ],
+      "notes": [
+        "Prices mostly from search snippets/third-party pages, not vendor pages",
+        "Bokio UK closure date varies by source"
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 4,
+        "total": 4,
+        "time_seconds": 39.2,
+        "tokens": 50489,
+        "tool_calls": 5,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The skill checks for an existing ICP before asking questions",
+          "passed": false,
+          "evidence": "No mention of looking for an ICP; notes say it only listed the (empty) project folder for general context."
+        },
+        {
+          "text": "The skill asks who the app is for before doing the research",
+          "passed": false,
+          "evidence": "Asked 'Who is it for?' only after running 2 web searches and presenting a landscape."
+        },
+        {
+          "text": "Missing scope questions are asked together in one short message",
+          "passed": false,
+          "evidence": "Questions are grouped, but appended to a long landscape message - not one short message."
+        },
+        {
+          "text": "The skill does not produce a competitor list before the target customer is known",
+          "passed": false,
+          "evidence": "Produced a full 'landscape (first pass)' with ~15 named competitors before knowing the target customer."
+        }
+      ],
+      "notes": [
+        "Assumed consumer, probably US/English-speaking market"
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 3,
+        "failed": 3,
+        "total": 6,
+        "time_seconds": 140.6,
+        "tokens": 71430,
+        "tool_calls": 19,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Direct, indirect and do-nothing alternatives are each covered",
+          "passed": true,
+          "evidence": "Direct table, 'Indirect' section, incumbents, and 'Doing nothing (leftovers, vending machine, meal deal) is the real competitor.'"
+        },
+        {
+          "text": "Pricing is given with the date it was checked or flagged as possibly stale",
+          "passed": true,
+          "evidence": "'Researched 2026-10-19. Prices and features are as published ... on that date.'"
+        },
+        {
+          "text": "Every competitor claim has a source link, and there is a sources section",
+          "passed": false,
+          "evidence": "Recipe apps and trackers (Mealime, Samsung Food, MyFitnessPal...) described 'from general knowledge, not re-checked today' with no links."
+        },
+        {
+          "text": "The output contains no market-size, revenue, valuation or funding speculation",
+          "passed": true,
+          "evidence": "No market-size/revenue/valuation/funding speculation (a next step suggests counting search volume, not a size estimate)."
+        },
+        {
+          "text": "The output ends by naming decisions for the founder and research gaps itself, rather than choosing the strategy or handing those decisions to another tool or agent (pointing to fk-icp for the follow-up customer conversations is fine)",
+          "passed": false,
+          "evidence": "Ends with 'My recommendation' (picks segment, pricing, positioning for the founder) and next steps; no decisions named for the founder."
+        },
+        {
+          "text": "The report is saved to docs/customer-research/competitors/ and the path is stated",
+          "passed": false,
+          "evidence": "Saved to research/competitors.md, not docs/customer-research/competitors/."
+        }
+      ],
+      "notes": [
+        "Assumed NHS staff primary, warehouse secondary; no scoping question",
+        "Makes the strategy choice for the founder"
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.9433,
+        "stddev": 0.0981,
+        "min": 0.83,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 386.9667,
+        "stddev": 321.4524,
+        "min": 19.8,
+        "max": 617.7
+      },
+      "tokens": {
+        "mean": 69777.6667,
+        "stddev": 18585.7919,
+        "min": 49538,
+        "max": 86078
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.2633,
+        "stddev": 0.2511,
+        "min": 0.0,
+        "max": 0.5
+      },
+      "time_seconds": {
+        "mean": 91.1333,
+        "stddev": 50.745,
+        "min": 39.2,
+        "max": 140.6
+      },
+      "tokens": {
+        "mean": 61986.0,
+        "stddev": 10620.3803,
+        "min": 50489,
+        "max": 71430
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.68",
+      "time_seconds": "+295.8",
+      "tokens": "+7792"
+    }
+  },
+  "notes": [
+    "One run per configuration (with skill / without skill), so there is no variance estimate: \u00b1 is the spread across evals, not across repeated runs.",
+    "Iteration 2 re-ran only evals 1 and 3 with the skill, after two fixes: the report check now requires every 'where a bootstrapper can win' point to name the ICP pain point or persona it serves, and one-line landscape mentions to carry a link. Eval 2 (both configurations) and the without-skill runs of evals 1 and 3 are carried over from iteration 1, where with the skill passed 15 of 17 assertions (90% mean pass rate).",
+    "Eval 3 with the skill still misses 'every competitor claim has a source link' on a single unlinked comparison-table cell ('Mealime: Partly (scales portions)'); the landscape links that failed in iteration 1 are now present.",
+    "Eval 3's 'decisions-not-strategy' assertion was reworded so that pointing to fk-icp for follow-up conversations, which the skill itself asks for, no longer reads as a failure.",
+    "Tokens and time are the executor agent's own and exclude any research subagent it dispatched. Web search was unavailable (budget used up) during the iteration-2 runs, which worked from page fetches only; some iteration-1 runs hit a concurrent-subagent limit and researched inline.",
+    "Without the skill, runs listed competitors before asking who the app was for, quoted no complaints with links, used product-by-product rather than pain-based comparison rows, and chose the strategy for the founder."
+  ]
+}

@@ -1,0 +1,560 @@
+{
+  "metadata": {
+    "skill_name": "fk-coach",
+    "skill_path": "plugins/founder-coach/skills/fk-coach",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-10-19T06:14:18Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 43.5,
+        "tokens": 60752,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response asks exactly one question of the founder, not a list of questions",
+          "passed": true,
+          "evidence": "Only one question asked: \"What's your connection to freelance photographers?\""
+        },
+        {
+          "text": "The response reflects back what the founder said (designer, part-time, photographers' bookkeeping) before asking",
+          "passed": true,
+          "evidence": "Opens with \"A product designer with an idea for photographers\" and the notes summary repeats \"former product designer, three days a week at an agency\" before the question."
+        },
+        {
+          "text": "The founder is placed at stage 1 (find a problem worth you solving), not at a build stage",
+          "passed": true,
+          "evidence": "\"Where you are: stage 1, Find a problem worth you solving.\"; journey.md stage 1."
+        },
+        {
+          "text": "docs/founder-coach/founder-profile.md is created with the stated background and constraints, and unknowns marked as unknown or not asked rather than guessed",
+          "passed": true,
+          "evidence": "Profile records designer background and 3 days/week at agency; hours for business, runway, goals, reach all \"Not asked yet\"; founder type marked \"to confirm\"."
+        },
+        {
+          "text": "docs/founder-coach/journey.md is created with the current stage and each exit criterion marked met or not yet",
+          "passed": true,
+          "evidence": "journey.md has stage 1 and all three criteria with status; two \"Not yet\", edge criterion \"Unknown\" (not met, consistent with skill rule to mark unknowns) - judged as substance-pass."
+        },
+        {
+          "text": "The response shows what was written and ends with the paths of the files created, relative to the project",
+          "passed": true,
+          "evidence": "Lists what each file contains, then ends with \"Files written: docs/founder-coach/founder-profile.md (created) / docs/founder-coach/journey.md (created...)\"."
+        }
+      ],
+      "notes": [
+        "Founder type Designer recorded from background, marked to confirm."
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 78.2,
+        "tokens": 66291,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The founders remain at stage 2; the coach does not move them to stage 3 or 4 or endorse building now",
+          "passed": true,
+          "evidence": "\"Where you are: stage 2... can I start building?: not yet.\"; journey stays at 2 (\"None (stays at 2)\")."
+        },
+        {
+          "text": "The coach explains that prompted answers and 'would use it' are weak evidence and do not meet the exit criteria",
+          "passed": true,
+          "evidence": "\"Why 'everyone said they'd use it' doesn't count yet: ... saying yes costs them nothing\"; prompted in all six."
+        },
+        {
+          "text": "Each stage 2 exit criterion is shown as not yet met with the evidence behind it",
+          "passed": true,
+          "evidence": "Table: unprompted \"Not yet - 0 of 6...\"; pay \"Not yet - answer to a direct question, no money/time spent\"."
+        },
+        {
+          "text": "Recommends customer-research:fk-icp for the transcripts, with its install command",
+          "passed": true,
+          "evidence": "Recommends fk-icp to analyse transcripts with /plugin marketplace add Vibing-Founders/founder-kit and /plugin install customer-research@founder-kit."
+        },
+        {
+          "text": "Recommends interview-script from pm-skills and warns about its hypothetical questions",
+          "passed": true,
+          "evidence": "Recommends interview-script from pm-skills with install commands; \"Drop any hypothetical questions it suggests (If you could wave a magic wand...)\"."
+        },
+        {
+          "text": "Agrees no more than three next actions, each with a date",
+          "passed": true,
+          "evidence": "Three next actions dated 2026-10-22, 2026-11-06, 2026-11-09 in response and journey.md."
+        },
+        {
+          "text": "Updates docs/founder-coach/journey.md and lists it as changed",
+          "passed": true,
+          "evidence": "journey.md updated (criteria, bet, actions, log); \"Files written: docs/founder-coach/journey.md\"."
+        }
+      ],
+      "notes": [
+        "Did not know whether Aisha or Tom was speaking."
+      ]
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 39.8,
+        "tokens": 60249,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The coach says the logo redesign is probably a distraction at stage 2 because it does not move an exit criterion",
+          "passed": true,
+          "evidence": "\"A new logo doesn't move either of those... So for now I'd call it a distraction\"."
+        },
+        {
+          "text": "The coach links it to the designer founder type's time sink (rebranding or polishing after feedback)",
+          "passed": true,
+          "evidence": "\"a designer's classic trap: reworking the brand after feedback, before there's been a payment test. This is exactly that.\""
+        },
+        {
+          "text": "The tone is kind and specific, referring to what the founder said rather than lecturing",
+          "passed": true,
+          "evidence": "Kind framing (\"easy one to fall into, because you're good at it\"), quotes \"a bit amateur\", refers to her 3 interviews and planned next action."
+        },
+        {
+          "text": "Offers a concrete alternative that moves stage 2 forward",
+          "passed": true,
+          "evidence": "Run the three planned interviews with no logo/mock-ups, asking about last tax return, by 2026-10-24; plus interview-script."
+        },
+        {
+          "text": "Leaves the decision to the founder rather than forbidding it",
+          "passed": true,
+          "evidence": "\"then it's your call\"; ends asking whether to park it or whether there is a reason it needs to change now."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 63.0,
+        "tokens": 63896,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The check-in walks through what was learned, the bet, the test, the result and the decision",
+          "passed": true,
+          "evidence": "Recaps result, holds it against the bet and kill line, \"What the numbers say\" (learning), options, then the decision after founder reply."
+        },
+        {
+          "text": "Compares the result with the bet's kill criteria and says they were triggered",
+          "passed": true,
+          "evidence": "\"fewer than five pre-orders... You got zero, so the test has given its answer\"; log \"kill criteria met\"."
+        },
+        {
+          "text": "Says waitlist sign-ups are not evidence that people will pay",
+          "passed": true,
+          "evidence": "\"A waitlist sign-up costs nothing... It's easy to count those 31 as demand, but they aren't yet.\""
+        },
+        {
+          "text": "Moves (or proposes moving, with founder agreement) the stage back from 3 to 2 and frames moving back as normal",
+          "passed": true,
+          "evidence": "Proposes option 1 back to stage 2, founder agrees; \"Going back a stage is normal. It isn't a failure.\""
+        },
+        {
+          "text": "Adds a decision log entry to journey.md with date, decision, reason and stage change 3 \u2192 2",
+          "passed": true,
+          "evidence": "Row: 2026-10-19 | Back a stage (kill criteria met) | reason with numbers | 3 -> 2."
+        },
+        {
+          "text": "Sets no more than three dated next actions aimed at stage 2 criteria",
+          "passed": true,
+          "evidence": "Three dated actions (10-26, 11-05, 11-09) interviewing waitlisters, aimed at the stage-2 criteria."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 47.2,
+        "tokens": 59065,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Tom gets his own founder section, separate from Aisha's",
+          "passed": true,
+          "evidence": "New \"## Tom (co-founder)\" section; Aisha's unchanged."
+        },
+        {
+          "text": "Only what was said is recorded for Tom; unknowns are marked rather than invented",
+          "passed": true,
+          "evidence": "Tom: nurse, no-code apps, ~10 hrs; background details, reach, runway, goals \"not asked yet\"; type/time sinks marked \"To confirm with Tom\"."
+        },
+        {
+          "text": "The team section is updated to cover both founders, who does what and combined hours",
+          "passed": true,
+          "evidence": "Team: who does what, combined ~22 hrs (12+10), decisions \"Not agreed yet\", gaps, watching time sinks."
+        },
+        {
+          "text": "Tom's founder type and time sinks are recorded from evidence or asked about, including the risk of building too early",
+          "passed": true,
+          "evidence": "Type \"Domain expert and builder\"; time sink \"starting the app before anyone has paid\", marked to confirm."
+        },
+        {
+          "text": "Any follow-up asks one question at a time",
+          "passed": true,
+          "evidence": "Single follow-up: \"Does Tom work on your ward, or somewhere else?\""
+        },
+        {
+          "text": "Lists docs/founder-coach/founder-profile.md as changed",
+          "passed": true,
+          "evidence": "\"Files written: docs/founder-coach/founder-profile.md (Tom added...)\"."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.17,
+        "passed": 1,
+        "failed": 5,
+        "total": 6,
+        "time_seconds": 23.9,
+        "tokens": 46705,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response asks exactly one question of the founder, not a list of questions",
+          "passed": false,
+          "evidence": "Asks a numbered list of five questions."
+        },
+        {
+          "text": "The response reflects back what the founder said (designer, part-time, photographers' bookkeeping) before asking",
+          "passed": true,
+          "evidence": "\"a designer's eye..., two free days a week, and a narrow, specific audience. Freelance photographers...\""
+        },
+        {
+          "text": "The founder is placed at stage 1 (find a problem worth you solving), not at a build stage",
+          "passed": false,
+          "evidence": "No stage framework or explicit placement; advice is \"don't build yet\" but no stage named."
+        },
+        {
+          "text": "docs/founder-coach/founder-profile.md is created with the stated background and constraints, and unknowns marked as unknown or not asked rather than guessed",
+          "passed": false,
+          "evidence": "No files created (project unchanged)."
+        },
+        {
+          "text": "docs/founder-coach/journey.md is created with the current stage and each exit criterion marked met or not yet",
+          "passed": false,
+          "evidence": "No journey.md created."
+        },
+        {
+          "text": "The response shows what was written and ends with the paths of the files created, relative to the project",
+          "passed": false,
+          "evidence": "No files written or listed."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.57,
+        "passed": 4,
+        "failed": 3,
+        "total": 7,
+        "time_seconds": 37.3,
+        "tokens": 49543,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The founders remain at stage 2; the coach does not move them to stage 3 or 4 or endorse building now",
+          "passed": true,
+          "evidence": "\"Short answer: not yet. You're still in stage 2\"; journey log \"Stay in stage 2; do not start building\"."
+        },
+        {
+          "text": "The coach explains that prompted answers and 'would use it' are weak evidence and do not meet the exit criteria",
+          "passed": true,
+          "evidence": "\"Why 'everyone said they'd use it' doesn't count... the question named the problem for them\"."
+        },
+        {
+          "text": "Each stage 2 exit criterion is shown as not yet met with the evidence behind it",
+          "passed": true,
+          "evidence": "Table with both criteria \"Not yet\" and the reason for each."
+        },
+        {
+          "text": "Recommends customer-research:fk-icp for the transcripts, with its install command",
+          "passed": false,
+          "evidence": "No fk-icp or any tool recommended."
+        },
+        {
+          "text": "Recommends interview-script from pm-skills and warns about its hypothetical questions",
+          "passed": false,
+          "evidence": "No interview-script / pm-skills recommendation."
+        },
+        {
+          "text": "Agrees no more than three next actions, each with a date",
+          "passed": false,
+          "evidence": "Five next actions (response and journey.md), exceeding three."
+        },
+        {
+          "text": "Updates docs/founder-coach/journey.md and lists it as changed",
+          "passed": true,
+          "evidence": "journey.md changed; \"I've updated docs/founder-coach/journey.md with this decision...\""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.8,
+        "passed": 4,
+        "failed": 1,
+        "total": 5,
+        "time_seconds": 23.7,
+        "tokens": 47300,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The coach says the logo redesign is probably a distraction at stage 2 because it does not move an exit criterion",
+          "passed": true,
+          "evidence": "\"A new logo won't move either of those\"; stage 2 criteria named."
+        },
+        {
+          "text": "The coach links it to the designer founder type's time sink (rebranding or polishing after feedback)",
+          "passed": true,
+          "evidence": "\"This is the time sink we flagged... rebranding or polishing the brand... after feedback\". \"You're a designer\"."
+        },
+        {
+          "text": "The tone is kind and specific, referring to what the founder said rather than lecturing",
+          "passed": true,
+          "evidence": "Specific to her 3 interviews, 15 hrs/week and the feedback; not lecturing."
+        },
+        {
+          "text": "Offers a concrete alternative that moves stage 2 forward",
+          "passed": true,
+          "evidence": "Don't show logo/screens in next three interviews; start with last tax return."
+        },
+        {
+          "text": "Leaves the decision to the founder rather than forbidding it",
+          "passed": false,
+          "evidence": "Borderline: directive throughout (\"Leave the logo alone\", \"Don't act on it\"); never hands the decision back; final question is a clarifying one, not a choice."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.67,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 59.3,
+        "tokens": 52753,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The check-in walks through what was learned, the bet, the test, the result and the decision",
+          "passed": true,
+          "evidence": "Covers result vs kill rule, what the numbers say/learned, hypotheses, then decision and new bet."
+        },
+        {
+          "text": "Compares the result with the bet's kill criteria and says they were triggered",
+          "passed": true,
+          "evidence": "\"You got zero. The kill criterion has fired.\""
+        },
+        {
+          "text": "Says waitlist sign-ups are not evidence that people will pay",
+          "passed": true,
+          "evidence": "\"The 31 are telling you 'I'm interested', not 'I'd pay'\"."
+        },
+        {
+          "text": "Moves (or proposes moving, with founder agreement) the stage back from 3 to 2 and frames moving back as normal",
+          "passed": false,
+          "evidence": "Moves 3 -> 2 with agreement, but frames it as honouring the rule (\"rather than move the goalposts\"); never says moving back is normal."
+        },
+        {
+          "text": "Adds a decision log entry to journey.md with date, decision, reason and stage change 3 \u2192 2",
+          "passed": true,
+          "evidence": "Row: 2026-10-19 | Kill criterion met: back to re-check the problem | reason | 3 -> 2."
+        },
+        {
+          "text": "Sets no more than three dated next actions aimed at stage 2 criteria",
+          "passed": false,
+          "evidence": "Four dated next actions in journey.md, and the first (test checkout) is not aimed at a stage-2 criterion."
+        }
+      ],
+      "notes": [
+        "Assumed checkout worked; added a test purchase as first action."
+      ]
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.83,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 27.4,
+        "tokens": 48131,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Tom gets his own founder section, separate from Aisha's",
+          "passed": true,
+          "evidence": "New \"## Tom (co-founder, joined 2026-10-19)\" section."
+        },
+        {
+          "text": "Only what was said is recorded for Tom; unknowns are marked rather than invented",
+          "passed": true,
+          "evidence": "Tom's section records only stated facts, with \"not asked yet\" for the rest. Note: the team section assumes a role split and \"Until then, Aisha decides\" and infers gaps (executor notes admit this)."
+        },
+        {
+          "text": "The team section is updated to cover both founders, who does what and combined hours",
+          "passed": true,
+          "evidence": "Team: who does what, combined 22 hrs, decisions, gaps updated."
+        },
+        {
+          "text": "Tom's founder type and time sinks are recorded from evidence or asked about, including the risk of building too early",
+          "passed": true,
+          "evidence": "Type \"Domain expert; no-code builder\"; time sinks \"Not asked yet. (Watch for building before the problem is validated.)\""
+        },
+        {
+          "text": "Any follow-up asks one question at a time",
+          "passed": false,
+          "evidence": "Asks \"How many did you get done?\" plus a numbered list of two (multi-part) questions."
+        },
+        {
+          "text": "Lists docs/founder-coach/founder-profile.md as changed",
+          "passed": true,
+          "evidence": "Lists \"docs/founder-coach/founder-profile.md\" with changes (also journey.md)."
+        }
+      ],
+      "notes": [
+        "Team-section role split, decision rule and gaps were assumed/inferred, per executor notes."
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 54.34,
+        "stddev": 16.0015,
+        "min": 39.8,
+        "max": 78.2
+      },
+      "tokens": {
+        "mean": 62050.6,
+        "stddev": 2967.8454,
+        "min": 59065,
+        "max": 66291
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.608,
+        "stddev": 0.2661,
+        "min": 0.17,
+        "max": 0.83
+      },
+      "time_seconds": {
+        "mean": 34.32,
+        "stddev": 15.0177,
+        "min": 23.7,
+        "max": 59.3
+      },
+      "tokens": {
+        "mean": 48886.4,
+        "stddev": 2409.7468,
+        "min": 46705,
+        "max": 52753
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.39",
+      "time_seconds": "+20.0",
+      "tokens": "+13164"
+    }
+  },
+  "notes": [
+    "One run per configuration (with skill / without skill), so there is no variance estimate: \u00b1 is the spread across evals, not across repeated runs.",
+    "Founder turn-taking was simulated: evals 2 and 4 got one scripted reply ('Agreed, go with what you suggest.'); evals 1, 3 and 5 were single turns.",
+    "Eval 2's 'weak evidence' and 'scorecard' assertions do not discriminate much, because the fixture journey.md already records that the pain was prompted and both criteria are not yet met.",
+    "Without the skill, runs asked lists of questions, wrote no coaching files on a first conversation, set four or five next actions instead of three, and recommended no tools."
+  ]
+}
