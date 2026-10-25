@@ -115,6 +115,11 @@ applies only what you approve:
 - the **worktree rule**, so branch work happens in its own git worktree, plus what makes a fresh
   worktree usable: a script that links your env files from the main checkout rather than copying
   them, the ignore entries, and a "First time in a worktree" guide
+- the **ticket stages rule**, when you track work on a GitHub Projects board or in Linear: one
+  fixed set of stages (brainstormed, planned, in progress, human review, for release, released
+  and measuring impact, done) mapped to your own columns, with which event moves a ticket and who
+  moves it, so agents keep the board in step with the work without being asked; plus a
+  `ticket-stages.md` guide with the exact commands to move a card
 - a `docs/` layout for architecture, decisions, plans, solutions and conventions
 - the default plugins, [compound-engineering](https://github.com/EveryInc/compound-engineering-plugin)
   for planning and delivery and [pm-skills](https://github.com/phuryn/pm-skills) for product
@@ -193,7 +198,9 @@ Hand a planned ticket to a Claude cloud sandbox and get back a pull request whos
 
 Running a delivery stage in a cloud sandbox works, but the proof is expensive and most of what it teaches is invisible from the outside: a sandbox has no Docker daemon, so a local database stack is impossible there; raw TCP to Postgres does not route; tools with hand-rolled network dialers hang and fail while `curl` answers instantly; and a setup script starts outside the repository clone, which kills the session before any agent runs. None of that is discoverable by reasoning. This plugin carries that knowledge once, so a second project does not rediscover it at the same cost.
 
-Everything project-specific — tracker, stage map, risk paths, close-out steps, database tier — is declared in the `agent-delivery` section of `.vf-founder-kit/config.yaml` in your own repository, a file shared by every Founder Kit plugin. The plugin names no planning workflow, tracker, or test runner as a hard dependency.
+Everything project-specific — risk paths, close-out steps, database tier, which skill runs for a ticket — is declared in the `agent-delivery` section of `.vf-founder-kit/config.yaml` in your own repository, a file shared by every Founder Kit plugin. The tracker and its stage map sit in the same file as a shared top-level `tracker` key, which `core` and `site-delivery` read too: a dispatched ticket moves to your "in progress" column when the run is fired and to your "human review" column on close-out. The plugin names no planning workflow, tracker, or test runner as a hard dependency.
+
+A `tracker` block left inside the `agent-delivery` section by an earlier version still works: its review marker is read as the human review column, the skills report the old location as deprecated, and `core`'s `fk-setup` or `fk-onboard` moves it to the top level when you confirm.
 
 Existing `.agent-delivery/config.yaml` and `.site-delivery/config.yaml` files still work (the skills report them as deprecated), and each plugin's `fk-onboard` migrates them into `.vf-founder-kit/config.yaml`, deleting the old file only if you confirm.
 
@@ -227,7 +234,7 @@ For smart non-coding founders. Give Claude a brief in plain language and get bac
 
 Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Human always reviews, merges, runs publish, and confirms live — Claude never auto-merges or triggers deploys.
 
-> **v0.0.1 scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages) scaffold complete. No live tracker API calls or publish flow execution in this release. Human runs the locked publish path. Optional future integration with `agent-delivery:fk-dispatch` for sandbox execution of implementation slices.
+> **v0.0.1 scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages) scaffold complete. No publish flow execution in this release. The thin path makes no tracker calls; the fuller path reads the ticket, posts the PR link and moves the ticket through the shared stage map. Human runs the locked publish path. Optional future integration with `agent-delivery:fk-dispatch` for sandbox execution of implementation slices.
 
 ### Skills
 
@@ -238,7 +245,7 @@ Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Hum
 /site-delivery:fk-onboard check my site-delivery config
 ```
 
-A plain-language wizard that writes the `site-delivery` section of `.vf-founder-kit/config.yaml` through conversation. Asks for your site repository, publish platform (Lovable/SST/Supabase+Lovable), and whether you want the thin path (no tracker) or fuller path (GitHub Project or Linear integration with compound-engineering stages). Defaults to thin path for non-coders. Reports every defaulted value explicitly.
+A plain-language wizard that writes the `site-delivery` section of `.vf-founder-kit/config.yaml` through conversation. Asks for your site repository, publish platform (Lovable/SST/Supabase+Lovable), and whether you want the thin path (no tracker) or fuller path (GitHub Project or Linear integration with compound-engineering stages, reusing the shared board mapping when `core` has already set one up). Defaults to thin path for non-coders. Reports every defaulted value explicitly.
 
 **`/site-delivery:fk-orchestrate`** — run a site delivery from brief to PR
 ```
@@ -247,7 +254,7 @@ A plain-language wizard that writes the `site-delivery` section of `.vf-founder-
 /site-delivery:fk-orchestrate deliver this brief
 ```
 
-Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path: reads tracker state and runs the compound-engineering stage), makes the changes, opens a PR, and reports the human gates (review, merge, publish, confirm live). Posts PR link to the tracker when configured. Enforces hard delivery rules: never auto-merge, never trigger publish, refuse experimental changes not in the brief.
+Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path: reads tracker state and runs the compound-engineering stage), makes the changes, opens a PR, and reports the human gates (review, merge, publish, confirm live). On the fuller path, posts the PR link to the ticket and moves it through the shared stage map, to your human review column when a ready PR opens. Enforces hard delivery rules: never auto-merge, never trigger publish, refuse experimental changes not in the brief.
 
 ---
 

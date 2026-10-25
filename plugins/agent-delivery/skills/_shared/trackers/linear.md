@@ -10,15 +10,22 @@ capabilities; use whichever names your connector exposes for them.
 
 ## Configuration this adapter reads
 
+The shared top-level `tracker` key of `.vf-founder-kit/config.yaml`:
+
 ```yaml
 tracker:
   kind: linear
-  review_marker:
-    state: In Review        # workflow state name
+  stage_map:                # canonical stage -> workflow state name
+    in_progress: In Progress
+    human_review: In Review
+    # ...any other stages the project uses
 ```
 
-Linear models the review marker directly as a workflow state, so this adapter needs one config
-value where the GitHub one needs three.
+Linear models a stage directly as a workflow state, so this adapter needs no `board` block.
+
+**The old location.** When there is no top-level `tracker` but `agent-delivery.tracker` exists,
+read `review_marker.state` as the `human_review` state. No other stage is mapped. See
+[`../config-schema.md`](../config-schema.md#the-old-location).
 
 ## Credential scope
 
@@ -39,9 +46,11 @@ and its team, which the next operation needs.
 **Defect detection**, which `close_out.defect_record` depends on: the issue's type or label marks
 it as a defect. Read it in the same pass.
 
-## Operation 2 — set the review marker
+## Operation 2 — set stage `<stage>`
 
-Update the issue's workflow state to the one named by `review_marker.state`.
+Look `<stage>` up in `tracker.stage_map`. **If it has no entry, stop**: report "no state mapped
+for `<stage>`; ticket left where it is" and make no call. Otherwise update the issue's workflow
+state to the one the map names.
 
 Two things to know:
 
@@ -49,7 +58,7 @@ Two things to know:
    globally. A workspace can carry several states with the same name belonging to different teams,
    and setting the wrong team's state silently fails or moves the issue nowhere visible.
 2. **Match on the state's name, not its type.** Several states share the type that means "in
-   review"; the configured name is the contract.
+   review" or "started"; the mapped name is the contract.
 
 **When the named state does not exist on that team**, report it and leave the issue unchanged. Do
 not substitute the nearest state by name or type, and do not fall back to a label or a comment —

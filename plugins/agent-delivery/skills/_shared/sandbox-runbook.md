@@ -291,8 +291,11 @@ Name what you could not run and why. An unnamed gap reads as coverage.
 
 Your prompt states which close-out steps this project has enabled and what each one targets. You
 have the tracker connector a local session has, so **you complete the ticket yourself** rather
-than handing it back: set the review marker, post the manual-test checklist, and on a defect
-ticket record the escape cause and the guard that shipped with the fix.
+than handing it back: move the ticket to the column your prompt names for the `human_review`
+stage, post the manual-test checklist, and on a defect ticket record the escape cause and the
+guard that shipped with the fix. A draft pull request is not ready for review: leave the ticket
+where it is and say why. If the column does not exist, report it and leave the ticket alone;
+never pick a similar one.
 
 A step your prompt does not name is switched off for this project. Do not perform it, and say in
 your report that it was off.

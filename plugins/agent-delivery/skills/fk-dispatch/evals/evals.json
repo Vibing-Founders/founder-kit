@@ -71,7 +71,7 @@
       "id": 6,
       "name": "claims-verified-with-provenance",
       "prompt": "Did the ABC-123 run work?",
-      "expected_output": "The run claims a passing test suite and an open pull request. The skill verifies what is cheap — the PR exists, is open, is not merged, CI state, the ticket's review marker — and reports claimed and confirmed as two DISTINCT things, naming what it could not verify rather than letting the gap read as verified.",
+      "expected_output": "The run claims a passing test suite and an open pull request. The skill verifies what is cheap — the PR exists, is open, is not merged, CI state, that the ticket is in the column tracker.stage_map names for human_review — and reports claimed and confirmed as two DISTINCT things, naming what it could not verify rather than letting the gap read as verified.",
       "files": ["a completed run log claiming a passing PR, and a real PR and ticket to check it against"],
       "assertions": [
         {"id": "separates-claim-and-check", "text": "The report distinguishes what the run claimed from what was independently confirmed"},
@@ -97,11 +97,11 @@
       "id": 8,
       "name": "close-out-step-disabled",
       "prompt": "Dispatch ABC-321. Our config has the manual-test checklist turned off.",
-      "expected_output": "The composed prompt names only the enabled close-out steps, so the run sets the review marker and posts no checklist. The report says the checklist step was off, distinguishing a configured skip from a failed step.",
+      "expected_output": "The composed prompt names only the enabled close-out steps, so the run moves the ticket to the column tracker.stage_map names for human_review and posts no checklist. The report says the checklist step was off, distinguishing a configured skip from a failed step.",
       "files": ["a repo whose config sets close_out.manual_test_checklist: false"],
       "assertions": [
         {"id": "checklist-not-named", "text": "The prompt does not instruct the run to post a manual-test checklist"},
-        {"id": "marker-still-set", "text": "The review-marker step is still named and performed"},
+        {"id": "human-review-still-set", "text": "The step that moves the ticket to the human_review column is still named and performed"},
         {"id": "reports-the-skip", "text": "The report states that the checklist step was switched off, rather than silently omitting it"}
       ]
     },
@@ -116,6 +116,33 @@
         {"id": "reports-deprecated", "text": "The report says the old .agent-delivery/config.yaml is deprecated"},
         {"id": "points-at-migration", "text": "The report says running fk-onboard will migrate it into .vf-founder-kit/config.yaml"},
         {"id": "no-config-writes", "text": "No config file is created, edited, moved, or deleted by fk-dispatch"}
+      ]
+    },
+    {
+      "id": 10,
+      "name": "in-progress-on-fire",
+      "prompt": "Dispatch ABC-123 to the cloud.",
+      "expected_output": "After the run is created, started and disabled, the skill sets stage in_progress on the ticket through the adapter, moving it to the column tracker.stage_map names for in_progress ('In Progress'). The prompt names the human_review column as the close-out target. The report says the ticket was moved to In Progress.",
+      "files": ["a repo whose .vf-founder-kit/config.yaml has an agent-delivery section and a top-level tracker key (kind: github, board Delivery / Status, stage_map with in_progress: In Progress and human_review: Human Review), a plan for ABC-123 carrying artifact_readiness: implementation-ready, and a tracker double"],
+      "assertions": [
+        {"id": "moved-after-fire", "text": "The ticket is moved to In Progress only after the run has been started, not before"},
+        {"id": "uses-map", "text": "The column used is the one stage_map names for in_progress"},
+        {"id": "prompt-names-target", "text": "The composed prompt names Human Review as the column for the close-out step"},
+        {"id": "reported", "text": "The report says the ticket was moved to In Progress"}
+      ]
+    },
+    {
+      "id": 11,
+      "name": "old-tracker-location-fallback",
+      "prompt": "Dispatch ABC-456 to the cloud.",
+      "expected_output": "There is no top-level tracker key; the agent-delivery section still carries tracker.kind: github and review_marker (project Delivery, field Status, option In review). The skill reads it, dispatches as normal, and uses 'In review' as the human_review close-out target. Because no in_progress stage is mapped, it skips moving the ticket on fire and says so rather than guessing a column. The report says agent-delivery.tracker is deprecated and that fk-setup or fk-onboard will migrate it. It does not edit the config itself.",
+      "files": ["a repo whose agent-delivery section in .vf-founder-kit/config.yaml has the old tracker block with review_marker and no top-level tracker key, a board whose Status options include 'In Progress' and 'In review', and a plan for ABC-456 carrying artifact_readiness: implementation-ready"],
+      "assertions": [
+        {"id": "dispatches", "text": "The dispatch proceeds rather than refusing as unconfigured"},
+        {"id": "marker-is-human-review", "text": "The close-out target named in the prompt is 'In review', taken from review_marker.option"},
+        {"id": "no-guessed-in-progress", "text": "The ticket is not moved to 'In Progress' on fire; the report says no column is mapped for in_progress"},
+        {"id": "deprecation", "text": "The report says the old agent-delivery.tracker location is deprecated and names fk-setup or fk-onboard to migrate it"},
+        {"id": "config-untouched", "text": "No config file is created, edited or deleted"}
       ]
     }
   ]

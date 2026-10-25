@@ -20,7 +20,7 @@ agent-delivery:
 Nothing in the plugin hardcodes a tracker, a test runner, a planning workflow, a file path, or
 a credential. If a skill needs to know something about *your* project, it is a key below. Key
 paths in this document (`repo.clone_dir`, `stages.map`, ...) are relative to the `agent-delivery`
-section.
+section, except `tracker`, which is the shared top-level key.
 
 `fk-onboard` writes this section. `fk-dispatch` and the sandbox runbook read it. A human can edit
 it at any time; it is plain YAML and every key has a default.
@@ -40,9 +40,10 @@ it at any time; it is plain YAML and every key has a default.
   `.agent-delivery/config.yaml` is being ignored.
 - **Neither present.** The project is not configured; point at `fk-onboard`.
 
-**Writing.** The file is shared, so `fk-onboard` writes **only the `agent-delivery` section**. It
-keeps every other key and section — `docs_root`, other plugins' sections, comments — exactly as
-it was, and creates the file (and the `.vf-founder-kit/` folder) if it does not exist.
+**Writing.** The file is shared, so `fk-onboard` writes **only the `agent-delivery` section**,
+plus the top-level `tracker` key when that does not exist yet (see `tracker` below). It keeps
+every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was,
+and creates the file (and the `.vf-founder-kit/` folder) if it does not exist.
 
 **Migrating.** When `fk-onboard` finds the old `.agent-delivery/config.yaml`, it offers to
 migrate it:
@@ -99,22 +100,84 @@ log to read. `fk-onboard` detects it from the repository name and writes it expl
 `test_command` must accept file paths appended to it, because the runbook runs the tests a change
 touches rather than the whole suite.
 
-## `tracker` — where tickets live
+## `tracker` — where tickets live, and the stage map
+
+The tracker is **not** in the `agent-delivery` section. It is the shared top-level `tracker` key
+of `.vf-founder-kit/config.yaml`, beside `docs_root`, because `core` and `site-delivery` read the
+same map. `core`'s `fk-setup` usually writes it; `fk-onboard` writes it when it is missing.
 
 ```yaml
+docs_root: docs
 tracker:
-  kind: github                   # github | linear. REQUIRED.
-  review_marker:
-    # kind: github
-    project: Delivery            # project board name or number
-    field: Status                # the board's single-select field
-    option: In review            # the option standing for "ready for human review"
-    # kind: linear
-    state: In Review             # workflow state name
+  kind: github                 # github | linear | none
+  board:                       # github only
+    project: Delivery          # project board name or number
+    field: Status              # the board's single-select field
+  stage_map:                   # canonical stage -> this project's column (github) or state (linear)
+    brainstormed: Brainstormed
+    planned: Planned
+    in_progress: In Progress
+    human_review: Human Review
+    for_release: For Release
+    released_measure_impact: Measure Impact
+    done: Done
+agent-delivery:
+  # ...this plugin's own keys
 ```
 
 `kind` selects one adapter file under `_shared/trackers/`. Adding a third tracker is one new file
-there and no edit anywhere else.
+there and no edit anywhere else. **`kind: none` does not work for this plugin**: a dispatch starts
+by reading a ticket, so `fk-dispatch` refuses with that reason and points at the config rather
+than guessing a brief.
+
+The stage keys are fixed and mean the same in every project. A project maps each one it uses to
+its own column or workflow state, and leaves the rest out:
+
+| Key | Meaning | This plugin sets it |
+|---|---|---|
+| `brainstormed` | Requirements or a brainstorm exist for the ticket | — |
+| `planned` | An implementation plan exists | — |
+| `in_progress` | Someone, or an agent, is building it | When `fk-dispatch` fires a run |
+| `human_review` | A pull request is open and ready for a human | Close-out, step 1 |
+| `for_release` | Merged, waiting to go to production | — |
+| `released_measure_impact` | In production; impact is being checked | — |
+| `done` | Finished | — |
+
+The other stages are moved by whoever reaches them, following the Ticket stages rule `fk-setup`
+writes into the project's `CLAUDE.md`. Columns not in the map are never touched.
+
+`stage_map` is unrelated to this section's own `stages` key below, which routes a ticket to a
+skill by readiness. That is why the shared key is not called `stages`.
+
+**A stage not in the map is skipped and reported** — "no column mapped for `in_progress`; ticket
+left where it is". It is never guessed from a similar column name.
+
+### The old location
+
+Earlier versions kept the tracker inside this section:
+
+```yaml
+agent-delivery:
+  tracker:
+    kind: github
+    review_marker:
+      project: Delivery          # github
+      field: Status              # github
+      option: In review          # github
+      state: In Review           # linear
+```
+
+- **Top-level `tracker` missing, `agent-delivery.tracker` present.** Read the old one. `kind` is
+  the kind; `review_marker.project` and `review_marker.field` are the board; and
+  `review_marker.option` (github) or `review_marker.state` (linear) is the `human_review` stage.
+  No other stage is mapped, so setting `in_progress` is skipped and reported. Say in the report
+  that the old location is deprecated and that `core`'s `fk-setup` or this plugin's `fk-onboard`
+  will migrate it.
+- **Both present.** The top-level key wins. Say in the report that `agent-delivery.tracker` is
+  being ignored.
+- **Migrating.** Copy the values into the top-level key **unchanged**, show the founder what was
+  written, and remove the old keys **only after the founder confirms** — the same pattern as the
+  old `.agent-delivery/config.yaml` above.
 
 ### The tracker contract
 
@@ -124,12 +187,12 @@ a tracker directly:
 | Operation | Contract |
 |---|---|
 | **read the brief** | Return the ticket's title, body, **and every comment**. A comment can carry an instruction that the body does not; an adapter that returns the body alone is incomplete. |
-| **set the review marker** | Move the ticket to the project's declared review marker. What that *is* differs per tracker — a workflow state, a board column — but it is one operation to the caller. |
+| **set stage `<stage>`** | Look `<stage>` up in `tracker.stage_map`, then move the ticket to that column or workflow state. What that *is* differs per tracker — a board column, a workflow state — but it is one operation to the caller. A stage with no entry in the map is skipped and reported, and the ticket left where it is. |
 | **post a comment** | Add a comment to the ticket. |
 
 ### Missing-target behaviour
 
-When the configured state, board, field, or option does not exist, the adapter **reports it and
+When the mapped state, board, field, or option does not exist, the adapter **reports it and
 leaves the ticket unchanged**. It never guesses a similarly-named substitute — a ticket parked in
 the wrong column is worse than a ticket left alone with a clear message.
 
@@ -262,13 +325,17 @@ The plugin checks these during onboarding rather than assuming them:
 
 ```yaml
 close_out:
-  review_marker: true            # default: true
+  review_marker: true            # default: true — set stage human_review
   manual_test_checklist: true    # default: true
   defect_record: true            # default: true
 ```
 
+`review_marker` keeps its name, so existing configs need no change. It now means "set stage
+`human_review`", looked up in `tracker.stage_map`.
+
 All three default on. Each is independently switchable off. With all three off, a run opens a
-pull request and touches the tracker not at all.
+pull request and touches the tracker not at all. The dispatcher still sets `in_progress` when it fires the run, if
+that stage is mapped; leave `in_progress` out of `tracker.stage_map` to stop that.
 
 `defect_record` applies only to tickets the tracker reports as defects. A project with no
 defect-recording practice sets it `false`, and the run says it skipped it rather than inventing a

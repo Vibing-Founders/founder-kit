@@ -11,7 +11,7 @@ description: >
 
 # fk-orchestrate — run a site delivery from brief to PR
 
-One skill, two paths: thin (brief-to-PR with no tracker) or fuller (tracker + compound-engineering stages). The path is determined by the `site-delivery` section of `.vf-founder-kit/config.yaml`, not by guessing.
+One skill, two paths: thin (brief-to-PR with no tracker) or fuller (tracker + compound-engineering stages). The path is determined by `stages.enabled` in the `site-delivery` section of `.vf-founder-kit/config.yaml`, not by guessing.
 
 ## Procedure
 
@@ -25,38 +25,56 @@ Read the `site-delivery` section of `.vf-founder-kit/config.yaml` (other plugins
 
 > This repository is not configured for site delivery. Run `/site-delivery:fk-onboard` first to add a `site-delivery` section to `.vf-founder-kit/config.yaml`.
 
+**Read the tracker from the shared top-level `tracker` key** of the same file, not from the `site-delivery` section. It holds `kind` (`github`, `linear` or `none`; the old `github-project` is read as `github`), the board, and `stage_map`, which maps the kit's fixed stages to this project's columns. When it is missing but the old `site-delivery.tracker` exists, use that, and say in your report that the old location is deprecated and that `/site-delivery:fk-onboard` will migrate it. When neither exists, the tracker is `none`; report that as a default. See [`../_shared/config-schema.md`](../_shared/config-schema.md) for both shapes.
+
+The thin path makes no tracker calls, even when a `tracker` key exists for other plugins. If `stages.enabled` is `true` but the tracker is `none`, stop and say the fuller path needs a tracker to read the ticket from; point at `/site-delivery:fk-onboard`.
+
 Validate `schema_version`. If it is not `1`, warn and continue — but name both the version found and the version supported so a later key-level error is diagnosable.
 
 Report every config value you fall back to a default for. Silent defaulting is a bug.
 
 ### 2. Read the brief
 
-**Thin path (`tracker.kind: none`):**
+**Thin path (`stages.enabled: false`):**
 - The brief comes from the user's message or argument
 - Ask if the brief is incomplete: "What should this site change do?"
 - The brief is plain language: "Add a testimonials section to the homepage" or "Update the pricing page to show the new starter plan"
 
-**Fuller path (`tracker.kind: github-project` or `linear`):**
+**Fuller path (`stages.enabled: true`, with `tracker.kind` `github` or `linear`):**
 - The brief is a ticket ID (e.g. `SITE-123` or a GitHub issue number)
 - Read the ticket through the tracker adapter (see `Tracker adapters` below)
 - The brief is the ticket's title, body, and **all comments** — comments can carry instructions the body does not
 
 ### 3. Resolve the stage
 
-**Thin path (`tracker.kind: none`):**
+**Thin path (`stages.enabled: false`):**
 - There is only one stage: brief-to-PR
 - Skip stage resolution entirely
 - Report: "Running thin path: brief to PR with no tracker integration."
 
 **Fuller path (`stages.enabled: true`):**
-- Read the ticket's current stage from the tracker (via the adapter's read operation)
-- Map the tracker's state to a stage using `stages.map` or `tracker.stage_map` (config files show both patterns; use whichever is present)
-- The stage is one of: `brainstorm`, `plan`, `work`, `review`
+
+Resolve the stage to run, which is one of `brainstorm`, `plan`, `work`, `review`, in this order:
+
+1. An explicit `--stage` argument.
+2. The ticket's planning artifact, when one matches `stages.artifact_glob`: its `stages.readiness_key` value, mapped through `stages.map` (for example `implementation-ready` → `work`).
+3. The ticket's column. Read it through the adapter, find which canonical stage `tracker.stage_map` gives it, and run the next step:
+
+   | Ticket's stage | Stage to run | Why |
+   |---|---|---|
+   | Not mapped (a `Backlog` or `Todo` column) | `brainstorm` | Nothing exists for it yet |
+   | `brainstormed` | `plan` | Requirements exist; the plan is next |
+   | `planned` | `work` | The plan exists; building is next |
+   | `in_progress` | `work` | Building has started |
+   | `human_review` | `review` | A pull request is waiting |
+   | `for_release`, `released_measure_impact`, `done` | None — stop | The work is merged; say so and change nothing |
+
+   On the old `site-delivery.tracker` location, the old `stage_map` (column → stage) gives the stage directly, as it always did.
 - If the stage is in `stages.interactive` (default: `[brainstorm]`), **refuse it:**
 
   > This ticket is in the `brainstorm` stage, which needs question-and-answer with a human. Site delivery cannot run interactive stages through PRs alone. Move it to `plan` or `work` and try again.
 
-- Report which stage was resolved and from which tracker state
+- Report which stage was resolved, and from what: the argument, the artifact and its field, or the column and its canonical stage
 
 ### 4. Execute the stage
 
@@ -70,7 +88,7 @@ Report every config value you fall back to a default for. Silent defaulting is a
 
 **Fuller path (when a stage skill is configured):**
 
-1. Look up the skill for this stage in `stages.skills` (e.g. `brainstorm: compound-engineering:ce-brainstorm`)
+1. Look up the skill for this stage in `stages.skills` (e.g. `brainstorm: compound-engineering:ce-brainstorm`). When the stage is `work`, **set stage `in_progress`** on the ticket before starting
 2. If the skill is not found or cannot be invoked, **fall back to the thin path** and report the fallback:
 
    > The config names `{skill-name}` for this stage, but I cannot invoke it. Falling back to the thin brief-to-PR path.
@@ -79,6 +97,7 @@ Report every config value you fall back to a default for. Silent defaulting is a
 4. The stage skill (from compound-engineering) produces a planning artifact or implementation
 5. Commit the stage's output with a message naming the stage: `{stage}: {brief summary}`
 6. Push the branch
+7. Move the ticket to match what now exists: after `brainstorm`, **set stage `brainstormed`**; after `plan`, **set stage `planned`**. The `human_review` move comes with the pull request, in phase 5
 
 **Experimental changes rule:**
 
@@ -125,13 +144,15 @@ Create a PR against `{repo.main_branch}` with:
 
 **Draft or ready:**
 - If the stage is `review`, open as a regular PR (ready for review)
-- Otherwise, open as a draft PR
+- If the stage is `work` and it finished the change with nothing blocking it, open as a regular PR (ready for review). This is what moves the ticket to `human_review`; without it, a finished build would sit in `in_progress` and the next run would resolve to `work` again
+- Otherwise — the thin path, `brainstorm` or `plan` (their output is a document, not the change), or a `work` stage that stopped on a blocker — open as a draft PR, with any blocker stated at the top
 
 **Tracker integration (fuller path only):**
 
-When `tracker.kind` is not `none`:
-1. Post a comment on the ticket with the PR link and a note: "PR opened: {pr-url}. Ready for review."
-2. If the stage is `review`, set the tracker state to the review marker (via `tracker.stage_map` or equivalent)
+1. Post a comment on the ticket with the PR link and a note: "PR opened: {pr-url}." Add "Ready for review." only when the PR is not a draft.
+2. When the PR is ready (not draft), **set stage `human_review`**. A draft PR leaves the ticket where it is.
+
+Name the ticket in the PR body with `Refs #<number>` (GitHub) or the Linear identifier, not `Closes #<number>`: GitHub closes the issue at merge, before the human has published.
 
 ### 6. Report the outcome
 
@@ -155,7 +176,7 @@ Report what was done and what the human must do next:
 > - Commits: {commit-count} commit(s)
 > - Files changed: {file-count} file(s)
 > - PR state: {draft OR ready}
-> {- Tracker updated: {ticket-id} moved to {state} (fuller path only)}
+> {- Tracker updated: {ticket-id} moved to {column} (fuller path only), and any stage skipped because no column is mapped for it}
 
 Never imply the delivery is complete when the human gates remain. Merge ≠ production. Human runs the locked publish path.
 
@@ -163,22 +184,29 @@ Never imply the delivery is complete when the human gates remain. Merge ≠ prod
 
 ## Tracker adapters
 
-When `tracker.kind` is `github-project` or `linear`, interact with the tracker through these operations:
+On the fuller path, with `tracker.kind` `github` or `linear`, interact with the tracker through these operations:
 
 | Operation | What it does |
 |---|---|
 | **read_brief** | Return the ticket's title, body, and all comments |
-| **read_stage** | Return the current stage based on `tracker.stage_map` |
-| **set_stage** | Move the ticket to the named stage |
+| **read_stage** | Return the ticket's column (or workflow state) and the canonical stage `tracker.stage_map` gives it, or "not mapped" |
+| **set_stage `<stage>`** | Look `<stage>` up in `tracker.stage_map` and move the ticket to that column or state |
 | **post_comment** | Add a comment with the PR link |
+
+When the project has `docs/conventions/ticket-stages.md` (written by `core`'s `fk-setup`), follow its procedure for moving a ticket. Otherwise:
+
+- **GitHub:** `gh project list --owner <owner> --format json` to find the project named in `tracker.board.project`; `gh project field-list <number> --owner <owner> --format json` for the field in `tracker.board.field` and the option named by the column; `gh project item-list <number> --owner <owner> --limit 1000 --format json` for the issue's item (adding it with `gh project item-add` if it is not on the board, and saying so); then `gh project item-edit --id <item-id> --project-id <project-id> --field-id <field-id> --single-select-option-id <option-id>`. This needs the `project` scope on the `gh` login (`gh auth refresh -s project`); without it the error reads as a plain permissions failure.
+- **Linear:** set the issue's workflow state by name, looking it up within the issue's own team.
+
+**An unmapped stage** — `stage_map` has no entry for it — is skipped and reported: "no column mapped for `planned`; ticket left where it is". Never guess.
 
 **Missing-target behaviour:**
 
-If the configured project, field, state, or option does not exist, **refuse and report it clearly:**
+If the mapped board, field, column or state does not exist, **report it clearly and leave the ticket unchanged:**
 
-> The config names a GitHub Project called "Widget Co Site Delivery", but I cannot find it. Check the project name in the `site-delivery` section of `.vf-founder-kit/config.yaml` and run `/site-delivery:fk-onboard` again if it is wrong.
+> The config names a GitHub Project called "Widget Co Site Delivery", but I cannot find it. Check `tracker.board.project` in `.vf-founder-kit/config.yaml` and run `/site-delivery:fk-onboard` again if it is wrong.
 
-Never guess a substitute. A ticket parked in the wrong column is worse than a ticket left alone with a clear error message.
+When the stage cannot be read at all for that reason, stop for that ticket. When only a move fails, carry on with the delivery and report the move that did not happen. Never guess a substitute. A ticket parked in the wrong column is worse than a ticket left alone with a clear error message.
 
 ---
 
@@ -235,7 +263,7 @@ When off, refuse any change not in the brief:
 4. **Never auto-merge.** When `human_merge_gate: true` (the default), PRs are opened, never merged by the agent.
 5. **Never trigger publish.** When `human_publish_gate: true` (the default), the human runs the publish flow. The agent never calls Lovable APIs, `sst deploy`, or similar.
 6. **Confirm live is a human step.** The agent cannot verify a site is live. The human confirms it after publish.
-7. **Thin path is valid.** Do not treat `tracker.kind: none` as incomplete. It is the designed default for non-coders who want brief-to-PR without tracker overhead.
+7. **Thin path is valid.** Do not treat `tracker.kind: none`, or a missing `tracker` key, as incomplete. It is the designed default for non-coders who want brief-to-PR without tracker overhead.
 8. **Report defaults.** If a config value falls back to a default, say so. Silent defaulting is a bug.
 
 ---

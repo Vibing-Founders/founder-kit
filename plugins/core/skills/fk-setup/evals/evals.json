@@ -7,8 +7,8 @@
       "name": "empty-project-python",
       "prompt": "I've just created this project. Set it up for Founder Kit.",
       "files": ["a git repository with one commit containing only README.md ('# Rotaplate — meal planning for shift workers') and an untracked .env"],
-      "founder_replies": ["Python with uv. Install is `uv sync`, tests are `uv run pytest`, lint is `uv run ruff check`, dev server is `uv run fastapi dev`. No database yet, no local services. Releasing isn't decided. Use the default plugins. Naming: snake_case files. Apply everything."],
-      "expected_output": "Reads baseline.md, detects the name from the README and asks once for the commands, releasing, naming and the plugin choice. Shows an audit with everything Missing and the two database rules Not applicable, proposes, and applies after approval. CLAUDE.md has the seven sections in order; the worktree rule carries `uv sync && sh scripts/worktree-setup.sh .env` with no start-services clause and keeps the doc-only sentence. The docs layout exists with stubs, there is no docs/brainstorms, scripts/worktree-setup.sh is an exact copy and executable, .gitignore has the four entries, .claude/settings.json enables the three default plugins, and the core section of .vf-founder-kit/config.yaml records baseline_version 1. The .env file is not opened or changed. Nothing is committed.",
+      "founder_replies": ["Python with uv. Install is `uv sync`, tests are `uv run pytest`, lint is `uv run ruff check`, dev server is `uv run fastapi dev`. No database yet, no local services. Releasing isn't decided. We don't use a tracker. Use the default plugins. Naming: snake_case files. Apply everything."],
+      "expected_output": "Reads baseline.md, detects the name from the README and asks once for the commands, releasing, naming and the plugin choice. Shows an audit with everything Missing, and the two database rules, the Ticket stages rule (B3.7) and ticket-stages.md (B9) Not applicable, proposes, and applies after approval. CLAUDE.md has the seven sections in order; the worktree rule carries `uv sync && sh scripts/worktree-setup.sh .env` with no start-services clause and keeps the doc-only sentence. The docs layout exists with stubs, there is no docs/brainstorms, scripts/worktree-setup.sh is an exact copy and executable, .gitignore has the four entries, .claude/settings.json enables the three default plugins, and the core section of .vf-founder-kit/config.yaml records baseline_version 2, and the top-level tracker key records kind: none. The .env file is not opened or changed. Nothing is committed.",
       "assertions": [
         {"id": "asks-once", "text": "Undetectable values and the plugin choice are asked for in a single message, not one question at a time"},
         {"id": "audit-table", "text": "An audit table is shown before anything is written, using the statuses Present, Missing, Different, Not applicable, Declined"},
@@ -22,7 +22,7 @@
         {"id": "gitignore", "text": ".gitignore contains .claude/worktrees/, .claude/settings.local.json, .claude/*.patch and an env pattern"},
         {"id": "plugins-enabled", "text": ".claude/settings.json registers both marketplaces and enables compound-engineering, pm-product-discovery and pm-go-to-market"},
         {"id": "install-commands", "text": "The report gives the `claude plugin install … --scope project` command for plugins that are not installed, without running it"},
-        {"id": "config-recorded", "text": ".vf-founder-kit/config.yaml has a core section with baseline_version 1 and the commands given"},
+        {"id": "config-recorded", "text": ".vf-founder-kit/config.yaml has a core section with baseline_version 2 and the commands given"},
         {"id": "env-untouched", "text": "The .env file is unchanged and its contents were never printed"},
         {"id": "no-extras", "text": "No rule, section, hook, script or file outside the baseline was added; anything else appears only under Suggestions"}
       ]
@@ -60,16 +60,16 @@
       "name": "rerun-up-to-date-with-declined-item",
       "prompt": "Is my setup up to date?",
       "files": [
-        "a project on which fk-setup has already been applied in full at baseline version 1, except that the founder's own Naming rule differs from the baseline wording",
-        ".vf-founder-kit/config.yaml with a core section: baseline_version 1, the project's commands, declined: [B3.6], plus an agent-delivery section and a docs_root key"
+        "a project on which fk-setup has already been applied in full at baseline version 2, with a GitHub Projects board called Delivery whose Status columns all still match the map, except that the founder's own Naming rule differs from the baseline wording",
+        ".vf-founder-kit/config.yaml with a core section: baseline_version 2, the project's commands, declined: [B3.6]; a top-level tracker key (kind: github, board Delivery / Status, a stage_map matching the board); plus an agent-delivery section and a docs_root key"
       ],
-      "expected_output": "Reads the recorded values and asks nothing. The audit shows every item Present except Naming, shown as Declined and not proposed again. Says the project is up to date with baseline 1 and writes no project files. The agent-delivery section and docs_root in the config are untouched.",
+      "expected_output": "Reads the recorded values and asks nothing. Re-reads the board and finds every mapped column still there. The audit shows every item Present except Naming, shown as Declined and not proposed again. Says the project is up to date with baseline 2 and writes no project files. The agent-delivery section, the tracker key and docs_root in the config are untouched.",
       "assertions": [
         {"id": "no-questions", "text": "No question is asked about commands, releasing or plugins; recorded values are reused"},
         {"id": "declined-respected", "text": "The Naming rule is listed as Declined and no change to it is proposed"},
         {"id": "up-to-date", "text": "The answer states the project is up to date with the current baseline version"},
         {"id": "nothing-written", "text": "No file other than, at most, the core section of the config is modified"},
-        {"id": "other-sections-kept", "text": "The agent-delivery section and docs_root key in .vf-founder-kit/config.yaml are byte-identical afterwards"}
+        {"id": "other-sections-kept", "text": "The agent-delivery section, the tracker key and the docs_root key in .vf-founder-kit/config.yaml are byte-identical afterwards"}
       ]
     },
     {
@@ -92,6 +92,102 @@
         {"id": "choice-recorded", "text": "The core config section records the founder's alternative for the workflow and product plugins"},
         {"id": "points-to-onboard", "text": "The report says agent-delivery is not onboarded and names /agent-delivery:fk-onboard, without running it"},
         {"id": "make-commands", "text": "Development Commands come from the Makefile targets, with no invented dev-server or type-check command"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "board-all-columns-match",
+      "prompt": "Set this project up for Founder Kit. We track work on our GitHub board.",
+      "files": [
+        "a Node project with package.json (scripts: dev, test using vitest), package-lock.json and a GitHub remote, no env files",
+        "one GitHub Projects board, Delivery, whose Status field has the options Backlog, Brainstormed, Planned, In Progress, In review, For Release, Measure impact, Done",
+        "a gh login with the project scope"
+      ],
+      "founder_replies": ["The mapping is right. Releasing: merging to main deploys. No naming preference. Default plugins. Apply everything."],
+      "expected_output": "Lists the boards, finds exactly one and proposes it with the Status field. Proposes a stage map matching all seven stages, with 'In review' as human_review and 'Measure impact' as released_measure_impact, and shows Backlog as not mapped and left alone. Asks for confirmation in the same single message as the other questions. After approval, writes the top-level tracker key (and nothing else of the config beyond the core section), then docs/conventions/ticket-stages.md, then CLAUDE.md. The Ticket stages rule has one line per stage using the board's own column names, keeps the Refs # sentence because the map goes past For Release, and points at ticket-stages.md. ticket-stages.md holds the stage table and the gh procedure, including the project scope note and gh auth refresh -s project. Suggests the board's built-in workflows as a backstop.",
+      "assertions": [
+        {"id": "one-message", "text": "The proposed stage map is shown for confirmation in the same message as the other questions"},
+        {"id": "synonyms-matched", "text": "'In review' is proposed for human_review and 'Measure impact' for released_measure_impact"},
+        {"id": "backlog-left-alone", "text": "Backlog is shown as not mapped and does not appear in stage_map"},
+        {"id": "tracker-key-written", "text": ".vf-founder-kit/config.yaml has a top-level tracker key with kind: github, board.project: Delivery, board.field: Status and the seven confirmed stages"},
+        {"id": "rule-uses-columns", "text": "The Ticket stages rule in CLAUDE.md names the board's columns exactly (In review, Measure impact, ...) with the event and who moves it for each"},
+        {"id": "refs-not-closes", "text": "The rule says to link pull requests with Refs #, not Closes #"},
+        {"id": "stages-doc", "text": "docs/conventions/ticket-stages.md exists with the stage table and the gh project item-edit procedure, including the project scope and gh auth refresh -s project"},
+        {"id": "order", "text": "The tracker key and ticket-stages.md are written before CLAUDE.md"},
+        {"id": "where-to-find", "text": "The Where to Find Things table lists docs/conventions/ticket-stages.md"},
+        {"id": "workflows-suggested", "text": "The Suggestions mention the board's built-in workflows as a backstop"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "board-with-unmatched-column-and-missing-stage",
+      "prompt": "Set up this project with the Founder Kit baseline.",
+      "files": [
+        "a Python project (pyproject.toml, uv.lock, tests/) with a GitHub remote and an untracked .env",
+        "one GitHub Projects board, Roadmap, whose Status field has the options Todo, Shaping, Planned, Doing, Review, Shipped"
+      ],
+      "founder_replies": ["Leave Shaping and Shipped unmapped for now. Releasing isn't decided. Defaults for everything else. Apply all of it."],
+      "expected_output": "Proposes Planned → planned, Doing → in_progress and Review → human_review. Shaping and Shipped match nothing obvious and are shown as unmapped rather than guessed (Shaping is not mapped to brainstormed and Shipped is not mapped to for_release or done). Todo is left alone. Stages with no column (brainstormed, for_release, released_measure_impact, done) are listed as unmapped. After the founder confirms, stage_map has exactly three entries; the rule and ticket-stages.md have lines only for those three; the Refs # sentence is left out because nothing is mapped after for_release. The report lists the unmapped stages and columns under Still open.",
+      "assertions": [
+        {"id": "no-guess", "text": "Shaping and Shipped are not mapped to any stage, and the proposal shows them as unmatched"},
+        {"id": "missing-stages-shown", "text": "brainstormed, for_release, released_measure_impact and done are shown as having no column"},
+        {"id": "three-entries", "text": "stage_map in .vf-founder-kit/config.yaml has exactly planned, in_progress and human_review"},
+        {"id": "rule-mapped-only", "text": "The Ticket stages rule and ticket-stages.md have lines only for Planned, Doing and Review"},
+        {"id": "no-refs-sentence", "text": "The rule does not include the Refs # sentence"},
+        {"id": "reported-open", "text": "The report lists the unmapped stages and the unmatched columns under Still open"}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "no-tracker",
+      "prompt": "Check my project setup.",
+      "files": ["a Go project (go.mod, Makefile with build and test targets), already set up at baseline version 1 with a core section in .vf-founder-kit/config.yaml recording baseline_version 1, and no GitHub Projects board"],
+      "founder_replies": ["We don't use a tracker. Nothing else to change."],
+      "expected_output": "Starts with what is new since baseline 1: the Ticket stages rule and ticket-stages.md. Finds no board and asks whether the project uses a tracker. On 'we don't use a tracker', records the top-level tracker key as kind: none, marks B3.7 and B9 Not applicable with that reason, writes neither the rule nor the doc, and records baseline_version 2.",
+      "assertions": [
+        {"id": "whats-new", "text": "The audit starts with a line naming B3.7 and B9 as new since baseline 1"},
+        {"id": "kind-none", "text": "The top-level tracker key records kind: none"},
+        {"id": "not-applicable", "text": "B3.7 and B9 are shown as Not applicable because there is no tracker"},
+        {"id": "nothing-written", "text": "No Ticket stages rule is added to CLAUDE.md and docs/conventions/ticket-stages.md is not created"},
+        {"id": "version-recorded", "text": "The core section records baseline_version 2"}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "rerun-after-column-renamed",
+      "prompt": "Is my setup still up to date?",
+      "files": [
+        "a project set up at baseline version 2 with tracker kind: github, board Delivery / Status, and a stage_map whose human_review is 'In review'; CLAUDE.md and docs/conventions/ticket-stages.md use 'In review'",
+        "the Delivery board's Status option 'In review' has since been renamed to 'Human Review'; every other mapped column is unchanged"
+      ],
+      "founder_replies": ["Yes, use Human Review. Apply it."],
+      "expected_output": "Re-reads the board and finds that the mapped column 'In review' no longer exists. Reports B9, the stage map and the Ticket stages rule as Different, naming the missing column, and proposes 'Human Review' as the likely replacement for the founder to confirm rather than switching to it silently. Shows the diff for the tracker key, ticket-stages.md and CLAUDE.md. After approval, all three say 'Human Review', and nothing else in the files changes.",
+      "assertions": [
+        {"id": "detects-rename", "text": "The audit reports that the mapped column 'In review' no longer exists on the board"},
+        {"id": "marked-different", "text": "B9 and the Ticket stages rule are marked Different, not Present"},
+        {"id": "asks-before-remap", "text": "'Human Review' is proposed and only applied after the founder agrees"},
+        {"id": "all-three-updated", "text": "After applying, stage_map, ticket-stages.md and the rule in CLAUDE.md all name 'Human Review'"},
+        {"id": "rest-untouched", "text": "No other line of CLAUDE.md, the config or ticket-stages.md changes"}
+      ]
+    },
+    {
+      "id": 9,
+      "name": "old-review-marker-location",
+      "prompt": "What's new in the baseline? Bring my project up to date.",
+      "files": [
+        "a project set up at baseline version 1",
+        ".vf-founder-kit/config.yaml with a core section (baseline_version 1), docs_root: docs, and an agent-delivery section whose tracker is kind: github with review_marker project: Delivery, field: Status, option: In review; no top-level tracker key",
+        "a GitHub Projects board Delivery whose Status options are Todo, Planned, In Progress, In review, Done"
+      ],
+      "founder_replies": ["Yes, migrate it and map the rest as you proposed. Don't remove the old keys yet."],
+      "expected_output": "Reads the old agent-delivery.tracker location, says it is deprecated, and treats 'In review' as the human_review stage. Offers to migrate. Proposes Planned, In Progress and Done for the other stages for confirmation. On approval, writes a top-level tracker key with board Delivery / Status and human_review: In review copied unchanged, plus the confirmed stages; shows what it wrote. Because the founder said not yet, the agent-delivery.tracker keys are left exactly as they were, and the report says they are now ignored and can be removed on a later run. Then writes ticket-stages.md and the rule.",
+      "assertions": [
+        {"id": "reads-old", "text": "The old agent-delivery.tracker.review_marker is read, and 'In review' is used for human_review"},
+        {"id": "deprecation-noted", "text": "The report says the old location is deprecated"},
+        {"id": "copied-unchanged", "text": "The top-level tracker key has kind: github, board.project: Delivery, board.field: Status and human_review: In review, unchanged from the old values"},
+        {"id": "shows-written", "text": "What was written to the tracker key is shown to the founder"},
+        {"id": "old-kept", "text": "The agent-delivery section, including its tracker keys, is byte-identical afterwards, because the founder did not confirm removal"},
+        {"id": "other-keys-kept", "text": "docs_root and the core section's other values are unchanged apart from baseline_version"}
       ]
     }
   ]

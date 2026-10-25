@@ -24,6 +24,12 @@ will migrate it. If both exist, the section wins, and the report says the old
 `.agent-delivery/config.yaml` is being ignored. See
 [`../_shared/config-schema.md`](../_shared/config-schema.md).
 
+**The tracker and its stage map** are the shared top-level `tracker` key of the same file, not part
+of the `agent-delivery` section. When it is missing but the old `agent-delivery.tracker` exists, use
+that: its review marker is the `human_review` stage and no other stage is mapped. Say in the report
+that the old location is deprecated and that `core`'s `fk-setup` or `fk-onboard` will migrate it.
+With `tracker.kind: none`, refuse: a dispatch starts from a ticket, and there is nowhere to read one.
+
 ## Procedure
 
 ### 1. Read the brief and resolve the stage
@@ -46,6 +52,11 @@ Compose the branch name yourself, carrying the ticket identifier.
 ### 3. Fire
 
 See **The firing seam** below. Report what you fired and where the result will appear.
+
+Once the run has started, **set stage `in_progress`** on the ticket through the adapter, so the
+board shows the work is under way. A stage with no column in `tracker.stage_map` is skipped and
+reported; a missing column is reported and the ticket left alone. Neither stops the dispatch: the
+run is already going.
 
 ### 4. Verify and report — with provenance
 
@@ -107,13 +118,13 @@ Verify what is cheap, which is most of it:
 | "I opened a pull request" | Fetch it. Confirm it exists, is open, is not merged, and is draft if the run reported a blocker |
 | "The tests passed" | Read the run log for the actual test output, not just the summary line |
 | "CI is green" | Read the checks on the pull request |
-| "I set the review marker" | Read the ticket through the adapter and confirm the marker |
+| "I moved the ticket to human review" | Read the ticket through the adapter and confirm it is in the column `stage_map` names for `human_review` |
 | "I deleted the branch" | See **Branch reconciliation** — always, regardless of the claim |
 
 Write it with provenance:
 
 > The run reports 42 tests passing against its preview branch. **Confirmed:** PR #318 is open and
-> not merged, CI green, the issue is in *In review*. **Not confirmed:** the test count — the run
+> not merged, CI green, the issue is in *Human Review*. **Not confirmed:** the test count — the run
 > log shows the suite ran but the log is truncated above the summary.
 
 Name what you could not verify. An unnamed gap reads as verified.
