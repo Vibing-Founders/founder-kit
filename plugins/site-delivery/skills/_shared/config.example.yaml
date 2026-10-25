@@ -6,6 +6,10 @@
 # project. The file is shared by every Founder Kit plugin, so other plugins'
 # sections (agent-delivery, customer-research, ...) may sit in the same file —
 # leave them as they are.
+#
+# The tracker is NOT part of the site-delivery section. It is the shared
+# top-level `tracker` key, which core and agent-delivery read too. Examples 2
+# and 3 show it. If core's fk-setup already wrote it, keep it as it is.
 
 # ============================================================================
 # EXAMPLE 1: Thin path (default) — no tracker, no stages
@@ -21,8 +25,7 @@ site-delivery:
     main_branch: main
     branch_prefix: feature/
 
-  tracker:
-    kind: none  # No tracker integration — brief comes from user input
+  # No tracker key needed: the thin path makes no tracker calls.
 
   publish:
     kind: lovable
@@ -43,10 +46,23 @@ site-delivery:
 ---
 
 # ============================================================================
-# EXAMPLE 2: GitHub Project tracker with fuller stages
+# EXAMPLE 2: GitHub board with fuller stages
 # ============================================================================
 # For teams using GitHub Projects to track site work and wanting
 # compound-engineering brainstorm/plan/work/review stages.
+
+tracker:                        # shared top-level key, not inside site-delivery
+  kind: github                  # github-project is still read as github
+  board:
+    project: Widget Co Site Delivery  # Anonymized project name
+    field: Status
+  stage_map:                    # canonical stage -> column on the board
+    brainstormed: Brainstormed
+    planned: Planned
+    in_progress: In Progress
+    human_review: Review
+    for_release: Ready to Publish
+    done: Live
 
 site-delivery:
   schema_version: 1
@@ -55,16 +71,6 @@ site-delivery:
     url: https://github.com/Widget-Co/company-site  # Anonymized example
     main_branch: main
     branch_prefix: feature/
-
-  tracker:
-    kind: github-project
-    project: Widget Co Site Delivery  # Anonymized project name
-    field: Status
-    stage_map:
-      Brainstorm: brainstorm
-      Plan: plan
-      Implement: work
-      Review: review
 
   publish:
     kind: sst-web
@@ -100,6 +106,15 @@ site-delivery:
 # ============================================================================
 # For teams using Linear to track site delivery work.
 
+tracker:                        # shared top-level key, not inside site-delivery
+  kind: linear
+  stage_map:                    # canonical stage -> workflow state
+    brainstormed: Brainstormed
+    planned: Planned
+    in_progress: In Progress
+    human_review: In Review
+    done: Done
+
 site-delivery:
   schema_version: 1
 
@@ -107,15 +122,6 @@ site-delivery:
     url: https://github.com/Acme/acme-site  # Anonymized example
     main_branch: main
     branch_prefix: feature/
-
-  tracker:
-    kind: linear
-    team_key: SITE  # Anonymized team key (e.g. SITE-123)
-    stage_map:
-      Brainstorm: brainstorm
-      Plan: plan
-      In Progress: work
-      In Review: review
 
   publish:
     kind: supabase+lovable

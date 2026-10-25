@@ -15,6 +15,33 @@
         {"id": "shows-what-it-wrote", "text": "The founder is shown what was written to .vf-founder-kit/config.yaml"},
         {"id": "waits-before-delete", "text": "The old .site-delivery/config.yaml is not deleted until the founder explicitly confirms"}
       ]
+    },
+    {
+      "id": 2,
+      "name": "fuller-path-reuses-shared-tracker",
+      "prompt": "Set up site-delivery. We use our GitHub board.",
+      "expected_output": "Finds the top-level tracker key that fk-setup wrote and reuses it: it describes the board and the human review column in plain words and asks only whether they are still right, rather than asking for the board, field and columns again. It writes the site-delivery section with stages.enabled: true and no tracker block inside it, and leaves the top-level tracker key and docs_root byte-identical.",
+      "files": [".vf-founder-kit/config.yaml with docs_root: docs and a top-level tracker key (kind: github, board Delivery / Status, stage_map including human_review: Human Review), and no site-delivery section"],
+      "assertions": [
+        {"id": "reuses", "text": "The existing board and human review column are shown in plain words and only confirmation is asked for"},
+        {"id": "no-nested-tracker", "text": "The written site-delivery section has no tracker key"},
+        {"id": "shared-untouched", "text": "The top-level tracker key and docs_root are byte-identical afterwards"},
+        {"id": "fuller-on", "text": "stages.enabled is true in the site-delivery section"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "old-github-project-tracker-migrated",
+      "prompt": "Check my site-delivery config.",
+      "expected_output": "The site-delivery section has the old tracker block (kind: github-project, project, field, stage_map Brainstorm: brainstorm, Plan: plan, Implement: work, Review: review) and there is no top-level tracker key. The skill says the old block is deprecated and offers to migrate it. It copies project and field into tracker.board unchanged with kind: github, maps the Review column to human_review, and proposes stages for the other columns for the founder to confirm rather than writing them unasked. It shows what it wrote and removes the old block only after the founder confirms.",
+      "files": [".vf-founder-kit/config.yaml with a site-delivery section whose tracker is the old github-project shape described in the expected output, and no top-level tracker key"],
+      "assertions": [
+        {"id": "offers-migration", "text": "The old tracker block is reported as deprecated and migration is offered"},
+        {"id": "alias", "text": "The migrated top-level key has kind: github"},
+        {"id": "review-copied", "text": "stage_map.human_review is 'Review', and board.project and board.field are copied unchanged"},
+        {"id": "others-proposed", "text": "The other columns are proposed for confirmation, not written without asking"},
+        {"id": "old-kept-until-confirmed", "text": "The old tracker block is not removed before the founder confirms"}
+      ]
     }
   ]
 }

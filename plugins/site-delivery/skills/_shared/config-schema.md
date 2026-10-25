@@ -17,7 +17,7 @@ site-delivery:
 # other plugins' sections (agent-delivery, customer-research, ...) may sit in the same file
 ```
 
-Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow stage. If a skill needs to know something about *your* project, it is a key below. Key paths in this document (`repo.url`, `tracker.kind`, ...) are relative to the `site-delivery` section.
+Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow stage. If a skill needs to know something about *your* project, it is a key below. Key paths in this document (`repo.url`, `stages.enabled`, ...) are relative to the `site-delivery` section, except `tracker`, which is the shared top-level key.
 
 `fk-onboard` writes this section. `fk-orchestrate` reads it. A human can edit it at any time; it is plain YAML and every key has a default.
 
@@ -31,7 +31,7 @@ Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow sta
 - **Both present.** The section wins. Say in the report that the old `.site-delivery/config.yaml` is being ignored.
 - **Neither present.** The project is not configured; point at `fk-onboard`.
 
-**Writing.** The file is shared, so `fk-onboard` writes **only the `site-delivery` section**. It keeps every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was, and creates the file (and the `.vf-founder-kit/` folder) if it does not exist.
+**Writing.** The file is shared, so `fk-onboard` writes **only the `site-delivery` section**, plus the top-level `tracker` key when the fuller path needs one and it does not exist yet. It keeps every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was, and creates the file (and the `.vf-founder-kit/` folder) if it does not exist.
 
 **Migrating.** When `fk-onboard` finds the old `.site-delivery/config.yaml`, it offers to migrate it:
 
@@ -78,48 +78,94 @@ repo:
 
 ---
 
-## `tracker` — where briefs and tasks live (optional)
+## `tracker` — where tickets live, and the stage map (optional, shared)
+
+The tracker is **not** in the `site-delivery` section. It is the shared top-level `tracker` key of
+`.vf-founder-kit/config.yaml`, beside `docs_root`, because `core` and `agent-delivery` read the
+same map. `core`'s `fk-setup` usually writes it; this plugin's `fk-onboard` writes it when it is
+missing and the founder chooses the fuller path.
 
 ```yaml
+docs_root: docs
 tracker:
-  kind: none                     # none | github-project | linear. default: none
-  
-  # kind: github-project
-  project: My Site Delivery      # project board name or number
-  field: Status                  # the board's single-select field
-  stage_map:                     # field option -> stage
-    Brainstorm: brainstorm
-    Plan: plan
-    Implement: work
-    Review: review
-  
-  # kind: linear
-  team_key: SITE                 # Linear team key (e.g. SITE-123)
-  stage_map:                     # workflow state -> stage
-    Brainstorm: brainstorm
-    Plan: plan
-    In Progress: work
-    In Review: review
+  kind: github                 # github | linear | none. default: none
+  board:                       # github only
+    project: Delivery          # project board name or number
+    field: Status              # the board's single-select field
+  stage_map:                   # canonical stage -> this project's column (github) or state (linear)
+    brainstormed: Brainstormed
+    planned: Planned
+    in_progress: In Progress
+    human_review: Human Review
+    for_release: For Release
+    released_measure_impact: Measure Impact
+    done: Done
+site-delivery:
+  # ...this plugin's own keys
 ```
 
-**Thin path:** `kind: none` (the default) means no tracker integration. Briefs come from user input, and PR creation is the only output. No ticket status updates, no comment posting.
+`kind: github-project`, the value earlier versions of this plugin used, is read as `github`.
 
-**Fuller path:** Set `kind: github-project` or `linear` to enable tracker reads, status updates, and comment posting. When a tracker is configured, stage resolution reads the ticket state and the orchestration includes richer compound-engineering stages.
+The stage keys are fixed and mean the same in every project. A project maps each one it uses to
+its own column or workflow state and leaves the rest out. Columns not in the map, such as
+`Backlog` or `Todo`, are never touched.
+
+| Key | Meaning | This plugin sets it |
+|---|---|---|
+| `brainstormed` | Requirements or a brainstorm exist for the ticket | After the `brainstorm` stage commits its output |
+| `planned` | An implementation plan exists | After the `plan` stage commits its output |
+| `in_progress` | Someone, or an agent, is building it | When the `work` stage starts |
+| `human_review` | A pull request is open and ready for a human | When it opens a ready (not draft) pull request |
+| `for_release` | Merged, waiting to go to production | — the human merges |
+| `released_measure_impact` | In production; impact is being checked | — the human publishes |
+| `done` | Finished | — the founder |
+
+**Thin path:** with `stages.enabled: false` the plugin makes no tracker calls at all, whatever the
+`tracker` key says. A missing `tracker` key means `none`; report it as a default. The thin path is
+the designed default, not a degraded one.
+
+**Fuller path:** `stages.enabled: true` needs `tracker.kind` of `github` or `linear`. The ticket's
+column is read to resolve the stage, and the ticket is moved as the table above says.
+
+### Where the tracker is read from
+
+1. **The top-level `tracker` key.** When it exists, it wins.
+2. **The old location, `site-delivery.tracker`.** Earlier versions kept the tracker inside this
+   section, with `kind` (`none`, `github-project` or `linear`), `project`, `field`, `team_key`
+   and a `stage_map` running the other way: column → this plugin's stage (`Review: review`). When
+   there is no top-level key, read it: `project` and `field` are the board, the old map resolves
+   the stage as it always did, and the column mapped to `review` is the `human_review` column. No
+   other canonical stage is mapped, so those moves are skipped and reported. Say in the report
+   that the old location is deprecated and that `fk-onboard` will migrate it.
+3. **Neither.** `kind: none`.
+
+**Migrating** the old location, in `fk-onboard`: copy `project` and `field` into `board`, and the
+column mapped to `review` into `stage_map.human_review`, unchanged. The old map's other columns
+named where a stage *runs*, not what *exists*, so they do not translate one-to-one: propose a
+canonical stage for each and let the founder confirm. Show what was written, and remove the old
+keys only after the founder confirms. `team_key` is not carried over: Linear issue identifiers
+already name their team.
 
 ### The tracker contract
 
-When `kind` is not `none`, the adapter must implement:
+When the fuller path is on, the adapter implements:
 
 | Operation | Contract |
 |---|---|
 | **read the brief** | Return the ticket's title, body, and every comment. Comments can carry instructions the body does not. |
-| **read current stage** | Return which stage the ticket is in, based on `stage_map`. |
-| **set stage** | Move the ticket to the named stage. |
+| **read current stage** | Return the ticket's column or workflow state, and the canonical stage `stage_map` gives it (or "not mapped"). |
+| **set stage `<stage>`** | Look `<stage>` up in `stage_map` and move the ticket there. A stage with no entry is skipped and reported, and the ticket left where it is. |
 | **post a comment** | Add a comment to the ticket with the PR link and any delivery notes. |
 
 ### Missing-target behaviour
 
-When the configured project, field, or state does not exist, the adapter **reports it and refuses to proceed** for that ticket. It never guesses a substitute.
+When the mapped board, field, column or state does not exist, the adapter **reports it and leaves
+the ticket unchanged**. It never guesses a similarly named substitute: a ticket in the wrong column
+is worse than one left alone with a clear message. If the stage cannot be read at all because the
+board is missing, the orchestration stops for that ticket.
+
+One exception, and it is an addition rather than a guess: when the issue exists but is not yet an
+item on the configured board, it is **added, then set, and both actions are reported**.
 
 ---
 
@@ -168,6 +214,8 @@ stages:
 
 **Fuller path:** Set `enabled: true` when you have compound-engineering installed and want brainstorm/plan/work/review stages. Requires a `tracker` (not `none`) so the stage can be read from ticket state.
 
+`stages.map` here is about planning artifacts (readiness value → stage), not the board. The board's columns are in the shared `tracker.stage_map`.
+
 When `enabled: false`, the other keys in this block are ignored.
 
 ---
@@ -211,6 +259,6 @@ When `enabled: false`, this block is ignored.
 
 See `config.example.yaml` for complete examples:
 - Thin path (no tracker, no stages)
-- GitHub Project tracker with fuller stages
-- Linear tracker with fuller stages
+- GitHub board with fuller stages (shared `tracker` key)
+- Linear with fuller stages (shared `tracker` key)
 - All three publish kinds (anonymized)

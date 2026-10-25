@@ -19,7 +19,7 @@ A plain-language wizard that writes the `site-delivery` section of `.vf-founder-
 
 Onboarding is complete when:
 
-1. The `site-delivery` section of `.vf-founder-kit/config.yaml` exists with all required values (`repo.url`, `publish.kind`, and `tracker.kind`).
+1. The `site-delivery` section of `.vf-founder-kit/config.yaml` exists with all required values (`repo.url` and `publish.kind`), and, for the fuller path, the shared top-level `tracker` key exists with a board (GitHub) and a `stage_map`.
 2. Every value was either provided by the user or is a documented default that was **reported as a default**.
 3. The user knows which path they chose: thin (no tracker) or fuller (tracker + compound-engineering stages).
 4. Re-running on an already-configured repository detects the existing config, reports what would change, and asks before overwriting.
@@ -43,6 +43,15 @@ If they agree:
 3. Ask whether to delete the old `.site-delivery/config.yaml`. Delete it **only after they confirm**. If they say no, leave it, and tell them it is now ignored because the new section wins.
 
 If the `site-delivery` section already exists as well, do not overwrite it from the old file: say the old file is ignored, show any differences between the two, and offer only to delete it.
+
+**An old tracker block inside the section.** Earlier versions also kept the tracker inside the `site-delivery` section (`tracker.kind`, `project`, `field`, `team_key` and a `stage_map` from column to stage). The tracker is now the shared top-level `tracker` key, which `core` and `agent-delivery` read too. If the section has one and there is no top-level key, offer to migrate it:
+
+1. Copy `project` and `field` into `tracker.board`, unchanged, and write `kind: github` for `github-project`.
+2. The column the old map sent to `review` becomes `stage_map.human_review`, unchanged.
+3. The old map's other columns said where a stage *runs*, not what *exists*, so they do not translate one-to-one. Propose a stage for each (for example, the column where `work` ran → `in_progress`) and ask them to confirm or correct it. Leave out anything they are unsure of.
+4. Show them exactly what you wrote, and remove the old `tracker` block from the section **only after they confirm**.
+
+If a top-level `tracker` key already exists, leave it as it is: say the old block is ignored and offer only to remove it.
 
 After migrating, carry on with the steps below only if they want to change something; otherwise go to step 6.
 
@@ -78,24 +87,31 @@ After migrating, carry on with the steps below only if they want to change somet
 > 3. Fuller path with Linear
 
 **If they choose thin path (1):**
-- Set `tracker.kind: none`
 - Set `stages.enabled: false`
+- Write no `tracker` key. If one already exists for other plugins, leave it alone: the thin path makes no tracker calls
 - State: "Great, we'll use the thin path. No tracker setup needed."
 
+**If they choose the fuller path (2 or 3), first check for a shared `tracker` key.** If `.vf-founder-kit/config.yaml` already has one (usually written by `/core:fk-setup`), reuse it. Show it in plain words and ask only whether it is still right:
+
+> Your board is already set up: "Delivery", using the Status field. When Claude opens a pull request ready for review, the ticket moves to "Human Review". Is that still right?
+
+Otherwise ask, as below, and write it as the shared top-level `tracker` key. The stages are fixed: `brainstormed`, `planned`, `in_progress`, `human_review`, `for_release`, `released_measure_impact`, `done`. Each maps to one of their columns; a stage they do not use is left out.
+
 **If they choose GitHub Project (2):**
-- Set `tracker.kind: github-project`
-- Ask: "What is your GitHub Project board name?" (e.g. "Widget Co Site Delivery")
-- Ask: "What is the status field name?" (default: "Status")
-- Ask: "What are the field options for each stage?" (default: Brainstorm, Plan, Implement, Review)
+- Set `tracker.kind: github`
+- Ask: "What is your GitHub Project board name?" (e.g. "Widget Co Site Delivery") → `tracker.board.project`
+- Ask: "What is the status field name?" (default: "Status") → `tracker.board.field`
+- Ask which column means each stage, in plain words: "Which column do tickets go in when the brainstorm is written? When the plan is written? While it is being built? When a pull request is ready for you to review? When it is merged? When it is live? When it is finished?" Any they do not have is left out → `tracker.stage_map`
 - Set `stages.enabled: true`
-- State: "You'll need compound-engineering installed for the fuller path stages. I'll configure the stage map now."
+- State: "You'll need compound-engineering installed for the fuller path stages."
 
 **If they choose Linear (3):**
 - Set `tracker.kind: linear`
-- Ask: "What is your Linear team key?" (e.g. "SITE" for issues like SITE-123)
-- Ask: "What are your workflow states for each stage?" (default: Brainstorm, Plan, In Progress, In Review)
+- Ask the same plain-words question about their workflow states → `tracker.stage_map`
 - Set `stages.enabled: true`
-- State: "You'll need compound-engineering installed for the fuller path stages. I'll configure the stage map now."
+- State: "You'll need compound-engineering installed for the fuller path stages."
+
+Never guess a column from a similar name. If they are unsure about one, leave that stage out: it is skipped and reported later, which is safe; a wrong column moves tickets to the wrong place.
 
 ### 3. Ask about publish platform
 
@@ -143,13 +159,14 @@ If they want to change any, note it. Otherwise, use the defaults.
 Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the reference and [`../_shared/config.example.yaml`](../_shared/config.example.yaml) as the template, write the `site-delivery` section of `.vf-founder-kit/config.yaml` with:
 
 - The repository URL, main branch, and branch prefix
-- The tracker kind and configuration (or `none` for thin path)
 - The publish kind and platform-specific details
-- Stages enabled/disabled based on tracker choice
+- Stages enabled or disabled, which is the path choice
 - Delivery rules (defaults unless user changed them)
 - `agent_delivery_integration.enabled: false` (stub for future)
 
-**The file is shared by every Founder Kit plugin. Write only the `site-delivery` section.** Keep every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was. If the file does not exist, create it (and the `.vf-founder-kit/` folder) with just this section.
+For the fuller path, also write the top-level `tracker` key when it did not exist: `kind`, `board` (GitHub only) and `stage_map`. Never write a tracker block inside the `site-delivery` section.
+
+**The file is shared by every Founder Kit plugin. Write only the `site-delivery` section**, plus the `tracker` key when it is new. Keep every other key and section — `docs_root`, other plugins' sections, an existing `tracker` key, comments — exactly as it was. If the file does not exist, create it (and the `.vf-founder-kit/` folder) with just what you are writing.
 
 **Report every defaulted value explicitly:**
 
@@ -157,7 +174,7 @@ Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the refere
 > - Repository: `https://github.com/username/my-site` (detected)
 > - Main branch: `main` (default)
 > - Branch prefix: `feature/` (default)
-> - Tracker: `none` (thin path)
+> - Path: thin (no tracker calls)
 > - Publish: `lovable` with project ID `[you'll add this]`
 > - Stages: disabled (thin path)
 > - Delivery rules: all safe defaults (human merge gate, human publish gate, confirm live, no experiments)
@@ -179,9 +196,9 @@ Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the refere
 > You're configured for the fuller path with tracker integration. To deliver:
 > 1. Create a ticket in your tracker (GitHub Project or Linear)
 > 2. Write the brief in the ticket body or comments
-> 3. Move the ticket to the right stage (Brainstorm, Plan, Implement, or Review)
-> 4. Run `/site-delivery:fk-orchestrate <ticket-id>`
-> 5. Claude reads the ticket, runs the compound-engineering stage, and opens a PR
+> 3. Run `/site-delivery:fk-orchestrate <ticket-id>`
+> 4. Claude reads the ticket, works out the next stage from its plan or its column, runs it, and moves the ticket along as the work progresses
+> 5. When a pull request is ready for you, the ticket moves to your review column
 > 6. You review, merge, and run your publish flow
 > 7. You confirm it's live
 >
@@ -201,8 +218,8 @@ Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the refere
 3. **Thin path is the default.** Frame the fuller path as an opt-in choice for teams who already have a planning workflow and want richer stages.
 4. **Stop and ask rather than guessing.** If a value is ambiguous (e.g. which GitHub Project board name), ask. Do not invent a plausible-sounding name.
 5. **Re-running is safe.** Detect an existing config, report what would change, and ask before overwriting. Someone may have hand-edited it since the last onboard.
-6. **No tracker means no compound-engineering stages.** When `tracker.kind: none`, `stages.enabled` must be `false`. The fuller path requires a tracker to read stage state from.
-7. **Touch only your own section.** `.vf-founder-kit/config.yaml` is shared. Never change another key or section, and never delete an old config file without the founder's confirmation.
+6. **No tracker means no compound-engineering stages.** When `tracker.kind` is `none` or there is no `tracker` key, `stages.enabled` must be `false`. The fuller path requires a tracker to read stage state from.
+7. **Touch only your own section**, plus a new shared `tracker` key. `.vf-founder-kit/config.yaml` is shared. Never change another key or section, never rewrite an existing `tracker` key without the founder's say-so, and never delete an old config file or block without the founder's confirmation.
 
 ## Out of scope
 
