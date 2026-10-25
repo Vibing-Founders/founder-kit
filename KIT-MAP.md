@@ -61,8 +61,12 @@ connect in these ways:
   its advice, and none other writes it.
 
 - **One config file.** `.vf-founder-kit/config.yaml` in the founder's project holds a section per
-  plugin plus the shared `docs_root`. A skill writes only its own plugin's section. `compliance`
-  does not use it today.
+  plugin plus two shared keys: `docs_root` and `tracker`. A skill writes only its own plugin's
+  section. `compliance` does not use it today.
+- **One ticket stage map.** The shared `tracker` key maps the kit's fixed stages (`brainstormed`
+  through `done`) to the project's own board columns or Linear states. `core`'s `fk-setup` writes
+  it, with a `CLAUDE.md` rule saying which event moves a ticket; `agent-delivery` and
+  `site-delivery` move tickets through the same map, and write it only when it is missing.
 - **One docs convention.** Skills that save files use `docs/<plugin-name>/` unless the config or
   the request says otherwise.
 - **Research feeds research.** `fk-competitors` uses the ideal customer profile from `fk-icp` when
