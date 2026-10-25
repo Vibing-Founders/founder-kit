@@ -80,7 +80,7 @@ Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-d
 | `compliance` | Online safety, GDPR, application security and Supabase data access compliance for platform builders | `fk-online-safety` (+ `cra` mode), `fk-gdpr` (+ `lia` mode), `fk-application-security`, `fk-dpia`, `fk-supabase-rls` |
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `fk-onboard`, `fk-dispatch` |
 | `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `fk-onboard`, `fk-orchestrate` |
-| `customer-research` | Understand your customers well enough to validate an idea and sell it: an evidence-based ideal customer profile from real conversations, competitor research you can act on, and a fact-check of the claims you make and meet | `fk-icp`, `fk-competitors`, `fk-fact-check` |
+| `customer-research` | Understand your customers well enough to validate an idea and sell it: a ranked shortlist of who to talk to first and where to find them, an evidence-based ideal customer profile from real conversations, competitor research you can act on, and a fact-check of the claims you make and meet | `fk-segments`, `fk-icp`, `fk-competitors`, `fk-fact-check` |
 
 ---
 
@@ -306,9 +306,18 @@ Upgrading from 0.1.0, which wrote to `customer-research/` in the project root? T
 /plugin install customer-research@founder-kit
 ```
 
-You do not need the slash commands: plain requests such as "analyse this customer interview", "who are my competitors for …" or "fact-check this" trigger the right skill.
+You do not need the slash commands: plain requests such as "who should I talk to first?", "analyse this customer interview", "who are my competitors for …" or "fact-check this" trigger the right skill.
 
 ### Skills
+
+**`/customer-research:fk-segments`** — who to talk to first, and where to find them
+```
+/customer-research:fk-segments freelancers lose track of unpaid invoices; I think freelance designers and solo developers have it worst
+/customer-research:fk-segments who would pay for a meal planner for shift workers?
+/customer-research:fk-segments where do I find people with this problem?
+```
+
+For the start, before you have talked to customers. Give it the problem and one to three guesses at who has it. It scans every group that plausibly has the problem (including ones you did not name), scores them on how much it hurts, whether they can pay and whether you can reach them within about three months, and shortlists three to six. A research agent profiles each one: the pain in their own words from real public posts, when it peaks, what they do today, who holds the budget, why they might not buy, and exactly where they gather. It ends with who to talk to: how many people, where, a short outreach message that asks about the problem rather than pitching, and what an interview would have to reveal to change the ranking. Every claim is marked sourced or hypothesis, there is no market sizing, and it tells you when your favourite group ranks low. It reads your founder profile, if you have one, to see who you can already reach, and if you already have interviews it points you to `fk-icp` instead. Saves `segments.md`; then prepare the conversations with `interview-script` and bring the transcripts to `fk-icp`.
 
 **`/customer-research:fk-icp`** — ideal customer profile and personas from real conversations
 ```
@@ -342,9 +351,10 @@ Pulls the checkable claims out of your landing page, pitch, sales email, a compe
 These free skills from [pm-skills](https://github.com/phuryn/pm-skills) by Paweł Huryn fill gaps
 this plugin leaves on purpose:
 
-- **`interview-script`**: a full guide to prepare a customer interview. Give it the research
-  gaps from `fk-icp`, then bring the transcript back to `fk-icp`. Drop its hypothetical
-  questions ("If you could wave a magic wand…"); `fk-icp` treats the answers as weak evidence.
+- **`interview-script`**: a full guide to prepare a customer interview. Give it the shortlist
+  from `fk-segments` or the research gaps from `fk-icp`, then bring the transcript back to
+  `fk-icp`. Drop its hypothetical questions ("If you could wave a magic wand…"); `fk-icp`
+  treats the answers as weak evidence.
 - **`competitive-battlecard`**: responses to objections once you are on sales calls, built on
   the `fk-competitors` research.
 
@@ -442,6 +452,7 @@ plugins/
     .claude-plugin/plugin.json
     skills/
       _shared/          # Where research lives (docs-location rules)
+      fk-segments/      # Who to talk to first, with a bundled segment research agent
       fk-icp/           # Ideal customer profile, personas, qualifying questions
       fk-competitors/   # Competitor research with a bundled research agent
       fk-fact-check/    # Claim checking with bundled research and analyst agents
