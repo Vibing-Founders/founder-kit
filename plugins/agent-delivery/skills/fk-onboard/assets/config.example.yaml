@@ -7,13 +7,40 @@
 # `fk-onboard` skill write it for you from what it detects.
 #
 # Precedence: an explicit skill argument beats this section; this section beats the default.
-# Every key is optional except the four marked REQUIRED. Commented-out keys show the
+# Every key is optional except the ones marked REQUIRED. Commented-out keys show the
 # default the plugin uses when you leave them out.
 #
 # Full reference: skills/_shared/config-schema.md in the agent-delivery plugin.
 # v1 note: this format is unstable and may change without a migration path.
 
 docs_root: docs            # shared by all Founder Kit plugins (optional)
+
+# --- Where tickets live, and the stage map (shared) ----------------------------
+#
+# REQUIRED for this plugin, but NOT inside the agent-delivery section: core and
+# site-delivery read the same map, so it is a top-level key. If core's fk-setup
+# already wrote it, leave it as it is. kind: none does not work for agent-delivery,
+# because a dispatch starts by reading a ticket.
+
+tracker:
+  kind: github                 # github | linear | none
+
+  board:                       # kind: github only
+    project: Delivery          # project board name or number
+    field: Status              # the board's single-select field
+
+  # Canonical stage -> this project's column (github) or workflow state (linear).
+  # The keys never change; leave out a stage the project does not use. This plugin
+  # sets in_progress when a run is fired and human_review on close-out. A stage
+  # with no entry is skipped and reported, never guessed.
+  stage_map:
+    brainstormed: Brainstormed
+    planned: Planned
+    in_progress: In Progress
+    human_review: Human Review
+    for_release: For Release
+    released_measure_impact: Measure Impact
+    done: Done
 
 agent-delivery:
   schema_version: 1
@@ -37,21 +64,9 @@ agent-delivery:
     # lint_command: npm run lint
     # typecheck_command: npm run type-check
 
-  # --- Where tickets live ------------------------------------------------------
-
-  tracker:
-    # REQUIRED. github | linear
-    kind: github
-
-    # Where "ready for human review" lives. The run sets this on finishing.
-    review_marker:
-      # kind: github — a project board column
-      project: Delivery
-      field: Status
-      option: In review
-
-      # kind: linear — a workflow state
-      # state: In Review
+  # The tracker is the shared top-level `tracker` key above, not a key here.
+  # Older versions kept it here as tracker.kind + tracker.review_marker; that is
+  # still read (review_marker = the human_review stage) but deprecated.
 
   # --- Which skill runs for a ticket -------------------------------------------
   #
@@ -152,7 +167,7 @@ agent-delivery:
   # a run opens a pull request and touches the tracker not at all.
 
   close_out:
-    # review_marker: true
+    # review_marker: true              # moves the ticket to stage_map.human_review
     # manual_test_checklist: true
 
     # Applies only to tickets the tracker reports as defects. Set false if your

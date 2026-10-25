@@ -32,7 +32,7 @@
     {
       "name": "agent-delivery",
       "description": "Dispatch a planned ticket into a Claude cloud sandbox, run its tests against a disposable Supabase preview branch, and get back a pull request with the ticket closed out.",
-      "version": "0.0.3",
+      "version": "0.1.0",
       "author": {
         "name": "Vibing Founders",
         "url": "https://github.com/Vibing-Founders"

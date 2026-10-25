@@ -51,9 +51,17 @@ From the detection report, write the `agent-delivery` section of `.vf-founder-ki
 using [`assets/config.example.yaml`](assets/config.example.yaml) as the shape and
 [`../_shared/config-schema.md`](../_shared/config-schema.md) as the reference.
 
-**The file is shared by every Founder Kit plugin. Write only the `agent-delivery` section.** Keep
-every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was.
-If the file does not exist, create it (and the `.vf-founder-kit/` folder) with just this section.
+**The file is shared by every Founder Kit plugin. Write only the `agent-delivery` section**, plus
+the top-level `tracker` key when it does not exist yet. The tracker is shared with `core` and
+`site-delivery`, so it sits at the top level, never inside this section; when it already exists,
+reuse it and leave it as it is. Keep every other key and section — `docs_root`, other plugins'
+sections, comments — exactly as it was. If the file does not exist, create it (and the
+`.vf-founder-kit/` folder) with just this section and the tracker key.
+
+**An old tracker block is migrated the same way.** When the `agent-delivery` section has its own
+`tracker` with `review_marker` and there is no top-level `tracker`, copy the values into the
+top-level key unchanged (`review_marker.option` or `.state` becomes `stage_map.human_review`),
+show what you wrote, and remove the old keys only after the founder confirms.
 
 **An old config file is migrated, not merged.** Earlier versions of this plugin kept the config in
 its own file, `.agent-delivery/config.yaml`. If you find it, offer to migrate it before writing

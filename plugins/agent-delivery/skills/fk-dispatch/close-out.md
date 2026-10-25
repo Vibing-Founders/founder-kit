@@ -14,11 +14,11 @@ here.
 
 | # | Step | Config key | Contract operation |
 |---|---|---|---|
-| 1 | Set the review marker | `close_out.review_marker` | *set the review marker* |
+| 1 | Move the ticket to human review | `close_out.review_marker` | *set stage `human_review`* |
 | 2 | Post the manual-test checklist | `close_out.manual_test_checklist` | *post a comment* |
 | 3 | Record the escape cause and the guard — defect tickets only | `close_out.defect_record` | *post a comment* |
 
-Order matters: the marker moves first, so a ticket that reaches a human's review queue is already
+Order matters: the ticket moves first, so a ticket that reaches a human's review queue is already
 carrying the checklist rather than acquiring it a moment later.
 
 **Every step defaults to on.** A step whose key is `false` is not performed, and **the run says in
@@ -26,13 +26,23 @@ its report that it was off** — a silently skipped step and a failed step look 
 reads the ticket afterwards.
 
 With all three off, a run opens a pull request and touches the tracker not at all. That is a
-supported configuration, not a degraded one.
+supported configuration, not a degraded one. (The dispatcher sets `in_progress` when it fires,
+separately from close-out.)
 
-## Step 1 — set the review marker
+## Step 1 — set stage `human_review`
 
-One operation. The target is whatever `tracker.review_marker` names.
+One operation. The target is the column or workflow state that `tracker.stage_map` names for
+`human_review`, in the shared top-level `tracker` key. The config key keeps its old name,
+`close_out.review_marker`, so existing configs need no change. On a project still using the old
+`agent-delivery.tracker.review_marker`, that is the `human_review` target.
 
-**On a missing target** — the configured state, board, field, or option does not exist — report it
+**Set it only for a ready pull request.** A run that halted at a risk brake opens a draft pull
+request; that is not ready for review, so the ticket stays where it is and the report says why.
+
+**On an unmapped stage** — `stage_map` has no `human_review` — skip the step and say so: "no column
+mapped for `human_review`; ticket left where it is".
+
+**On a missing target** — the mapped state, board, field, or option does not exist — report it
 and leave the ticket unchanged. Do not substitute a similarly-named one. The adapter files carry
 the detail, including the one case that is an addition rather than a substitution: a ticket that is
 not yet an item on a configured board is added, then set, with both actions reported.
@@ -88,6 +98,6 @@ Two things, and both live in the fk-dispatch skill rather than here:
 
 - **Composing the prompt:** name the enabled steps and their targets. A step not named is off, so
   the run needs no config access to know what to do.
-- **Verifying:** read the ticket back through the adapter and confirm the marker and the comments.
+- **Verifying:** read the ticket back through the adapter and confirm its column and the comments.
   Report what the run claimed and what was confirmed separately — see the fk-dispatch skill's
   verification duty.

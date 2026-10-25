@@ -91,6 +91,19 @@
         {"id": "real-clone-dir", "text": "The clone directory is the repository's actual name rather than a placeholder left for the human"},
         {"id": "installs-plugin", "text": "The script installs the marketplace and the agent-delivery plugin so skill invocation is the run's primary path"}
       ]
+    },
+    {
+      "id": 8,
+      "name": "shared-tracker-key",
+      "prompt": "Onboard this repo for agent delivery.",
+      "expected_output": "Detects that the shared tracker key exists and reuses it: it does not ask for the review column again and writes no tracker block inside the agent-delivery section. It writes the agent-delivery section only, leaving docs_root and the tracker key byte-identical, and records the project scope as a required credential entry for the environment.",
+      "files": [".vf-founder-kit/config.yaml with docs_root: docs and a top-level tracker key (kind: github, board Delivery / Status, stage_map with in_progress and human_review) written by fk-setup, and no agent-delivery section"],
+      "assertions": [
+        {"id": "reuses-tracker", "text": "The shared tracker key is reported as found and reused, and no question about the review column is asked"},
+        {"id": "no-nested-tracker", "text": "The written agent-delivery section has no tracker key"},
+        {"id": "shared-untouched", "text": "docs_root and the top-level tracker key are byte-identical afterwards"},
+        {"id": "project-scope", "text": "The project scope is recorded as needed for the tracker credential"}
+      ]
     }
   ]
 }

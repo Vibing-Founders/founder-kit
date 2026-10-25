@@ -25,6 +25,15 @@ Read the repository. Do not ask the human anything you can read.
 
 ## 2. Tracker
 
+**Reuse the shared `tracker` key when it exists.** The tracker and its stage map are the
+top-level `tracker` key of `.vf-founder-kit/config.yaml`, shared with `core` and `site-delivery`
+(see [`../_shared/config-schema.md`](../_shared/config-schema.md#tracker--where-tickets-live-and-the-stage-map)).
+When `core`'s `fk-setup` has already written it, report it as detected, check that the board and
+the `in_progress` and `human_review` columns still exist, and skip the rest of this section except
+the credential scope. Never write a tracker block inside the `agent-delivery` section.
+
+When it does not exist, detect it:
+
 | Signal | Conclusion |
 |---|---|
 | A `.github/` directory and issues referenced as `#123` in commit messages | `kind: github` |
@@ -34,9 +43,15 @@ Read the repository. Do not ask the human anything you can read.
 Then read [`../_shared/trackers/<kind>.md`](../_shared/trackers/) and fill in that adapter's
 config block. Two things it will tell you that detection cannot:
 
-- **The review marker.** What it *is* differs per tracker, and the adapter file says both what to
-  configure and how to list the candidates. Do that, then ask: **which one means "ready for human
-  review" is the human's answer**, not something to infer from a name.
+- **The stage map.** List the board's columns (GitHub) or the team's workflow states (Linear), as
+  the adapter file describes, and propose which one stands for each stage in the shared map. This
+  plugin moves tickets to `in_progress` and `human_review`, so those two matter most; propose the
+  others too when the match is obvious, because the same map drives the project's Ticket stages
+  rule. **Which column means "ready for human review" is the human's answer**, not something to
+  infer from a name. A stage with no clear column is left out and reported.
+- **The old location.** If the `agent-delivery` section still has `tracker` with `review_marker`,
+  offer to migrate it to the top-level key: copy the values unchanged, show what was written, and
+  remove the old keys only after the founder confirms.
 - **Any extra credential scope.** Record it for phase 3; the GitHub adapter needs `project` scope,
   which is not in a default login and fails with an unhelpful permissions error.
 
@@ -100,7 +115,7 @@ Emit the detection report before writing any file. Structure it as three lists:
 
 - **Detected** — value, key, and the evidence (file and line).
 - **Defaulted** — value, key, and what would have had to exist for it to be detected.
-- **Needs a human answer** — the review marker, the project reference, the region, risk-brake
+- **Needs a human answer** — the stage map (at least the `human_review` column), the project reference, the region, risk-brake
   confirmation, and anything ambiguous. Ask these as one batch, not one at a time.
 
 Only then move to phase 2 and write the config.
