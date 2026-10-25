@@ -3,14 +3,16 @@ name: fk-setup
 description: >
   Sets up a project with the Founder Kit baseline for working with Claude Code agents, or checks a
   project that is already set up against the current baseline and offers to fill the gaps. The
-  baseline is a CLAUDE.md with standing rules (including the worktree rule), a docs layout, the
-  default plugins, ignore entries and a worktree setup script. Detects the project's stack rather
+  baseline is a CLAUDE.md with standing rules (including the worktree rule and, for a project with
+  a GitHub Projects board or Linear, the rule that keeps tickets in step with the work), a docs
+  layout, the default plugins, ignore entries and a worktree setup script. Detects the project's stack rather
   than assuming one, shows a diff before changing any existing file, and is safe to re-run at any
   time. Also reports other Founder Kit plugins that are installed but not yet onboarded. Use this
   skill when someone starts a new project, or wants to know what their project setup is missing.
   Triggers on: "set up this new project", "set up this project for Founder Kit", "apply the project
   baseline", "/core:fk-setup", "check my project setup", "what is my project missing", "is my
-  setup up to date", "what's new in the baseline", "add the worktree rule to this project".
+  setup up to date", "what's new in the baseline", "add the worktree rule to this project", "map
+  my board's columns", "keep my tickets in step with the work".
   NOT for configuring cloud dispatch or site delivery: those are the `fk-onboard` skills of the
   `agent-delivery` and `site-delivery` plugins, which this skill points to when they apply.
 ---
@@ -48,6 +50,9 @@ changes between releases of this plugin. Do not work from memory of an earlier r
    values from the last run, the baseline version the project was checked against, and any items
    the founder declined. Values recorded there are the founder's answers: reuse them, and do not
    ask again unless the project has visibly changed (a recorded command no longer exists).
+   Read the top-level `tracker` key as well: it holds the ticket stage map (B9). When it is
+   missing but an old `agent-delivery.tracker` section exists, read that instead, as B9 describes,
+   and note that it will be offered for migration.
 3. If the directory is not a git repository, say so and offer to run `git init`. The worktree
    items need git; the rest do not.
 
@@ -67,6 +72,32 @@ Read the project before asking anything. For each value, record the evidence.
 | Naming conventions | Existing source files, when there are enough to show a pattern |
 | Directory structure | The tree, two levels deep, leaving out dependencies and build output |
 
+### The tracker and its stage map
+
+Skip this when the top-level `tracker` key is already recorded, unless Step 4 finds it out of date.
+
+- **GitHub.** When the repository's remote is on GitHub, list the boards:
+  `gh project list --owner <owner> --format json`. If exactly one is listed, propose it;
+  otherwise ask which one. Then read its fields:
+  `gh project field-list <number> --owner <owner> --format json`, and take the single-select field
+  named `Status`, or ask which field when there is none or several.
+- **Linear.** When ticket identifiers shaped `ABC-123` appear in branch names or commit messages,
+  or a Linear connector is present, list the team's workflow states through the connector.
+- **Both, or neither.** Ask. "We don't use a tracker" is a normal answer: record `kind: none`,
+  and B3.7 and B9 are Not applicable.
+
+If `gh` fails with a permissions error, the login is probably missing the `project` scope. Say
+so, and give the command, `gh auth refresh -s project`, rather than carrying on as though there
+were no board.
+
+Propose a stage map by matching the board's column names to the stages in B9: ignore case and
+spacing, and accept obvious synonyms ("In review" or "Review" → `human_review`, "Doing" →
+`in_progress`, "Measure impact" or "Released" → `released_measure_impact`, "Ready to release" or
+"Merged" → `for_release`). Show the proposal as a table of stage and column, with every column
+that matched nothing and every stage with no column listed as unmapped. Do not guess a match
+that is not obvious: an unmapped stage is skipped and reported later, which is safe; a wrong one
+moves tickets to the wrong place.
+
 Then ask the founder, **in one message**, only for what could not be detected and what only they
 can know:
 
@@ -74,6 +105,8 @@ can know:
   "not decided yet" is an acceptable answer, and that item is then written as not set up yet);
 - how releasing works: what deploys on merge, what does not, and the manual steps in order;
 - naming conventions, when there is no code to read them from;
+- the board and field, when there was not exactly one, and whether the proposed stage map is
+  right (they confirm or correct it; the unmapped items are shown so they can fill them);
 - the plugin choice in Step 3.
 
 ## Step 3: Ask about plugins
@@ -109,9 +142,16 @@ rule, check the parts as well as its presence: the doc-only sentence, the refere
 `local-dev.md`, and commands that match the project's current ones. A script that differs from
 `assets/worktree-setup.sh` is Different.
 
+For B3.7 and B9, also check them against the board. Read the board's columns (or the team's
+workflow states) again: a mapped column that has been renamed or deleted makes B9 and the map
+Different, naming the column. The rule's column names must match `stage_map` line for line, and
+`ticket-stages.md` must have the same table; a mismatch is Different. When the tracker is still in
+the old `agent-delivery.tracker` location, report it as Different and say migration is offered.
+
 When the project's recorded baseline version is lower than the current one, start with a line
 saying what is new, taken from the change log in `baseline.md`: "New since your last check
-(baseline 1 → 2): …".
+(baseline 1 → 2): …". From 1 to 2, that is the Ticket stages rule (B3.7) and
+`docs/conventions/ticket-stages.md` (B9).
 
 If everything is Present, Not applicable or Declined, say the project is up to date, update the
 recorded version, and go to Step 7.
@@ -134,7 +174,16 @@ down in `declined`.
 ## Step 6: Apply
 
 Apply only what was approved, in this order: `.gitignore`, docs layout, the worktree script,
-`docs/conventions/local-dev.md`, `CLAUDE.md`, `.claude/settings.json`.
+`docs/conventions/local-dev.md`, the shared `tracker` key, `docs/conventions/ticket-stages.md`,
+`CLAUDE.md`, `.claude/settings.json`. The tracker key and `ticket-stages.md` come before
+`CLAUDE.md` so the rule never points at a file or a map that is not there yet.
+
+- Write the `tracker` key of `.vf-founder-kit/config.yaml` and nothing else in that step. Keep
+  every other key and section as it was, and create the file if it does not exist.
+- **Migrating the old location.** When the tracker was found in `agent-delivery.tracker`, copy
+  its values into the top-level key unchanged (B9 says which is which), show the founder what was
+  written, and offer to remove the old `kind` and `review_marker` keys. Remove them only after the
+  founder confirms; until then the top-level key wins and the old keys are ignored.
 
 - Copy `assets/worktree-setup.sh` to `scripts/worktree-setup.sh` byte for byte and make it
   executable. Do not adapt it to the project; the env file names are arguments.
@@ -169,11 +218,15 @@ End with:
 - **Done** — what was created and changed.
 - **Detected and defaulted** — which values came from the project, which from the founder, and
   which were defaulted.
-- **Still open** — items written as "not set up yet", declined items, and anything from Step 7.
+- **Still open** — items written as "not set up yet", declined items, stages with no column
+  ("no column mapped for `for_release`; tickets will be left where they are at that stage"),
+  board columns that are not in the map, and anything from Step 7.
 - **Try it** — when the worktree items were applied: commit the changes first, then the command
   sequence from `local-dev.md` to run in a new worktree.
 - **Plugins to install** — the `claude plugin install … --scope project` command for each enabled
   plugin that `claude plugin list --json` shows as not installed (B4), and a note that plugins do
   not carry into cloud sessions.
 - **Suggestions** — anything you think the baseline lacks for this project, kept separate and
-  not applied.
+  not applied. For a GitHub board, mention that its built-in workflows (the board's Workflows
+  settings) can move items automatically when a pull request is merged or an issue is closed. They
+  are a backstop for the moves the rule asks for, not a replacement.
