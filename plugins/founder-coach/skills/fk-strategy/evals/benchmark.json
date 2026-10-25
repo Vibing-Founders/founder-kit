@@ -1,0 +1,563 @@
+{
+  "metadata": {
+    "skill_name": "fk-strategy",
+    "skill_path": "plugins/founder-coach/skills/fk-strategy",
+    "executor_model": "claude-opus-5-5",
+    "analyzer_model": "claude-opus-5-5",
+    "timestamp": "2026-10-19T06:09:14Z",
+    "evals_run": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 7,
+        "failed": 0,
+        "total": 7,
+        "time_seconds": 138.5,
+        "tokens": 66725,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response shows it read the founder profile and journey (refers to details such as 15 hours a week, the meet-up group, or the 4 of 7 unprompted interviews) rather than re-asking them",
+          "passed": true,
+          "evidence": "Says it read founder-profile.md and journey.md and cites 4 of 7 unprompted, \u00a3400+ accountant, 15 hours, \u00a31,500, meet-up group"
+        },
+        {
+          "text": "The response asks the founder exactly one question, not a list of questions",
+          "passed": true,
+          "evidence": "Single bold question at the end: 'what are the two (or three) options you keep swinging between?'"
+        },
+        {
+          "text": "Neither the response nor strategy.md contains market sizing, TAM, market share, valuation or investor framing",
+          "passed": true,
+          "evidence": "No TAM, market size, share or valuation anywhere"
+        },
+        {
+          "text": "docs/founder-coach/strategy.md is created with sections for diagnosis, guiding policy, coherent actions, wedge, value proposition, strategic bets, not doing yet, phased path, open questions and change log",
+          "passed": true,
+          "evidence": "strategy.md has all ten sections (diagnosis through change log)"
+        },
+        {
+          "text": "strategy.md has 3 to 5 strategic bets and every bet has kill or pivot criteria with a number, a date or an observed behaviour",
+          "passed": true,
+          "evidence": "Four bets B1-B4, each with number and date, e.g. 'fewer than 3 photographers pay for a first month by 2026-11-30'"
+        },
+        {
+          "text": "strategy.md has at least one specific 'not doing yet' choice with a reason",
+          "passed": true,
+          "evidence": "Three 'not doing yet' items each with 'because'"
+        },
+        {
+          "text": "journey.md and founder-profile.md are unchanged",
+          "passed": true,
+          "evidence": "diff shows journey.md and founder-profile.md identical to fixture"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 98.1,
+        "tokens": 340191,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response says the statement is a goal (or goals) rather than a strategy, i.e. flags it as bad strategy",
+          "passed": true,
+          "evidence": "'is a goal (where you want to end up), not a strategy'"
+        },
+        {
+          "text": "The response names at least two specific problems from Rumelt's list, such as mistaking goals for strategy, fluff (e.g. 'leverage AI to empower') or failing to face the challenge, quoting the founder's words",
+          "passed": true,
+          "evidence": "Names goals-not-strategy and 'fluff' (citing Good Strategy / Bad Strategy), quoting each line"
+        },
+        {
+          "text": "The response explains what a strategy needs instead: a diagnosis, a guiding policy and coherent actions (in plain words)",
+          "passed": true,
+          "evidence": "'The diagnosis names the real challenge. The guiding policy ... The coherent actions ...'"
+        },
+        {
+          "text": "The response uses the founder's actual situation from the files (e.g. 15 hours a week, stage 2, interview evidence) to point at the real challenge",
+          "passed": true,
+          "evidence": "Uses 15 hours, \u00a31,500, meet-up of 60, 4 of 7 interviews, stage 2"
+        },
+        {
+          "text": "If strategy.md is written, '#1 platform' and the revenue target are not presented as the guiding policy; they appear, if at all, as goals",
+          "passed": true,
+          "evidence": "strategy.md keeps them under 'Goals (where Priya wants to be, not how to get there)'; policy is about late-payment photographers"
+        },
+        {
+          "text": "The tone is warm and direct and leaves the decision to the founder (offers a better version or asks a question rather than lecturing)",
+          "passed": true,
+          "evidence": "Warm tone, choices marked proposed, ends with one question about the goal"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 53.7,
+        "tokens": 205363,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The comparison uses evidence from the files: e.g. agency owners paying a VA, the 'lose the first month's margin' quote, solo consultants spending nothing, Marcus's network of agency owners",
+          "passed": true,
+          "evidence": "Table cites VA \u00a3600, 'lose the first month's margin', solo consultants spend nothing, 40 agency owners"
+        },
+        {
+          "text": "Both options are laid out side by side against the founder's constraints and evidence (a table or equivalent structure)",
+          "passed": true,
+          "evidence": "Three-column table: agencies, solo consultants, neither yet"
+        },
+        {
+          "text": "The response states the trade-off explicitly in a form like 'if you pick X, you are not doing Y for now, because\u2026'",
+          "passed": true,
+          "evidence": "'If you pick agencies, you are not serving solo consultants for now ... because ...'"
+        },
+        {
+          "text": "The response recommends one option and gives kill or pivot criteria for it with a number and a date",
+          "passed": true,
+          "evidence": "Proposed B1 kill: 'fewer than 2 of 10 agency owners ... agree to a paid pilot by 2026-11-30'"
+        },
+        {
+          "text": "The response leaves the decision to the founder and asks him to choose; strategy.md, if written, does not record the choice as already decided",
+          "passed": true,
+          "evidence": "'You decide. I haven't written anything to file.' Ends asking which he chooses"
+        },
+        {
+          "text": "No market sizing, TAM, market share or investor framing appears",
+          "passed": true,
+          "evidence": "No market sizing"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 138.5,
+        "tokens": 324106,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "strategy.md's wedge now names home care workers (not nurses) as the customer, with a problem and hero use case that reflect the notes (e.g. split shifts, eating in the car, agency rota)",
+          "passed": true,
+          "evidence": "Wedge: 'UK home care workers on split shifts who drive between clients' homes'; Thursday rota hero use case"
+        },
+        {
+          "text": "The response or change log cites specific evidence from the interview notes (e.g. 4 of 4 care workers unprompted, \u00a360 a week, paid batch-cooking box)",
+          "passed": true,
+          "evidence": "Quotes 'All four raised food without being asked', \u00a360 a week, \u00a330 batch box"
+        },
+        {
+          "text": "strategy.md has a new change log entry, newest first, with today's date, what changed, why and the interview notes as the source",
+          "passed": true,
+          "evidence": "New change log row 2026-10-19 with what, why, from interview-notes-2026-10-18.md"
+        },
+        {
+          "text": "Bets that depended on nurses (B1, and B3's nurses' groups channel) are revised, replaced or marked killed, with testable kill criteria",
+          "passed": true,
+          "evidence": "B1 rewritten for care workers, B3 replaced with agency channel, B4 added; each has number and date"
+        },
+        {
+          "text": "The response says the current bet or stage in journey.md is affected and suggests a coach check-in (fk-coach)",
+          "passed": true,
+          "evidence": "'For the coach' section: journey's current bet tests B1 for nurses; run /founder-coach:fk-coach check-in"
+        },
+        {
+          "text": "journey.md and founder-profile.md are not modified",
+          "passed": true,
+          "evidence": "diff shows journey.md and founder-profile.md unchanged"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 6,
+        "failed": 0,
+        "total": 6,
+        "time_seconds": 59.1,
+        "tokens": 213007,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The review says explicitly that the strategy has no 'not doing' choices and that this is a focus problem",
+          "passed": true,
+          "evidence": "Focus: Missing - '\"Not doing yet\" says \"(nothing yet)\". A strategy that rules nothing out hasn't chosen yet.'"
+        },
+        {
+          "text": "The review flags the kill criteria 'if it doesn't get traction' and/or 'if accountants aren't interested' as not testable and says what a testable version needs (number, date or behaviour)",
+          "passed": true,
+          "evidence": "Quotes both untestable criteria; says no number, date or observed behaviour"
+        },
+        {
+          "text": "The review says the coherent actions do not fit Priya's roughly 15 hours a week (or her stage), using the profile",
+          "passed": true,
+          "evidence": "Resources: 15 hours a week and \u00a31,500 vs build + launch + partnerships + video"
+        },
+        {
+          "text": "The review says the wedge is too broad and/or that the strategy ignores the interview evidence about late payments",
+          "passed": true,
+          "evidence": "Says strategy and evidence point at different businesses; wedge 'creative freelancers' too broad"
+        },
+        {
+          "text": "The review covers coherence, reality, resources, differentiation and focus (by name or clearly equivalent headings)",
+          "passed": true,
+          "evidence": "Table with Focus, Reality, Coherence, Resources, Differentiation, Testable bets"
+        },
+        {
+          "text": "strategy.md is not rewritten; the response offers edits instead of applying them",
+          "passed": true,
+          "evidence": "'No files changed'; edits suggested, not made"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.71,
+        "passed": 5,
+        "failed": 2,
+        "total": 7,
+        "time_seconds": 44.4,
+        "tokens": 49575,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response shows it read the founder profile and journey (refers to details such as 15 hours a week, the meet-up group, or the 4 of 7 unprompted interviews) rather than re-asking them",
+          "passed": true,
+          "evidence": "Cites 4 of 7 unprompted, \u00a3400+ accountant, interviews due 2026-10-18"
+        },
+        {
+          "text": "The response asks the founder exactly one question, not a list of questions",
+          "passed": true,
+          "evidence": "Ends with one question about 'wedding and event' slice; other lines are statements"
+        },
+        {
+          "text": "Neither the response nor strategy.md contains market sizing, TAM, market share, valuation or investor framing",
+          "passed": true,
+          "evidence": "No market sizing"
+        },
+        {
+          "text": "docs/founder-coach/strategy.md is created with sections for diagnosis, guiding policy, coherent actions, wedge, value proposition, strategic bets, not doing yet, phased path, open questions and change log",
+          "passed": false,
+          "evidence": "strategy.md has Who/What problem/Why Priya/Goal/Rules out/Open decisions/When to revisit; no diagnosis/guiding policy/coherent actions/bets/phased path/change log sections"
+        },
+        {
+          "text": "strategy.md has 3 to 5 strategic bets and every bet has kill or pivot criteria with a number, a date or an observed behaviour",
+          "passed": false,
+          "evidence": "No strategic bets section; no kill criteria apart from referencing the journey's"
+        },
+        {
+          "text": "strategy.md has at least one specific 'not doing yet' choice with a reason",
+          "passed": true,
+          "evidence": "Section 5 'What this strategy rules out' with reasons (e.g. widening to all freelancers)"
+        },
+        {
+          "text": "journey.md and founder-profile.md are unchanged",
+          "passed": true,
+          "evidence": "diff shows coach files unchanged"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.67,
+        "passed": 4,
+        "failed": 2,
+        "total": 6,
+        "time_seconds": 51.9,
+        "tokens": 147600,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The response says the statement is a goal (or goals) rather than a strategy, i.e. flags it as bad strategy",
+          "passed": true,
+          "evidence": "'that sentence isn't a strategy yet ... an ambition ... a goal ... a tagline'"
+        },
+        {
+          "text": "The response names at least two specific problems from Rumelt's list, such as mistaking goals for strategy, fluff (e.g. 'leverage AI to empower') or failing to face the challenge, quoting the founder's words",
+          "passed": false,
+          "evidence": "Classifies the lines as ambition/goal/tagline but does not name fluff or failure to face the challenge as problems; only the goal confusion is identified"
+        },
+        {
+          "text": "The response explains what a strategy needs instead: a diagnosis, a guiding policy and coherent actions (in plain words)",
+          "passed": false,
+          "evidence": "Defines strategy as 'what you'll do differently, for whom, and what you won't do'; does not explain diagnosis, guiding policy, coherent actions"
+        },
+        {
+          "text": "The response uses the founder's actual situation from the files (e.g. 15 hours a week, stage 2, interview evidence) to point at the real challenge",
+          "passed": true,
+          "evidence": "Uses 4 of 7 interviews, \u00a3400+ accountant, 15 hours a week"
+        },
+        {
+          "text": "If strategy.md is written, '#1 platform' and the revenue target are not presented as the guiding policy; they appear, if at all, as goals",
+          "passed": true,
+          "evidence": "Ambition and goal kept in their own sections; strategy is about payment matching"
+        },
+        {
+          "text": "The tone is warm and direct and leaves the decision to the founder (offers a better version or asks a question rather than lecturing)",
+          "passed": true,
+          "evidence": "Warm and direct; leaves four decisions to Priya"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 3,
+        "failed": 3,
+        "total": 6,
+        "time_seconds": 34.2,
+        "tokens": 143863,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The comparison uses evidence from the files: e.g. agency owners paying a VA, the 'lose the first month's margin' quote, solo consultants spending nothing, Marcus's network of agency owners",
+          "passed": true,
+          "evidence": "Cites VA \u00a3600, 'first month's margin', 40 agency owners, consultants under \u00a315"
+        },
+        {
+          "text": "Both options are laid out side by side against the founder's constraints and evidence (a table or equivalent structure)",
+          "passed": true,
+          "evidence": "Each of five numbered reasons compares both groups on pay, pain, numbers, reach and decision speed"
+        },
+        {
+          "text": "The response states the trade-off explicitly in a form like 'if you pick X, you are not doing Y for now, because\u2026'",
+          "passed": false,
+          "evidence": "No explicit 'if you pick X you are not doing Y because' trade-off; it argues for agencies only"
+        },
+        {
+          "text": "The response recommends one option and gives kill or pivot criteria for it with a number and a date",
+          "passed": false,
+          "evidence": "Kill bar 'fewer than two ... will commit' has no date"
+        },
+        {
+          "text": "The response leaves the decision to the founder and asks him to choose; strategy.md, if written, does not record the choice as already decided",
+          "passed": false,
+          "evidence": "Opens with 'Small agencies first' and says 'Treat agencies first as your working decision'; does not ask him to choose"
+        },
+        {
+          "text": "No market sizing, TAM, market share or investor framing appears",
+          "passed": true,
+          "evidence": "Customer counts needed for \u00a34k/month are revenue maths, not market sizing"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.83,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 57.9,
+        "tokens": 185488,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "strategy.md's wedge now names home care workers (not nurses) as the customer, with a problem and hero use case that reflect the notes (e.g. split shifts, eating in the car, agency rota)",
+          "passed": true,
+          "evidence": "Wedge changed to UK home care workers on split shifts, Thursday rota"
+        },
+        {
+          "text": "The response or change log cites specific evidence from the interview notes (e.g. 4 of 4 care workers unprompted, \u00a360 a week, paid batch-cooking box)",
+          "passed": true,
+          "evidence": "Cites all four unprompted, \u00a360 a week, \u00a330 box"
+        },
+        {
+          "text": "strategy.md has a new change log entry, newest first, with today's date, what changed, why and the interview notes as the source",
+          "passed": true,
+          "evidence": "Change log row dated 2026-10-19 citing interview-notes-2026-10-18.md"
+        },
+        {
+          "text": "Bets that depended on nurses (B1, and B3's nurses' groups channel) are revised, replaced or marked killed, with testable kill criteria",
+          "passed": false,
+          "evidence": "B3 kill criteria: 'to set once the agency has answered' - not testable"
+        },
+        {
+          "text": "The response says the current bet or stage in journey.md is affected and suggests a coach check-in (fk-coach)",
+          "passed": true,
+          "evidence": "'journey.md still describes the nurse bet ... Update it with the coach when you're ready'"
+        },
+        {
+          "text": "journey.md and founder-profile.md are not modified",
+          "passed": true,
+          "evidence": "Coach files unchanged"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.83,
+        "passed": 5,
+        "failed": 1,
+        "total": 6,
+        "time_seconds": 44.5,
+        "tokens": 145811,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The review says explicitly that the strategy has no 'not doing' choices and that this is a focus problem",
+          "passed": true,
+          "evidence": "'The \"Not doing yet\" section is empty'; 'Nothing is ruled out'"
+        },
+        {
+          "text": "The review flags the kill criteria 'if it doesn't get traction' and/or 'if accountants aren't interested' as not testable and says what a testable version needs (number, date or behaviour)",
+          "passed": true,
+          "evidence": "'have no number and no date, so you'll never actually know a bet has failed'"
+        },
+        {
+          "text": "The review says the coherent actions do not fit Priya's roughly 15 hours a week (or her stage), using the profile",
+          "passed": true,
+          "evidence": "'with about 15 hours a week and \u00a31,500, you need to say no to most of it'"
+        },
+        {
+          "text": "The review says the wedge is too broad and/or that the strategy ignores the interview evidence about late payments",
+          "passed": true,
+          "evidence": "'The diagnosis doesn't match your evidence'; wedge 'describes every bookkeeping app'"
+        },
+        {
+          "text": "The review covers coherence, reality, resources, differentiation and focus (by name or clearly equivalent headings)",
+          "passed": false,
+          "evidence": "Numbered problems (diagnosis, nothing ruled out, order reversed, bets, wedge) do not cover coherence or differentiation as checks"
+        },
+        {
+          "text": "strategy.md is not rewritten; the response offers edits instead of applying them",
+          "passed": true,
+          "evidence": "File not changed; draft not-doing list offered in the response"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 97.58,
+        "stddev": 41.0954,
+        "min": 53.7,
+        "max": 138.5
+      },
+      "tokens": {
+        "mean": 229878.4,
+        "stddev": 110173.0358,
+        "min": 66725,
+        "max": 340191
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.708,
+        "stddev": 0.1365,
+        "min": 0.5,
+        "max": 0.83
+      },
+      "time_seconds": {
+        "mean": 46.58,
+        "stddev": 8.9273,
+        "min": 34.2,
+        "max": 57.9
+      },
+      "tokens": {
+        "mean": 134467.4,
+        "stddev": 50495.6457,
+        "min": 49575,
+        "max": 185488
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.29",
+      "time_seconds": "+51.0",
+      "tokens": "+95411"
+    }
+  },
+  "notes": [
+    "One run per configuration, so the \u00b1 figures are spread across evals, not run-to-run variance.",
+    "Without the skill the model still does well at reading context, flagging an empty 'not doing' list and not touching journey.md; the assertions for those (eval 1 reads-context/no-tam/coach-files, eval 4 wedge-changed/change-log, eval 5 flags-* ) do not discriminate.",
+    "The skill's lift is in structure and restraint: the full strategy.md format with 3-5 bets and dated kill criteria (eval 1), naming the strategy kernel and fluff (eval 2), laying out trade-offs and leaving the choice to the founder instead of deciding (eval 3), and testable kill criteria on every rewritten bet (eval 4).",
+    "Timing and tokens are not like-for-like: eval 1 ran as subagents (tokens = subagent total), evals 2-5 ran via `claude -p` (tokens include cached system-prompt reads). Read the time/token deltas as rough; the skill does read 4-6 reference files, so it is slower.",
+    "Grading was done by the orchestrating model against the outputs and file diffs, not by an independent grader agent."
+  ]
+}
