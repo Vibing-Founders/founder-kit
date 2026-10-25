@@ -234,7 +234,7 @@ For smart non-coding founders. Give Claude a brief in plain language and get bac
 
 Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Human always reviews, merges, runs publish, and confirms live — Claude never auto-merges or triggers deploys.
 
-> **v0.0.1 scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages) scaffold complete. No live tracker API calls or publish flow execution in this release. Human runs the locked publish path. Optional future integration with `agent-delivery:fk-dispatch` for sandbox execution of implementation slices.
+> **v0.0.1 scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages) scaffold complete. No publish flow execution in this release. The thin path makes no tracker calls; the fuller path reads the ticket, posts the PR link and moves the ticket through the shared stage map. Human runs the locked publish path. Optional future integration with `agent-delivery:fk-dispatch` for sandbox execution of implementation slices.
 
 ### Skills
 

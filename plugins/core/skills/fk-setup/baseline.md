@@ -151,7 +151,7 @@ applicable when it is `none`.
 > a pull request to its issue with `Refs #` and the number, not `Closes #`: GitHub closes the issue
 > at merge, before it is released. When starting work on a ticket whose <column or state> is behind the work, bring it
 > up to date and say so. Never move a ticket backwards without saying why. A stage with no
-> <column or state> is skipped and said so; never pick a similar one. How to move a ticket:
+> <column or state> is skipped: say so, and never pick a similar one. How to move a ticket:
 > `docs/conventions/ticket-stages.md`.
 
 Filling it in:

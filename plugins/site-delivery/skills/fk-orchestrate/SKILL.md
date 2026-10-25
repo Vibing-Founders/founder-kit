@@ -144,7 +144,8 @@ Create a PR against `{repo.main_branch}` with:
 
 **Draft or ready:**
 - If the stage is `review`, open as a regular PR (ready for review)
-- Otherwise, open as a draft PR
+- If the stage is `work` and it finished the change with nothing blocking it, open as a regular PR (ready for review). This is what moves the ticket to `human_review`; without it, a finished build would sit in `in_progress` and the next run would resolve to `work` again
+- Otherwise — the thin path, `brainstorm` or `plan` (their output is a document, not the change), or a `work` stage that stopped on a blocker — open as a draft PR, with any blocker stated at the top
 
 **Tracker integration (fuller path only):**
 
