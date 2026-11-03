@@ -104,7 +104,10 @@ founder has put right.
    - `command`: the command, exactly as it will run.
    - `manual`: the `say` text.
 3. **List the tickets that will move**: every ticket in the `for_release` column (or Linear state),
-   looked up through `tracker.stage_map`. When `tracker` is missing, `kind: none`, or
+   looked up through `tracker.stage_map`. On GitHub, `gh project item-list <number> --owner <owner>
+   --limit 1000 --format json` returns each item with its field values: keep the items whose
+   `tracker.board.field` value is the `for_release` column. On Linear, list the issues in that
+   state through the connector. When `tracker` is missing, `kind: none`, or
    `for_release` or `released_measure_impact` is not mapped, say tickets will not be moved and why.
 4. **Show the plan** as a numbered list in target order, then the tickets, then any warning (a
    `lovable` target ahead of the backend; the config and `DEPLOYMENT.md` disagreeing; a migration

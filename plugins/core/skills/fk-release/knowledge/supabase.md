@@ -53,8 +53,9 @@ before the migrations target:
    ```
 
    `link` may ask for the database password. That is the founder's to type in their terminal;
-   never ask for it in the conversation. Linking changes local state only, not production, so
-   doing it again for a project that is already linked is safe.
+   never ask for it in the conversation. Linking changes local state only (the CLI keeps it under
+   `supabase/.temp/`, which Supabase projects normally ignore in git), not production, so doing
+   it again for a project that is already linked is safe.
 2. Never run a migrations command against a project ref other than the target's.
 
 ## `supabase-migrations`

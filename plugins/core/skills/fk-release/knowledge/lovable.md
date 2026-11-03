@@ -27,7 +27,7 @@ Say it in this shape, filled in, once the Supabase targets are verified:
 
 > The backend is live. Now publish the frontend in Lovable:
 >
-> 1. Open your Lovable project<project name or `project_id`, when the config has one>.
+> 1. Open your Lovable project (<project name or `project_id`, when the config has one>).
 > 2. Check the latest change you merged is there (for example, open the page it changed in the
 >    preview). If it is not, tell me before you publish.
 > 3. Click **Publish** in the top-right corner of the editor, next to **Share**. On a narrow
