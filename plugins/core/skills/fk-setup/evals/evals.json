@@ -8,7 +8,7 @@
       "prompt": "I've just created this project. Set it up for Founder Kit.",
       "files": ["a git repository with one commit containing only README.md ('# Rotaplate — meal planning for shift workers') and an untracked .env"],
       "founder_replies": ["Python with uv. Install is `uv sync`, tests are `uv run pytest`, lint is `uv run ruff check`, dev server is `uv run fastapi dev`. No database yet, no local services. Releasing isn't decided. We don't use a tracker. Use the default plugins. Naming: snake_case files. Apply everything."],
-      "expected_output": "Reads baseline.md, detects the name from the README and asks once for the commands, releasing, naming and the plugin choice. Shows an audit with everything Missing, and the two database rules, the Ticket stages rule (B3.7) and ticket-stages.md (B9) Not applicable, proposes, and applies after approval. CLAUDE.md has the seven sections in order; the worktree rule carries `uv sync && sh scripts/worktree-setup.sh .env` with no start-services clause and keeps the doc-only sentence. The docs layout exists with stubs, there is no docs/brainstorms, scripts/worktree-setup.sh is an exact copy and executable, .gitignore has the four entries, .claude/settings.json enables the three default plugins, and the core section of .vf-founder-kit/config.yaml records baseline_version 2, and the top-level tracker key records kind: none. The .env file is not opened or changed. Nothing is committed.",
+      "expected_output": "Reads baseline.md, detects the name from the README and asks once for the commands, releasing, naming and the plugin choice. Shows an audit with everything Missing, and the two database rules, the Ticket stages rule (B3.7) and ticket-stages.md (B9) Not applicable, proposes, and applies after approval. CLAUDE.md has the seven sections in order; the worktree rule carries `uv sync && sh scripts/worktree-setup.sh .env` with no start-services clause and keeps the doc-only sentence. The docs layout exists with stubs, there is no docs/brainstorms, scripts/worktree-setup.sh is an exact copy and executable, .gitignore has the four entries, .claude/settings.json enables the three default plugins, and the core section of .vf-founder-kit/config.yaml records baseline_version 3, and the top-level tracker key records kind: none. With releasing not decided, no release key is written and docs/DEPLOYMENT.md says it is not set up yet. The .env file is not opened or changed. Nothing is committed.",
       "assertions": [
         {"id": "asks-once", "text": "Undetectable values and the plugin choice are asked for in a single message, not one question at a time"},
         {"id": "audit-table", "text": "An audit table is shown before anything is written, using the statuses Present, Missing, Different, Not applicable, Declined"},
@@ -16,13 +16,13 @@
         {"id": "worktree-rule-filled", "text": "The worktree rule contains `uv sync && sh scripts/worktree-setup.sh .env`, no angle-bracket placeholders, and no start-local-services clause"},
         {"id": "doc-only-kept", "text": "The worktree rule keeps the sentence that doc-only commits never open a branch or a worktree"},
         {"id": "no-database-rules", "text": "The database migrations rule and the no-mocking testing rule are not written, and are reported as not applicable"},
-        {"id": "releasing-not-guessed", "text": "The Releasing rule says releasing is not set up yet rather than describing an invented process"},
+        {"id": "releasing-not-guessed", "text": "The Releasing rule and docs/DEPLOYMENT.md say releasing is not set up yet rather than describing an invented process, and no release key is written"},
         {"id": "docs-layout", "text": "Every path in B2 exists with a stub, and docs/brainstorms does not exist"},
         {"id": "script-verbatim", "text": "scripts/worktree-setup.sh is byte-identical to the shipped asset and is executable"},
         {"id": "gitignore", "text": ".gitignore contains .claude/worktrees/, .claude/settings.local.json, .claude/*.patch and an env pattern"},
         {"id": "plugins-enabled", "text": ".claude/settings.json registers both marketplaces and enables compound-engineering, pm-product-discovery and pm-go-to-market"},
         {"id": "install-commands", "text": "The report gives the `claude plugin install … --scope project` command for plugins that are not installed, without running it"},
-        {"id": "config-recorded", "text": ".vf-founder-kit/config.yaml has a core section with baseline_version 2 and the commands given"},
+        {"id": "config-recorded", "text": ".vf-founder-kit/config.yaml has a core section with baseline_version 3 and the commands given"},
         {"id": "env-untouched", "text": "The .env file is unchanged and its contents were never printed"},
         {"id": "no-extras", "text": "No rule, section, hook, script or file outside the baseline was added; anything else appears only under Suggestions"}
       ]
@@ -40,15 +40,18 @@
         ".claude/settings.json containing {\"permissions\": {\"allow\": [\"Bash(npm test:*)\"]}}",
         "untracked .env.local"
       ],
-      "founder_replies": ["Releasing: merging to main deploys the web app on Vercel; database migrations do not deploy on merge, I run `supabase db push` by hand after the merge. Default plugins are fine. Show me the changes.", "Apply all of it."],
-      "expected_output": "Detects the commands from CI (install is `npm ci --legacy-peer-deps`, and the report says it came from CI), the database and migration tool from supabase/, and .env.local as the env file. The audit marks the existing sections and docs/ARCHITECTURE.md Present and the rest Missing. Before writing, shows diffs for CLAUDE.md, .gitignore and .claude/settings.json. After approval the founder's description, commands and British English rule are word-for-word intact, the baseline rules are added after it including both database rules, the existing permissions key is still in settings.json, docs/ARCHITECTURE.md is unchanged, and .gitignore keeps its existing lines.",
+      "founder_replies": [
+        "Releasing: merging to main deploys the web app on Vercel; database migrations do not deploy on merge, I run `supabase db push` by hand after the merge. The Supabase project ref is <project-ref>. Default plugins are fine. Show me the changes.",
+        "Apply all of it."
+      ],
+      "expected_output": "Detects the commands from CI (install is `npm ci --legacy-peer-deps`, and the report says it came from CI), the database and migration tool from supabase/, and .env.local as the env file. Proposes a supabase-migrations release target from supabase/migrations/ (no functions directory, so no functions target, and no Lovable sign) in the same single message as the other questions. Vercel deploys itself on merge, so it gets no target (at most a manual step, if the founder asks for one). The audit marks the existing sections and docs/ARCHITECTURE.md Present and the rest Missing. Before writing, shows diffs for CLAUDE.md, .gitignore and .claude/settings.json. After approval the founder's description, commands and British English rule are word-for-word intact, the baseline rules are added after it including both database rules, the existing permissions key is still in settings.json, docs/ARCHITECTURE.md is unchanged, and .gitignore keeps its existing lines.",
       "assertions": [
         {"id": "ci-wins", "text": "The install command is `npm ci --legacy-peer-deps`, reported as detected from the CI workflow"},
         {"id": "diff-before-write", "text": "The exact differences to CLAUDE.md, .gitignore and .claude/settings.json are shown, and nothing is written until the founder agrees"},
         {"id": "founder-text-intact", "text": "The existing description, Development Commands and the British English rule are unchanged, word for word"},
         {"id": "rules-added", "text": "The Worktrees, General, Releasing, Database migrations, Testing and Naming rules are added to Key Rules"},
         {"id": "worktree-rule-values", "text": "The worktree rule names `npm ci --legacy-peer-deps && sh scripts/worktree-setup.sh .env.local` and a start-local-services command"},
-        {"id": "releasing-as-given", "text": "The Releasing rule states that the web app deploys on merge, migrations do not, and `supabase db push` is run by hand after the merge"},
+        {"id": "releasing-as-given", "text": "The top-level release key has one supabase-migrations target with project_ref <project-ref>, docs/DEPLOYMENT.md lists it with the migration rules, and the Releasing rule points to docs/DEPLOYMENT.md and /core:fk-release instead of listing the steps"},
         {"id": "settings-merged", "text": ".claude/settings.json still has the original permissions.allow entry alongside the new plugin keys"},
         {"id": "existing-doc-untouched", "text": "docs/ARCHITECTURE.md is unchanged and reported as Present"},
         {"id": "gitignore-additive", "text": ".gitignore keeps node_modules and .env.local and gains the .claude entries"},
@@ -60,16 +63,16 @@
       "name": "rerun-up-to-date-with-declined-item",
       "prompt": "Is my setup up to date?",
       "files": [
-        "a project on which fk-setup has already been applied in full at baseline version 2, with a GitHub Projects board called Delivery whose Status columns all still match the map, except that the founder's own Naming rule differs from the baseline wording",
-        ".vf-founder-kit/config.yaml with a core section: baseline_version 2, the project's commands, declined: [B3.6]; a top-level tracker key (kind: github, board Delivery / Status, a stage_map matching the board); plus an agent-delivery section and a docs_root key"
+        "a project on which fk-setup has already been applied in full at baseline version 3, with a GitHub Projects board called Delivery whose Status columns all still match the map, except that the founder's own Naming rule differs from the baseline wording",
+        ".vf-founder-kit/config.yaml with a core section: baseline_version 3, the project's commands, declined: [B3.6]; a top-level tracker key (kind: github, board Delivery / Status, a stage_map matching the board); a top-level release key with supabase-migrations, supabase-functions and lovable targets, and a docs/DEPLOYMENT.md generated from it; plus an agent-delivery section and a docs_root key"
       ],
-      "expected_output": "Reads the recorded values and asks nothing. Re-reads the board and finds every mapped column still there. The audit shows every item Present except Naming, shown as Declined and not proposed again. Says the project is up to date with baseline 2 and writes no project files. The agent-delivery section, the tracker key and docs_root in the config are untouched.",
+      "expected_output": "Reads the recorded values and asks nothing. Re-reads the board and finds every mapped column still there. The audit shows every item Present except Naming, shown as Declined and not proposed again. Says the project is up to date with baseline 3 and writes no project files. The agent-delivery section, the tracker key, the release key and docs_root in the config are untouched.",
       "assertions": [
         {"id": "no-questions", "text": "No question is asked about commands, releasing or plugins; recorded values are reused"},
         {"id": "declined-respected", "text": "The Naming rule is listed as Declined and no change to it is proposed"},
         {"id": "up-to-date", "text": "The answer states the project is up to date with the current baseline version"},
         {"id": "nothing-written", "text": "No file other than, at most, the core section of the config is modified"},
-        {"id": "other-sections-kept", "text": "The agent-delivery section, the tracker key and the docs_root key in .vf-founder-kit/config.yaml are byte-identical afterwards"}
+        {"id": "other-sections-kept", "text": "The agent-delivery section, the tracker key, the release key and the docs_root key in .vf-founder-kit/config.yaml are byte-identical afterwards"}
       ]
     },
     {
@@ -143,13 +146,13 @@
       "prompt": "Check my project setup.",
       "files": ["a Go project (go.mod, Makefile with build and test targets), already set up at baseline version 1 with a core section in .vf-founder-kit/config.yaml recording baseline_version 1, and no GitHub Projects board"],
       "founder_replies": ["We don't use a tracker. Nothing else to change."],
-      "expected_output": "Starts with what is new since baseline 1: the Ticket stages rule and ticket-stages.md. Finds no board and asks whether the project uses a tracker. On 'we don't use a tracker', records the top-level tracker key as kind: none, marks B3.7 and B9 Not applicable with that reason, writes neither the rule nor the doc, and records baseline_version 2.",
+      "expected_output": "Starts with what is new since baseline 1: the Ticket stages rule and ticket-stages.md (baseline 2), and the release key and DEPLOYMENT.md (baseline 3). Finds no board and asks whether the project uses a tracker. On 'we don't use a tracker', records the top-level tracker key as kind: none, marks B3.7 and B9 Not applicable with that reason, writes neither the rule nor the doc, and records baseline_version 3.",
       "assertions": [
-        {"id": "whats-new", "text": "The audit starts with a line naming B3.7 and B9 as new since baseline 1"},
+        {"id": "whats-new", "text": "The audit starts with what is new since baseline 1, naming B3.7 and B9 (baseline 2) and B10 (baseline 3)"},
         {"id": "kind-none", "text": "The top-level tracker key records kind: none"},
         {"id": "not-applicable", "text": "B3.7 and B9 are shown as Not applicable because there is no tracker"},
         {"id": "nothing-written", "text": "No Ticket stages rule is added to CLAUDE.md and docs/conventions/ticket-stages.md is not created"},
-        {"id": "version-recorded", "text": "The core section records baseline_version 2"}
+        {"id": "version-recorded", "text": "The core section records baseline_version 3"}
       ]
     },
     {
@@ -157,7 +160,7 @@
       "name": "rerun-after-column-renamed",
       "prompt": "Is my setup still up to date?",
       "files": [
-        "a project set up at baseline version 2 with tracker kind: github, board Delivery / Status, and a stage_map whose human_review is 'In review'; CLAUDE.md and docs/conventions/ticket-stages.md use 'In review'",
+        "a project set up at baseline version 3 with tracker kind: github, board Delivery / Status, and a stage_map whose human_review is 'In review'; CLAUDE.md and docs/conventions/ticket-stages.md use 'In review'",
         "the Delivery board's Status option 'In review' has since been renamed to 'Human Review'; every other mapped column is unchanged"
       ],
       "founder_replies": ["Yes, use Human Review. Apply it."],
@@ -188,6 +191,45 @@
         {"id": "shows-written", "text": "What was written to the tracker key is shown to the founder"},
         {"id": "old-kept", "text": "The agent-delivery section, including its tracker keys, is byte-identical afterwards, because the founder did not confirm removal"},
         {"id": "other-keys-kept", "text": "docs_root and the core section's other values are unchanged apart from baseline_version"}
+      ]
+    },
+    {
+      "id": 10,
+      "name": "detects-supabase-and-lovable-release-targets",
+      "prompt": "Set this project up for Founder Kit.",
+      "files": ["a Node project built in Lovable: package.json with lovable-tagger and supabase in devDependencies and @supabase/supabase-js in dependencies, package-lock.json, supabase/migrations/ with two .sql files, supabase/functions/ with send-email/index.ts, create-booking/index.ts and _shared/cors.ts, a GitHub remote, an untracked .env; no .vf-founder-kit/config.yaml and no docs/"],
+      "founder_replies": ["Those release steps are right, in that order. The Supabase project ref is <project-ref>. We don't use a tracker. No naming preference. Default plugins. Apply everything."],
+      "expected_output": "Detects supabase/migrations/ and supabase/functions/ and a Lovable sign (lovable-tagger), and proposes three release targets in order: supabase-migrations, supabase-functions, lovable, with cli `npx supabase` because supabase is a dev dependency. Asks the founder to confirm the targets and order and to give the project ref, in the same single message as the other questions; does not guess the ref. After approval writes the top-level release key (branch main, the three targets with project_ref <project-ref>), then generates docs/DEPLOYMENT.md from it: the three steps in order with the link, dry run, push and deploy-all commands, the four Supabase rules plus publishing after the backend, and 'Run `/core:fk-release` to release.' The Releasing rule in CLAUDE.md points to docs/DEPLOYMENT.md and /core:fk-release. The release key and DEPLOYMENT.md are written before CLAUDE.md.",
+      "assertions": [
+        {"id": "targets-detected", "text": "The proposal lists supabase-migrations, supabase-functions and lovable as release targets, in that order"},
+        {"id": "cli-detected", "text": "The proposed cli is `npx supabase`, reported as detected from the dev dependencies"},
+        {"id": "one-message", "text": "The release targets are confirmed in the same single message as the other questions"},
+        {"id": "ref-asked", "text": "The Supabase project ref is asked for rather than guessed"},
+        {"id": "release-key", "text": ".vf-founder-kit/config.yaml has a top-level release key with branch main and the three targets in order, each Supabase target with project_ref <project-ref>"},
+        {"id": "deployment-generated", "text": "docs/DEPLOYMENT.md lists the three steps in the key's order, says to deploy every function with no name, carries the migrations-before-functions and --include-all rules, and ends with 'Run `/core:fk-release` to release.'"},
+        {"id": "rule-points", "text": "The Releasing rule in CLAUDE.md points to docs/DEPLOYMENT.md and /core:fk-release and does not list the steps itself"},
+        {"id": "order", "text": "The release key and docs/DEPLOYMENT.md are written before CLAUDE.md"},
+        {"id": "version", "text": "The core section records baseline_version 3"}
+      ]
+    },
+    {
+      "id": 11,
+      "name": "baseline-2-rerun-migrates-site-delivery-publish",
+      "prompt": "What's new in the baseline? Bring my project up to date.",
+      "files": [
+        "a project set up at baseline version 2, with supabase/migrations/ and supabase/functions/, a CLAUDE.md whose Releasing rule reads 'Merge to main, then run supabase db push, then publish in Lovable.', and a stub docs/DEPLOYMENT.md",
+        ".vf-founder-kit/config.yaml with docs_root: docs, a core section (baseline_version 2), a top-level tracker key, and a site-delivery section with repo.main_branch: main and publish: kind: supabase+lovable, supabase_project_ref: <project-ref>, lovable_project_id: <lovable-project-id>; no top-level release key"
+      ],
+      "founder_replies": ["Yes, migrate it and remove the old publish block. Use the new Releasing rule. Apply it."],
+      "expected_output": "Starts with what is new since baseline 2: the release key and generated DEPLOYMENT.md (B10) and the new Releasing rule (B3.3). Reads site-delivery.publish, reports B10 as Different and offers migration, showing the release key it would write: branch main; supabase-migrations and supabase-functions with project_ref <project-ref>; then lovable with project_id <lovable-project-id>. Shows the current Releasing rule beside the B3.3 text. After the founder confirms, writes the release key, removes only the publish block from the site-delivery section, regenerates docs/DEPLOYMENT.md (showing the difference first), replaces the Releasing rule, and records baseline_version 3. The tracker key, docs_root and the rest of the site-delivery section are unchanged.",
+      "assertions": [
+        {"id": "whats-new", "text": "The audit starts with a line naming what is new from baseline 2 to 3: B10 and the changed Releasing rule"},
+        {"id": "mapping-shown", "text": "The release key the migration would write is shown before writing: migrations, then functions (both with <project-ref>), then lovable"},
+        {"id": "confirm-first", "text": "site-delivery.publish is removed only after the founder confirms"},
+        {"id": "rest-kept", "text": "The tracker key, docs_root and every site-delivery key other than publish are byte-identical afterwards"},
+        {"id": "deployment-regenerated", "text": "docs/DEPLOYMENT.md is regenerated from the release key, and the difference was shown first"},
+        {"id": "rule-replaced", "text": "The Releasing rule now points to docs/DEPLOYMENT.md and /core:fk-release"},
+        {"id": "version", "text": "The core section records baseline_version 3"}
       ]
     }
   ]

@@ -17,7 +17,7 @@ site-delivery:
 # other plugins' sections (agent-delivery, customer-research, ...) may sit in the same file
 ```
 
-Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow stage. If a skill needs to know something about *your* project, it is a key below. Key paths in this document (`repo.url`, `stages.enabled`, ...) are relative to the `site-delivery` section, except `tracker`, which is the shared top-level key.
+Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow stage. If a skill needs to know something about *your* project, it is a key below. Key paths in this document (`repo.url`, `stages.enabled`, ...) are relative to the `site-delivery` section, except `tracker` and `release`, which are shared top-level keys.
 
 `fk-onboard` writes this section. `fk-orchestrate` reads it. A human can edit it at any time; it is plain YAML and every key has a default.
 
@@ -31,7 +31,7 @@ Nothing in the plugin hardcodes a tracker, a publish platform, or a workflow sta
 - **Both present.** The section wins. Say in the report that the old `.site-delivery/config.yaml` is being ignored.
 - **Neither present.** The project is not configured; point at `fk-onboard`.
 
-**Writing.** The file is shared, so `fk-onboard` writes **only the `site-delivery` section**, plus the top-level `tracker` key when the fuller path needs one and it does not exist yet. It keeps every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was, and creates the file (and the `.vf-founder-kit/` folder) if it does not exist.
+**Writing.** The file is shared, so `fk-onboard` writes **only the `site-delivery` section**, plus the top-level `tracker` key when the fuller path needs one and it does not exist yet, and the top-level `release` key when it does not exist yet. It keeps every other key and section — `docs_root`, other plugins' sections, comments — exactly as it was, and creates the file (and the `.vf-founder-kit/` folder) if it does not exist.
 
 **Migrating.** When `fk-onboard` finds the old `.site-delivery/config.yaml`, it offers to migrate it:
 
@@ -117,7 +117,7 @@ its own column or workflow state and leaves the rest out. Columns not in the map
 | `in_progress` | Someone, or an agent, is building it | When the `work` stage starts |
 | `human_review` | A pull request is open and ready for a human | When it opens a ready (not draft) pull request |
 | `for_release` | Merged, waiting to go to production | — the human merges |
-| `released_measure_impact` | In production; impact is being checked | — the human publishes |
+| `released_measure_impact` | In production; impact is being checked | — whoever releases (`/core:fk-release` moves it) |
 | `done` | Finished | — the founder |
 
 **Thin path:** with `stages.enabled: false` the plugin makes no tracker calls at all, whatever the
@@ -169,27 +169,109 @@ item on the configured board, it is **added, then set, and both actions are repo
 
 ---
 
-## `publish` — where the site goes live
+## `release` — how the site goes live (shared)
+
+The release steps are **not** in the `site-delivery` section. They are the shared top-level
+`release` key of `.vf-founder-kit/config.yaml`, beside `docs_root` and `tracker`. This plugin
+never deploys: `delivery_rules.human_publish_gate` stays on, and the release itself is run with
+`core`'s `/core:fk-release` (if the founder has the core plugin) or by hand from
+`docs/DEPLOYMENT.md`. `fk-onboard` writes the key when it is missing; `fk-orchestrate` reads it to
+tell the founder what releasing involves.
+
+> **Kept in step by hand.** `core` carries the same schema in
+> `plugins/core/skills/fk-release/knowledge/release-config.md`, because each plugin installs on its
+> own and no file is shared across plugins. When this section changes, change that file in the
+> same pull request.
+
+`release` is a top-level key of `.vf-founder-kit/config.yaml`, beside `docs_root` and `tracker`.
+It is shared rather than owned: `core` (`fk-setup` writes it, `fk-release` reads it) and
+`site-delivery` (`fk-onboard` writes it, `fk-orchestrate` reads it) both use it.
 
 ```yaml
-publish:
-  kind: lovable                  # lovable | sst-web | supabase+lovable. REQUIRED.
-  
-  # kind: lovable
-  project_id: ""                 # Lovable project identifier (anonymized in examples)
-  
-  # kind: sst-web
-  stage: production              # SST stage name
-  aws_profile: ""                # AWS profile for deployment
-  
-  # kind: supabase+lovable
-  supabase_project_ref: ""       # Supabase project reference
-  lovable_project_id: ""         # Lovable project identifier
+release:
+  branch: main                    # the branch that is released
+  targets:                        # run in this order
+    - kind: supabase-migrations
+      project_ref: <project-ref>
+      cli: npx supabase           # how this repo calls the Supabase CLI
+    - kind: supabase-functions
+      project_ref: <project-ref>
+      cli: npx supabase
+    - kind: lovable               # manual: the founder clicks Publish and confirms
+      project_id: <lovable-project-id>   # optional, for the report only
+    # - kind: command
+    #   name: Deploy API
+    #   run: <command>
+    # - kind: manual
+    #   say: <a step only a person can do>
 ```
 
-**This block is declarative only in v0.0.1.** The orchestration skill reports which publish kind is configured and states that the human runs the locked publish path. It never triggers a deployment.
+### Keys
 
-`kind` must be set. Values without real project IDs are accepted; the examples show anonymized stubs.
+| Key | Meaning |
+|---|---|
+| `branch` | The branch that is released. Only what is merged here and pushed to `origin` goes live. Default: the repository's main branch, reported as a default |
+| `targets` | The release steps, **run in the order listed** |
+
+### Target kinds
+
+These five are all that v1 supports. Any other `kind` is reported by name and the release is
+refused before anything changes.
+
+| Kind | Keys | What it does |
+|---|---|---|
+| `supabase-migrations` | `project_ref` (required), `cli` (default `supabase`) | Applies pending migrations in `supabase/migrations/` to the project with `db push` |
+| `supabase-functions` | `project_ref` (required), `cli` (default `supabase`) | Deploys **every** edge function in `supabase/functions/` |
+| `lovable` | `project_id` (optional, shown in the report only) | Manual. The founder publishes in the Lovable editor and confirms it is live |
+| `command` | `name` (required), `run` (required) | Runs `run` from the repository root. A non-zero exit is a failure |
+| `manual` | `say` (required) | Manual. Tells the founder exactly what `say` says and waits for them to confirm it is done |
+
+`cli` is how this repository calls the Supabase CLI: `supabase` when it is installed globally,
+`npx supabase` when it is a dev dependency, and so on. Never put a secret in any key: no access
+token, database password or API key. Those come from the founder's environment or a CLI login.
+
+### Order rules
+
+Checked before anything runs.
+
+- **`supabase-functions` before `supabase-migrations` is refused.** The reason: functions would go
+  live before the schema they use, and every request that touches a new column fails until the
+  migration lands. Say which entries are out of order and that the fix is to swap them in
+  `release.targets`.
+- **`lovable` should come after every Supabase target.** If it does not, warn and ask: the
+  frontend would go live against an old backend. Fold the warning into the release plan, so the
+  founder answers it with the single "Release this?" question.
+- `command` and `manual` targets may go anywhere. The founder put them where they are.
+
+### Writing the key
+
+`fk-setup` (core) and `fk-onboard` (site-delivery) write `release` **only when it is missing**,
+and change an existing one only with the founder's say-so. They keep every other key and section
+of the file exactly as it was, and create the file if it does not exist. This is the same rule as
+for `tracker`. `fk-release` never writes it.
+
+### Migrating from `site-delivery.publish`
+
+Earlier versions of `site-delivery` kept a `publish` block in its own section. When `release` is
+missing and `site-delivery.publish` exists, map it:
+
+| `publish.kind` | `release.targets` |
+|---|---|
+| `lovable` | `- kind: lovable` with `project_id: <publish.project_id>` when set |
+| `supabase+lovable` | `- kind: supabase-migrations` and `- kind: supabase-functions`, both with `project_ref: <publish.supabase_project_ref>`, then `- kind: lovable` with `project_id: <publish.lovable_project_id>` |
+| `sst-web` | One `- kind: command`, `name: Deploy site`, `run: npx sst deploy --stage <publish.stage>`, prefixed with `AWS_PROFILE=<publish.aws_profile> ` when `aws_profile` is set |
+
+`branch` is `site-delivery.repo.main_branch` when set, otherwise `main`, reported as a default.
+`cli` is left out (so it defaults to `supabase`) unless the repository shows how it calls the CLI,
+for example `supabase` in `devDependencies` (then `npx supabase`).
+
+- **`fk-setup` and `fk-onboard`** show the founder exactly what will be written, then write
+  `release` and remove `site-delivery.publish` only after they confirm. Until then the old block
+  stays, and the skills that read `release` map it in memory.
+- **`fk-release`** (core) and **`fk-orchestrate`** (site-delivery) never write the file. They
+  apply the mapping in memory for that run, say so, and say that `/core:fk-setup` or
+  `/site-delivery:fk-onboard` will migrate it.
+- When both exist, `release` wins and `site-delivery.publish` is reported as ignored.
 
 ---
 
@@ -225,7 +307,7 @@ When `enabled: false`, the other keys in this block are ignored.
 ```yaml
 delivery_rules:
   human_merge_gate: true         # default: true — never auto-merge
-  human_publish_gate: true       # default: true — human confirms and runs publish
+  human_publish_gate: true       # default: true — delivery never deploys
   confirm_live: true             # default: true — human confirms site is live after publish
   experimental_changes: false    # default: false — refuse experimental changes not in brief
 ```
@@ -233,7 +315,7 @@ delivery_rules:
 All default to their safe values. These are the hard delivery constraints:
 
 1. **`human_merge_gate: true`** — PRs are always opened as draft or regular PRs, never merged by the agent. Human reviews and merges.
-2. **`human_publish_gate: true`** — Publish is never triggered by the agent. Human runs the locked publish path after merge.
+2. **`human_publish_gate: true`** — Delivery never deploys. After merge, the founder releases with `/core:fk-release` (if they have the core plugin) or by following `docs/DEPLOYMENT.md`.
 3. **`confirm_live: true`** — After publish, human confirms the change is live.
 4. **`experimental_changes: false`** — The agent refuses to invent features or experiments not described in the brief.
 
@@ -261,4 +343,4 @@ See `config.example.yaml` for complete examples:
 - Thin path (no tracker, no stages)
 - GitHub board with fuller stages (shared `tracker` key)
 - Linear with fuller stages (shared `tracker` key)
-- All three publish kinds (anonymized)
+- The shared `release` key for Lovable, Supabase + Lovable and an SST command (anonymized)

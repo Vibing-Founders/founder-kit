@@ -7,15 +7,25 @@
 # sections (agent-delivery, customer-research, ...) may sit in the same file —
 # leave them as they are.
 #
-# The tracker is NOT part of the site-delivery section. It is the shared
-# top-level `tracker` key, which core and agent-delivery read too. Examples 2
-# and 3 show it. If core's fk-setup already wrote it, keep it as it is.
+# The tracker and the release steps are NOT part of the site-delivery section.
+# They are the shared top-level `tracker` and `release` keys, which core reads
+# too (and agent-delivery reads `tracker`). If core's fk-setup already wrote
+# them, keep them as they are.
+#
+# Delivery never deploys. When you're ready, run /core:fk-release (if you have
+# the core plugin) or follow docs/DEPLOYMENT.md.
 
 # ============================================================================
 # EXAMPLE 1: Thin path (default) — no tracker, no stages
 # ============================================================================
 # For smart non-coding founders who want to hand Claude a brief
 # and get back a PR, without setting up GitHub Projects or Linear.
+
+release:                        # shared top-level key, not inside site-delivery
+  branch: main
+  targets:
+    - kind: lovable
+      project_id: <lovable-project-id>   # optional, for the report only
 
 site-delivery:
   schema_version: 1
@@ -26,10 +36,6 @@ site-delivery:
     branch_prefix: feature/
 
   # No tracker key needed: the thin path makes no tracker calls.
-
-  publish:
-    kind: lovable
-    project_id: ""  # Your Lovable project ID here
 
   stages:
     enabled: false  # Thin path — no compound-engineering stages
@@ -64,6 +70,13 @@ tracker:                        # shared top-level key, not inside site-delivery
     for_release: Ready to Publish
     done: Live
 
+release:                        # shared top-level key, not inside site-delivery
+  branch: main
+  targets:
+    - kind: command
+      name: Deploy site
+      run: AWS_PROFILE=<aws-profile> npx sst deploy --stage production
+
 site-delivery:
   schema_version: 1
 
@@ -71,11 +84,6 @@ site-delivery:
     url: https://github.com/Widget-Co/company-site  # Anonymized example
     main_branch: main
     branch_prefix: feature/
-
-  publish:
-    kind: sst-web
-    stage: production
-    aws_profile: ""  # Your AWS profile name
 
   stages:
     enabled: true  # Enable compound-engineering stages
@@ -115,6 +123,18 @@ tracker:                        # shared top-level key, not inside site-delivery
     human_review: In Review
     done: Done
 
+release:                        # shared top-level key, not inside site-delivery
+  branch: main
+  targets:                      # run in this order: backend before frontend
+    - kind: supabase-migrations
+      project_ref: <project-ref>
+      cli: npx supabase
+    - kind: supabase-functions
+      project_ref: <project-ref>
+      cli: npx supabase
+    - kind: lovable
+      project_id: <lovable-project-id>
+
 site-delivery:
   schema_version: 1
 
@@ -122,11 +142,6 @@ site-delivery:
     url: https://github.com/Acme/acme-site  # Anonymized example
     main_branch: main
     branch_prefix: feature/
-
-  publish:
-    kind: supabase+lovable
-    supabase_project_ref: ""  # Your Supabase project reference
-    lovable_project_id: ""    # Your Lovable project ID
 
   stages:
     enabled: true
@@ -153,15 +168,21 @@ site-delivery:
 ---
 
 # ============================================================================
-# NOTES ON PUBLISH KINDS
+# NOTES ON THE RELEASE KEY
 # ============================================================================
 #
-# All examples above use anonymized stub values. In your own config:
+# All examples above use placeholder values. In your own config:
 #
-# - lovable: Set project_id to your Lovable project identifier
-# - sst-web: Set stage (e.g. production, staging) and aws_profile
-# - supabase+lovable: Set both supabase_project_ref and lovable_project_id
+# - lovable: project_id is optional and only shown in reports
+# - supabase-migrations / supabase-functions: set project_ref to your Supabase
+#   project reference; migrations always come before functions
+# - command: any deploy command, such as `npx sst deploy --stage production`
+# - manual: a step only a person can do, with `say: <what to do>`
 #
-# The fk-orchestrate skill will report which publish kind is configured
-# and state that the human runs the locked publish path. No deployments
-# are triggered by the plugin in v0.0.1.
+# These five kinds are all v1 supports. The site-delivery plugin never deploys.
+# Run /core:fk-release (if you have the core plugin) or follow
+# docs/DEPLOYMENT.md.
+#
+# Upgrading from site-delivery 0.x? A `publish` block inside the site-delivery
+# section is read and mapped to `release`; /site-delivery:fk-onboard or
+# /core:fk-setup moves it when you confirm.

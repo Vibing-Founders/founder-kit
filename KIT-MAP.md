@@ -36,7 +36,7 @@ founder angle, or advice for a regulated sector the kit says it does not cover.
 | Plugin | The founder's question | Skills | Saves to |
 |---|---|---|---|
 | `founder-coach` | Where am I on the way to first revenue, what should I do next, which tool helps, and what are my big strategic choices? | `fk-coach`, `fk-strategy` | `docs/founder-coach/` (`founder-profile.md`, `journey.md`, `strategy.md`) |
-| `core` | How should my project be set up for working with agents, and what is it missing? | `fk-setup` | `CLAUDE.md`, `docs/`, `scripts/`, `.claude/settings.json`, `.gitignore` |
+| `core` | How should my project be set up for working with agents, what is it missing, and how do I release it? | `fk-setup`, `fk-release` | `CLAUDE.md`, `docs/` (including `DEPLOYMENT.md`), `scripts/`, `.claude/settings.json`, `.gitignore`; `fk-release` saves nothing (deploys, ticket moves, a hotfix pull request when needed) |
 | `customer-research` | Who should I talk to first, who is my customer, who else serves them, and can I back up what I say? | `fk-segments`, `fk-icp`, `fk-competitors`, `fk-fact-check` | `docs/customer-research/` |
 | `compliance` | Which rules apply to what I am building, and where do I fall short? | `fk-online-safety` (modes `assess`, `checklist`, `strategy-check`, `cra`), `fk-gdpr` (modes `assess`, `checklist`, `lia`), `fk-application-security` (modes `assess`, `checklist`), `fk-dpia`, `fk-supabase-rls` | `docs/compliance/` (`fk-supabase-rls` reports; `fk-dpia` still saves to the project root or `compliance/`) |
 | `site-delivery` | How do I get a change to my website made without writing code? | `fk-onboard`, `fk-orchestrate` | A pull request |
@@ -68,13 +68,17 @@ connect in these ways:
   from `customer-research` when it exists.
 
 - **One config file.** `.vf-founder-kit/config.yaml` in the founder's project holds a section per
-  plugin plus two shared keys: `docs_root` and `tracker`. A skill writes only its own plugin's
+  plugin plus three shared keys: `docs_root`, `tracker` and `release`. A skill writes only its own plugin's
   section. `compliance` reads only the docs folder keys (`docs_root`, `compliance.root`), for
   `fk-supabase-rls`.
 - **One ticket stage map.** The shared `tracker` key maps the kit's fixed stages (`brainstormed`
   through `done`) to the project's own board columns or Linear states. `core`'s `fk-setup` writes
   it, with a `CLAUDE.md` rule saying which event moves a ticket; `agent-delivery` and
   `site-delivery` move tickets through the same map, and write it only when it is missing.
+  `core`'s `fk-release` moves released tickets from `for_release` to `released_measure_impact`.
+- **One place deploys.** Only `core`'s `fk-release` deploys to production, and only when the
+  founder runs it. The delivery plugins stop at the pull request. The release steps are the shared
+  `release` key, written by `fk-setup` or `site-delivery`'s `fk-onboard` when it is missing.
 - **One docs convention.** Skills that save files use `docs/<plugin-name>/` unless the config or
   the request says otherwise.
 - **Security checks point to each other.** `fk-application-security` suggests `fk-supabase-rls`

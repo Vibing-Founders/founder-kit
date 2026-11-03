@@ -130,9 +130,10 @@ change, and keep its other keys. Plugins read it themselves rather than using Cl
 **Plugin settings beyond the docs folder live in the same file**, in the plugin's own section
 (`<plugin-name>:`), rather than in a config file of the plugin's own. A skill that writes the file
 writes only its plugin's section, keeps every other key and section exactly as it was, and
-creates the file if it does not exist. Two top-level keys are shared rather than owned: `docs_root`,
-and `tracker`, the ticket stage map that `core`, `agent-delivery` and `site-delivery` all read. A
-plugin writes `tracker` only when it is missing, and changes an existing one only with the
+creates the file if it does not exist. Three top-level keys are shared rather than owned:
+`docs_root`; `tracker`, the ticket stage map that `core`, `agent-delivery` and `site-delivery` all
+read; and `release`, the release steps that `core` and `site-delivery` both write. A plugin writes
+`tracker` or `release` only when it is missing, and changes an existing one only with the
 founder's say-so. See `plugins/agent-delivery/skills/_shared/config-schema.md`
 for a plugin that keeps its whole config there and migrates an older standalone file.
 
@@ -149,6 +150,12 @@ The `description` field is used by Claude to decide whether to invoke the skill 
 ## Adding knowledge files
 
 Knowledge files live alongside or under the skill that uses them. For knowledge shared across multiple skills, place it under `skills/_shared/`.
+
+`_shared/` is within one plugin. Never share or reference a file across plugins: each plugin
+installs on its own. When two plugins need the same knowledge, duplicate it and note in each copy
+where the other lives, so they are kept in step. (For example, the `release` key's schema is in
+both `core`'s `fk-release/knowledge/release-config.md` and `site-delivery`'s
+`_shared/config-schema.md`.)
 
 ```
 skills/

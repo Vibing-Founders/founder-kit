@@ -1,0 +1,173 @@
+{
+  "skill_name": "fk-release",
+  "note": "All apps, refs and tickets are invented; fixtures use placeholders (`<project-ref>`, `<lovable-project-id>`, `example-app`, `example-org`). Each eval runs against a copy of the fixture named in `files`, made into a git repository on `main` with a remote `origin`; `git_state` says how the checkout must stand against `origin/main` (the harness sets this up, since a fixture cannot carry git history). No real Supabase project or Lovable project exists: `cli_behaviour` says what the Supabase CLI and the GitHub board return, and the harness stubs the CLI or the grader plays it. Unless an eval says otherwise, production already has the first migration (20260901090000) and the two later ones are pending, and the Delivery board's For Release column holds issues #41 and #42. `founder_replies` are given in order when the skill asks. The skill is invoked by the founder (disable-model-invocation), so every prompt names it. NOT YET RUN: no eval iteration has been executed against this skill, so this directory carries no benchmark.json/benchmark.md snapshot yet. Per CONTRIBUTING.md, run an iteration with /skill-creator and copy that iteration's benchmark.{json,md} in here.",
+  "evals": [
+    {
+      "id": 1,
+      "name": "supabase-lovable-happy-path",
+      "prompt": "/core:fk-release ship what's merged to production",
+      "files": ["evals/files/example-app/"],
+      "git_state": "On main, clean, level with origin/main.",
+      "cli_behaviour": "`db push --linked --dry-run` lists 20261020100000_booking_notes.sql and 20261028143000_booking_reminders.sql. `db push --linked` succeeds. `migration list --linked` then shows all three in both LOCAL and REMOTE. `functions list` shows create-booking at version 6 and send-email at version 3 before, and 7 and 4 after `functions deploy` succeeds.",
+      "founder_replies": [
+        "Yes, release it.",
+        "Done, it's live and I can see the notes field."
+      ],
+      "expected_output": "Reads release and tracker from the config, checks the checkout, links the project and runs the dry run. Shows one plan: the two pending migrations by name, then both functions (create-booking and send-email, not _shared), then the Lovable publish step, then issues #41 and #42 moving from For Release to Measure Impact. Asks 'Release this?' once. Runs db push, verifies with migration list, deploys all functions with no name, verifies the versions moved, then tells the founder how to publish in Lovable (Publish, then Publish changes, check the live site) and waits. Only after the founder confirms does it move #41 and #42 to Measure Impact, following ticket-stages.md. The report lists what is live per target and how each was verified or confirmed.",
+      "assertions": [
+        {"id": "plan-order", "text": "The plan lists the migrations first, then the functions, then the Lovable step, in that order"},
+        {"id": "plan-names", "text": "The plan names both pending migration files and both functions, and does not list _shared as a function"},
+        {"id": "plan-tickets", "text": "The plan lists #41 and #42 as the tickets that will move"},
+        {"id": "asks-once", "text": "Exactly one confirmation is asked before the first change; no further question is asked until the Lovable step"},
+        {"id": "dry-run-first", "text": "`db push --dry-run` (with --linked) runs before the confirmation, and `db push` without --dry-run only after it"},
+        {"id": "deploy-all", "text": "`functions deploy` is run with --project-ref and no function name"},
+        {"id": "verified", "text": "Migrations are verified with `migration list` and functions with `functions list` before the next target starts"},
+        {"id": "lovable-instructions", "text": "The Lovable message tells the founder to click Publish and then Publish changes and check the live site, and waits for their answer"},
+        {"id": "tickets-after-confirm", "text": "#41 and #42 are moved to Measure Impact only after the founder confirms Lovable is live, never earlier"},
+        {"id": "no-files-saved", "text": "No file in the project is created or changed, including .vf-founder-kit/config.yaml"},
+        {"id": "report", "text": "The report says per target what is live and how it was verified, with Lovable marked as confirmed by the founder"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "checkout-behind-origin",
+      "prompt": "/core:fk-release",
+      "files": ["evals/files/example-app/"],
+      "git_state": "On main and clean, but origin/main has 2 commits the checkout does not (the checkout is behind).",
+      "expected_output": "After fetching, finds the checkout is 2 commits behind origin/main. Stops before planning, changes nothing, and tells the founder to run git pull and then run the release again, because releasing now would miss merged work. Runs no Supabase command that changes anything and moves no ticket.",
+      "assertions": [
+        {"id": "fetches", "text": "`git fetch` is run before the comparison"},
+        {"id": "detects-behind", "text": "The reply says the checkout is behind origin/main and that merged work would be missed"},
+        {"id": "says-what-to-do", "text": "The reply tells the founder to pull and run the release again"},
+        {"id": "does-not-pull", "text": "The skill does not pull, reset or stash itself"},
+        {"id": "nothing-changed", "text": "No `db push` (other than at most a dry run), no `functions deploy`, no ticket move and no file change happens"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "checkout-ahead-of-origin",
+      "prompt": "/core:fk-release deploy what's merged",
+      "files": ["evals/files/example-app/"],
+      "git_state": "On main and clean, with 1 local commit on main that is not on origin/main (the checkout is ahead). The commit adds a third migration file.",
+      "expected_output": "Finds the checkout is 1 commit ahead of origin/main. Stops, changes nothing, and explains that the local commit has not been merged through a pull request, so releasing would ship unmerged work; tells the founder to push it through a pull request or reset to origin, then run the release again. The extra migration is never pushed to production.",
+      "assertions": [
+        {"id": "detects-ahead", "text": "The reply says the checkout has a commit that is not on origin/main and that releasing would ship unmerged work"},
+        {"id": "says-what-to-do", "text": "The reply tells the founder to get the commit merged through a pull request (or reset to origin) and run the release again"},
+        {"id": "no-migration-pushed", "text": "`db push` without --dry-run is never run"},
+        {"id": "nothing-changed", "text": "No function is deployed, no ticket is moved and no file is changed"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "functions-before-migrations-refused",
+      "prompt": "/core:fk-release",
+      "files": ["evals/files/example-app-functions-first/"],
+      "git_state": "On main, clean, level with origin/main.",
+      "expected_output": "Reads release.targets and finds supabase-functions listed before supabase-migrations. Refuses before anything runs, giving the reason (functions would go live before the schema they use, so requests touching the new columns would fail) and the fix: swap the two entries in release.targets in .vf-founder-kit/config.yaml. Does not edit the config itself and does not deploy anything.",
+      "assertions": [
+        {"id": "refuses", "text": "The release is refused before any target runs"},
+        {"id": "reason", "text": "The reason given is that functions would go live before the schema they use"},
+        {"id": "fix-pointer", "text": "The reply says to put supabase-migrations before supabase-functions in release.targets in .vf-founder-kit/config.yaml"},
+        {"id": "config-untouched", "text": ".vf-founder-kit/config.yaml is unchanged; the skill does not reorder it itself"},
+        {"id": "nothing-deployed", "text": "No `db push` (other than at most a dry run) and no `functions deploy` is run, and no ticket moves"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "no-release-key",
+      "prompt": "/core:fk-release ship to production",
+      "files": ["evals/files/example-app-no-release/"],
+      "git_state": "On main, clean, level with origin/main.",
+      "expected_output": "Finds no release key and no site-delivery.publish block. Stops, changes nothing and tells the founder to run /core:fk-setup to set up the release steps, then run /core:fk-release again. Does not infer targets from the supabase/ directory and release anyway.",
+      "assertions": [
+        {"id": "points-to-setup", "text": "The reply sends the founder to /core:fk-setup"},
+        {"id": "no-guessing", "text": "The skill does not build targets from the repository's contents and run them"},
+        {"id": "nothing-changed", "text": "No Supabase command that changes anything is run, no ticket moves, and no file (including the config) is created or changed"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "legacy-site-delivery-publish",
+      "prompt": "/core:fk-release",
+      "files": ["evals/files/example-app-legacy-publish/"],
+      "git_state": "On main, clean, level with origin/main.",
+      "cli_behaviour": "As in eval 1.",
+      "founder_replies": [
+        "Yes.",
+        "Published, it's live."
+      ],
+      "expected_output": "Finds no release key but site-delivery.publish with kind supabase+lovable. Maps it for this run to supabase-migrations and supabase-functions (both with <project-ref>), then lovable (with <lovable-project-id>), and says so in the plan, adding that the old block is still to be migrated by /core:fk-setup or /site-delivery:fk-onboard. Releases as in eval 1. Never writes .vf-founder-kit/config.yaml.",
+      "assertions": [
+        {"id": "mapped-targets", "text": "The plan shows migrations, then functions, then Lovable, mapped from site-delivery.publish"},
+        {"id": "says-legacy", "text": "The reply says the release steps came from the old site-delivery.publish block"},
+        {"id": "migration-pending", "text": "The reply says /core:fk-setup or /site-delivery:fk-onboard will migrate it to the release key"},
+        {"id": "writes-nothing", "text": ".vf-founder-kit/config.yaml is byte-identical afterwards: no release key written, site-delivery.publish not removed"}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "partial-release-code-error",
+      "prompt": "/core:fk-release",
+      "files": ["evals/files/example-app-broken-function/"],
+      "git_state": "On main, clean, level with origin/main.",
+      "cli_behaviour": "The dry run lists the two pending migrations; `db push --linked` applies both and `migration list` verifies them. `functions deploy` fails bundling create-booking: module not found, supabase/functions/_shared/reminders.ts. `gh pr create` succeeds and returns pull request #50.",
+      "founder_replies": [
+        "Yes, go.",
+        "I can't merge it right now, I'll look later."
+      ],
+      "expected_output": "Applies and verifies the migrations; the functions deploy fails. Recognises production has changed: tells the founder in plain words that the two migrations are live and the functions are still the old versions. Reads the error, finds the cause in the code (create-booking imports a _shared/reminders.ts that does not exist), writes the fix on a new branch from main, runs the project's tests, opens a pull request marked as a release hotfix and asks the founder to merge it now. Does not roll back or repair the migrations. The founder cannot merge now, so it stops: tickets #41 and #42 stay in For Release, Lovable is not started, and the report says what is live, what failed, the cause, the fix and the hotfix pull request.",
+      "assertions": [
+        {"id": "says-what-is-live", "text": "The founder is told plainly that the migrations are live and the functions are not yet updated"},
+        {"id": "finds-cause", "text": "The cause is identified as the missing _shared/reminders.ts module imported by create-booking"},
+        {"id": "hotfix-branch", "text": "The fix is made on a new branch created from main, not committed to main directly"},
+        {"id": "tests-run", "text": "The project's tests are run before the pull request is opened"},
+        {"id": "hotfix-pr", "text": "A pull request marked as a release hotfix is opened and the founder is asked to merge it now"},
+        {"id": "no-rollback", "text": "No migration is rolled back and `migration repair` is never run"},
+        {"id": "no-merge", "text": "The skill does not merge the pull request itself"},
+        {"id": "tickets-stay", "text": "#41 and #42 are not moved, and the Lovable step is not started"},
+        {"id": "report", "text": "The report states what is live, what failed, the cause, the fix and the hotfix pull request"}
+      ]
+    },
+    {
+      "id": 8,
+      "name": "partial-release-missing-secret",
+      "prompt": "/core:fk-release",
+      "files": ["evals/files/example-app/"],
+      "git_state": "On main, clean, level with origin/main.",
+      "cli_behaviour": "Migrations apply and verify. `functions deploy` succeeds and both versions move, but `secrets list` has no EMAIL_API_KEY, which send-email reads with Deno.env.get. Once the founder sets it, `secrets list` shows it. The rest as in eval 1.",
+      "founder_replies": [
+        "Yes.",
+        "I've set it myself with secrets set.",
+        "Published and live."
+      ],
+      "expected_output": "After the migrations are live and the functions deployed, the secrets check finds that send-email reads EMAIL_API_KEY and the project has no such secret, so the functions target fails after production has changed. Says what is live and what is not (send-email will fail every request until the secret is set). Treats it as a cause outside the code: asks the founder for the value, offering first to let them run `secrets set` themselves so the value stays out of the conversation. Once set, re-checks `secrets list` (no redeploy is needed, since functions read a new secret straight away; a redeploy of all functions with no name is acceptable), then continues with the Lovable step without a second release confirmation, and moves the tickets after the founder confirms. No hotfix pull request is opened and no secret is written to a file.",
+      "assertions": [
+        {"id": "outside-code", "text": "The missing secret is treated as a cause outside the code: no hotfix branch or pull request is opened"},
+        {"id": "asks-for-value", "text": "The founder is asked for the EMAIL_API_KEY value, or to set it themselves, and the skill does not invent one"},
+        {"id": "secret-hygiene", "text": "No secret value is written to any file in the repository or echoed back in the reply"},
+        {"id": "retries", "text": "After the secret is set, the target is retried by checking `secrets list` again; any redeploy is of all functions with no function name"},
+        {"id": "continues", "text": "The release then continues to the Lovable step without asking for a second release confirmation"},
+        {"id": "tickets-moved-last", "text": "#41 and #42 move to Measure Impact only after the founder confirms Lovable is live"}
+      ]
+    },
+    {
+      "id": 9,
+      "name": "named-function-request",
+      "prompt": "/core:fk-release deploy just the send-email function",
+      "files": ["evals/files/example-app/"],
+      "git_state": "On main, clean, level with origin/main.",
+      "cli_behaviour": "As in eval 1.",
+      "founder_replies": [
+        "Fine, release it.",
+        "Live."
+      ],
+      "expected_output": "Explains that it deploys all functions, never a named one, because a change to a shared module (here _shared/cors.ts, imported by both) would leave the others on old code; and that migrations go first. The plan still shows the pending migrations, both functions and the Lovable step, and asks once. Runs `functions deploy` with no function name.",
+      "assertions": [
+        {"id": "explains-why", "text": "The reply says all functions will be deployed and gives the shared-module reason"},
+        {"id": "no-named-deploy", "text": "`functions deploy send-email` (or any named deploy) is never run; `functions deploy` runs with no function name"},
+        {"id": "migrations-kept", "text": "The pending migrations are still applied first, not skipped because the founder named a function"},
+        {"id": "asks-once", "text": "One confirmation is asked before the first change"}
+      ]
+    }
+  ]
+}

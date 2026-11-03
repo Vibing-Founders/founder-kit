@@ -9,8 +9,8 @@
   "plugins": [
     {
       "name": "core",
-      "description": "Project setup for Founder Kit: set up a new project with a baseline for working with Claude Code agents, or check an existing project against the current baseline and fill the gaps.",
-      "version": "0.2.0",
+      "description": "Project setup and releasing for Founder Kit: set up a new project with a baseline for working with Claude Code agents, check an existing project against the current baseline and fill the gaps, and release what is merged to production in a safe order when you ask.",
+      "version": "0.3.0",
       "author": {
         "name": "Vibing Founders",
         "url": "https://github.com/Vibing-Founders"
@@ -32,7 +32,7 @@
     {
       "name": "agent-delivery",
       "description": "Dispatch a planned ticket into a Claude cloud sandbox, run its tests against a disposable Supabase preview branch, and get back a pull request with the ticket closed out.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Vibing Founders",
         "url": "https://github.com/Vibing-Founders"
@@ -43,7 +43,7 @@
     {
       "name": "site-delivery",
       "description": "Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration and compound-engineering stages.",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "author": {
         "name": "Vibing Founders",
         "url": "https://github.com/Vibing-Founders"

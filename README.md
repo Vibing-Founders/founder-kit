@@ -76,7 +76,7 @@ Every skill name starts with `fk-` (for example `/compliance:fk-gdpr`, `/agent-d
 | Plugin | Description | Skills |
 |--------|-------------|--------|
 | `founder-coach` | Start here: a coach that works out where you are on the journey to first revenue, what done looks like for that stage, what to do next and which tool helps, and remembers your progress between sessions; plus a short living strategy for the big choices (who to serve first, your wedge, your bets, what not to do yet) | `fk-coach`, `fk-strategy` |
-| `core` | Sets a project up with a baseline for working with Claude Code agents, and checks an existing project for gaps whenever you re-run it | `fk-setup` |
+| `core` | Sets a project up with a baseline for working with Claude Code agents, checks an existing project for gaps whenever you re-run it, and releases what is merged to production in a safe order when you ask | `fk-setup`, `fk-release` |
 | `compliance` | Online safety, GDPR, application security and Supabase data access compliance for platform builders | `fk-online-safety` (+ `cra` mode), `fk-gdpr` (+ `lia` mode), `fk-application-security`, `fk-dpia`, `fk-supabase-rls` |
 | `agent-delivery` | Hand a planned ticket to a Claude cloud sandbox and get back a pull request whose tests ran against a real database | `fk-onboard`, `fk-dispatch` |
 | `site-delivery` | Smart non-coding founder toolkit for delivering website changes through a thin brief-to-PR path with optional tracker integration | `fk-onboard`, `fk-orchestrate` |
@@ -121,6 +121,10 @@ applies only what you approve:
   moves it, so agents keep the board in step with the work without being asked; plus a
   `ticket-stages.md` guide with the exact commands to move a card
 - a `docs/` layout for architecture, decisions, plans, solutions and conventions
+- your **release steps**, detected from the project (Supabase migrations, Supabase edge
+  functions, publishing in Lovable) and confirmed by you, recorded once in
+  `.vf-founder-kit/config.yaml` and written out as a `docs/DEPLOYMENT.md` checklist, so releasing
+  works by hand too
 - the default plugins, [compound-engineering](https://github.com/EveryInc/compound-engineering-plugin)
   for planning and delivery and [pm-skills](https://github.com/phuryn/pm-skills) for product
   work, or your own alternatives if you prefer them
@@ -133,6 +137,41 @@ but not yet set up.
 The worktree script needs a POSIX shell (macOS, Linux, cloud sandboxes, WSL). Plugins enabled in
 a project's settings do not carry into Claude Code cloud sessions; the rules, docs and script do,
 because they are files in your repository.
+
+**`/core:fk-release`** — release what is merged, in a safe order
+```
+/core:fk-release
+/core:fk-release ship what's merged to production
+```
+
+The one place Founder Kit deploys, and only when you run it. It releases what is merged on your
+release branch and pushed, nothing else: it stops if your checkout is behind or ahead of origin,
+or has uncommitted changes. It shows you a plan (the pending migrations from a dry run, the edge
+functions that will deploy, any step you do by hand such as clicking Publish in Lovable, and the
+tickets that will move) and asks once. Then it runs each step in order and checks it worked:
+database migrations always before functions, and every function deployed, never just one, so a
+change to shared code reaches all of them. Once everything is live and you have confirmed the
+manual steps, it moves the released tickets from your "for release" column to "measuring impact".
+
+If a step fails after production has changed, it does not hand you a half-released app. It finds
+the cause and fixes it there and then: an expired login or a missing secret it sorts out with
+you; a bug in the code it fixes on a hotfix pull request for you to merge, then carries on. It
+never rolls back a migration. It saves no files of its own.
+
+v1 supports five kinds of step: `supabase-migrations`, `supabase-functions`, `lovable` (you
+publish, it waits), `command` (any deploy command) and `manual` (anything only a person can do).
+Run `/core:fk-setup` first to record them:
+
+```yaml
+release:
+  branch: main
+  targets:                        # run in this order
+    - kind: supabase-migrations
+      project_ref: <project-ref>
+    - kind: supabase-functions
+      project_ref: <project-ref>
+    - kind: lovable
+```
 
 ---
 
@@ -263,9 +302,11 @@ Resolves the stage from the plan's readiness (sweeping branches and worktrees, n
 
 For smart non-coding founders. Give Claude a brief in plain language and get back a pull request — no GitHub Project or Linear setup required. Optional tracker integration and compound-engineering stages for teams who want fuller planning workflows.
 
-Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Human always reviews, merges, runs publish, and confirms live — Claude never auto-merges or triggers deploys.
+Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. You always review, merge and confirm live, and Claude never auto-merges. **Delivery never deploys.** When you're ready, run `/core:fk-release` (if you have the core plugin), the one place Founder Kit deploys and only when you run it, or follow `docs/DEPLOYMENT.md`.
 
-> **v0.0.1 scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages) scaffold complete. No publish flow execution in this release. The thin path makes no tracker calls; the fuller path reads the ticket, posts the PR link and moves the ticket through the shared stage map. Human runs the locked publish path. Optional future integration with `agent-delivery:fk-dispatch` for sandbox execution of implementation slices.
+> **Upgrading from 0.x**: how your site goes live has moved from the `publish` block in the `site-delivery` section to the shared top-level `release` key, which `core` reads too. The old block still works; `/site-delivery:fk-onboard` or `/core:fk-setup` moves it when you confirm.
+
+> **Scope**: Thin path (brief-to-PR) and fuller path (tracker + CE stages). The thin path makes no tracker calls; the fuller path reads the ticket, posts the PR link and moves the ticket through the shared stage map. Optional future integration with `agent-delivery:fk-dispatch` for sandbox execution of implementation slices.
 
 ### Skills
 
@@ -276,7 +317,7 @@ Designed for website delivery through Lovable, SST Web, or Supabase+Lovable. Hum
 /site-delivery:fk-onboard check my site-delivery config
 ```
 
-A plain-language wizard that writes the `site-delivery` section of `.vf-founder-kit/config.yaml` through conversation. Asks for your site repository, publish platform (Lovable/SST/Supabase+Lovable), and whether you want the thin path (no tracker) or fuller path (GitHub Project or Linear integration with compound-engineering stages, reusing the shared board mapping when `core` has already set one up). Defaults to thin path for non-coders. Reports every defaulted value explicitly.
+A plain-language wizard that writes the `site-delivery` section of `.vf-founder-kit/config.yaml` through conversation. Asks for your site repository, where the site goes live (Lovable/SST/Supabase+Lovable, written as the shared `release` key when `core` has not already set it), and whether you want the thin path (no tracker) or fuller path (GitHub Project or Linear integration with compound-engineering stages, reusing the shared board mapping when `core` has already set one up). Defaults to thin path for non-coders. Reports every defaulted value explicitly.
 
 **`/site-delivery:fk-orchestrate`** — run a site delivery from brief to PR
 ```
@@ -285,7 +326,7 @@ A plain-language wizard that writes the `site-delivery` section of `.vf-founder-
 /site-delivery:fk-orchestrate deliver this brief
 ```
 
-Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path: reads tracker state and runs the compound-engineering stage), makes the changes, opens a PR, and reports the human gates (review, merge, publish, confirm live). On the fuller path, posts the PR link to the ticket and moves it through the shared stage map, to your human review column when a ready PR opens. Enforces hard delivery rules: never auto-merge, never trigger publish, refuse experimental changes not in the brief.
+Reads the config, resolves the stage (thin path: always brief-to-PR; fuller path: reads tracker state and runs the compound-engineering stage), makes the changes, opens a PR, and reports the human gates (review, merge, publish, confirm live). On the fuller path, posts the PR link to the ticket and moves it through the shared stage map, to your human review column when a ready PR opens. Enforces hard delivery rules: never auto-merge, never deploy (it points you to `/core:fk-release` instead), refuse experimental changes not in the brief.
 
 ---
 
@@ -450,6 +491,7 @@ plugins/
     .claude-plugin/plugin.json
     skills/
       fk-setup/         # Project baseline: audit, propose, apply (baseline.md is the versioned list)
+      fk-release/       # Release what is merged in a safe order; Supabase and Lovable knowledge
     tests/              # Unit tests for the worktree setup script
   compliance/
     .claude-plugin/plugin.json

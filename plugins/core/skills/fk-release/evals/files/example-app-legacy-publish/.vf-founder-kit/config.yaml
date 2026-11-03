@@ -1,0 +1,41 @@
+docs_root: docs
+tracker:
+  kind: github
+  board:
+    project: Delivery
+    field: Status
+  stage_map:
+    planned: Planned
+    in_progress: In Progress
+    human_review: Human Review
+    for_release: For Release
+    released_measure_impact: Measure Impact
+    done: Done
+core:
+  baseline_version: 2
+  has_database: true
+  env_files: [.env]
+  commands:
+    install: npm ci
+    dev: npm run dev
+    build: npm run build
+    test: npm test
+    migration: npx supabase migration new
+  declined: []
+site-delivery:
+  schema_version: 1
+  repo:
+    url: https://github.com/example-org/example-app
+    main_branch: main
+    branch_prefix: feature/
+  publish:
+    kind: supabase+lovable
+    supabase_project_ref: <project-ref>
+    lovable_project_id: <lovable-project-id>
+  stages:
+    enabled: false
+  delivery_rules:
+    human_merge_gate: true
+    human_publish_gate: true
+    confirm_live: true
+    experimental_changes: false
