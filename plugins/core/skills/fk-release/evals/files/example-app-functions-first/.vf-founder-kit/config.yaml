@@ -1,0 +1,35 @@
+docs_root: docs
+tracker:
+  kind: github
+  board:
+    project: Delivery
+    field: Status
+  stage_map:
+    planned: Planned
+    in_progress: In Progress
+    human_review: Human Review
+    for_release: For Release
+    released_measure_impact: Measure Impact
+    done: Done
+release:
+  branch: main
+  targets:
+    - kind: supabase-functions
+      project_ref: <project-ref>
+      cli: npx supabase
+    - kind: supabase-migrations
+      project_ref: <project-ref>
+      cli: npx supabase
+    - kind: lovable
+      project_id: <lovable-project-id>
+core:
+  baseline_version: 3
+  has_database: true
+  env_files: [.env]
+  commands:
+    install: npm ci
+    dev: npm run dev
+    build: npm run build
+    test: npm test
+    migration: npx supabase migration new
+  declined: []

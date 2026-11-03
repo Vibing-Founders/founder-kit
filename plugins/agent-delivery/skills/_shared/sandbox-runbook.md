@@ -95,6 +95,12 @@ everything except the two branch-lifecycle calls below.
 **Tool policy: the provider's MCP connector first; the HTTP management API only where the
 connector cannot go**, which in practice is branch create and delete.
 
+> **For maintainers: kept in step by hand.** `core`'s release skill carries overlapping Supabase
+> facts (migrations before functions, deploying every function, the migration history) in
+> `plugins/core/skills/fk-release/knowledge/supabase.md`. Each plugin installs on its own, so
+> neither file reads the other. When a Supabase fact here changes, check that file in the same
+> pull request.
+
 ### 3.1 Push your git branch first
 
 A git-associated preview branch builds from the **pushed ref**. If the branch does not exist
