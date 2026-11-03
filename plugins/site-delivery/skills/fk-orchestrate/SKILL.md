@@ -27,6 +27,8 @@ Read the `site-delivery` section of `.vf-founder-kit/config.yaml` (other plugins
 
 **Read the tracker from the shared top-level `tracker` key** of the same file, not from the `site-delivery` section. It holds `kind` (`github`, `linear` or `none`; the old `github-project` is read as `github`), the board, and `stage_map`, which maps the kit's fixed stages to this project's columns. When it is missing but the old `site-delivery.tracker` exists, use that, and say in your report that the old location is deprecated and that `/site-delivery:fk-onboard` will migrate it. When neither exists, the tracker is `none`; report that as a default. See [`../_shared/config-schema.md`](../_shared/config-schema.md) for both shapes.
 
+**Read the release steps from the shared top-level `release` key** of the same file. This skill never runs them; it only tells the founder what releasing involves. When `release` is missing but the old `site-delivery.publish` block exists, map it in memory as [`../_shared/config-schema.md`](../_shared/config-schema.md) says, write nothing, and say in your report that the old block is deprecated and that `/site-delivery:fk-onboard` (or `/core:fk-setup`) will migrate it. When neither exists, say releasing is not set up yet and point at `/site-delivery:fk-onboard`; carry on with the delivery, because opening a pull request does not need it.
+
 The thin path makes no tracker calls, even when a `tracker` key exists for other plugins. If `stages.enabled` is `true` but the tracker is `none`, stop and say the fuller path needs a tracker to read the ticket from; point at `/site-delivery:fk-onboard`.
 
 Validate `schema_version`. If it is not `1`, warn and continue — but name both the version found and the version supported so a later key-level error is diagnosable.
@@ -131,14 +133,14 @@ Create a PR against `{repo.main_branch}` with:
 ## Delivery gates (all required)
 
 - [ ] **Human merge gate**: Review this PR and merge it yourself. I never auto-merge.
-- [ ] **Human publish gate**: After merge, run your publish flow ({publish.kind}) yourself. I never trigger deploys.
+- [ ] **Release**: After merge, release it with `/core:fk-release` (if you have the core plugin) or by following `docs/DEPLOYMENT.md` ({release steps, in order}). Delivery never deploys.
 - [ ] **Confirm live**: After publish, confirm the change is live on the site.
 
 ## Config
 
 - Repository: `{repo.url}`
 - Tracker: `{tracker.kind}`
-- Publish: `{publish.kind}`
+- Release: {release steps, in order, from the shared `release` key, or "not set up yet"}
 - Experimental changes: `{delivery_rules.experimental_changes}`
 ```
 
@@ -152,7 +154,7 @@ Create a PR against `{repo.main_branch}` with:
 1. Post a comment on the ticket with the PR link and a note: "PR opened: {pr-url}." Add "Ready for review." only when the PR is not a draft.
 2. When the PR is ready (not draft), **set stage `human_review`**. A draft PR leaves the ticket where it is.
 
-Name the ticket in the PR body with `Refs #<number>` (GitHub) or the Linear identifier, not `Closes #<number>`: GitHub closes the issue at merge, before the human has published.
+Name the ticket in the PR body with `Refs #<number>` (GitHub) or the Linear identifier, not `Closes #<number>`: GitHub closes the issue at merge, before it is released.
 
 ### 6. Report the outcome
 
@@ -162,13 +164,13 @@ Report what was done and what the human must do next:
 >
 > **Your next steps:**
 > 1. Review the PR and merge it when ready
-> 2. Run your publish flow for `{publish.kind}` (I never trigger deploys)
+> 2. Release it: run `/core:fk-release` (if you have the core plugin) or follow `docs/DEPLOYMENT.md` ({release steps, in order}). Delivery never deploys
 > 3. Confirm the change is live on the site
 >
 > **Config used:**
 > - Path: {thin OR fuller with stage-name}
 > - Tracker: {tracker.kind}
-> - Publish: {publish.kind}
+> - Release: {release steps, in order, or "not set up yet"}
 > - Experimental changes: {on OR off}
 >
 > **What I did:**
@@ -178,7 +180,7 @@ Report what was done and what the human must do next:
 > - PR state: {draft OR ready}
 > {- Tracker updated: {ticket-id} moved to {column} (fuller path only), and any stage skipped because no column is mapped for it}
 
-Never imply the delivery is complete when the human gates remain. Merge ≠ production. Human runs the locked publish path.
+Never imply the delivery is complete when the human gates remain. Merge ≠ production. The founder releases, with `/core:fk-release` or by hand.
 
 ---
 
@@ -222,13 +224,15 @@ PRs are opened as draft or regular, **never merged by this skill**. The report a
 
 ### 2. Human publish gate (`human_publish_gate: true`, default)
 
-Publish is **never triggered**. The report always states:
+Delivery **never deploys**. The report always states:
 
-> After merge, run your publish flow for `{publish.kind}` yourself. I never trigger deploys.
+> After merge, release it with `/core:fk-release` (if you have the core plugin) or by following `docs/DEPLOYMENT.md`. Delivery never deploys.
 
 No matter what the user asks ("deploy it now", "publish after merge"), refuse and restate the rule:
 
-> The `human_publish_gate` rule is on. You run the publish flow yourself. I cannot trigger deploys.
+> The `human_publish_gate` rule is on, so delivery never deploys. To release what is merged, run `/core:fk-release` yourself (if you have the core plugin), or follow `docs/DEPLOYMENT.md`.
+
+Do not invoke `/core:fk-release` from here, even when it is installed: releasing runs only when the founder starts it.
 
 ### 3. Confirm live (`confirm_live: true`, default)
 
@@ -258,10 +262,10 @@ When off, refuse any change not in the brief:
 ## Rules
 
 1. **Never clone the site repo onto this machine.** All git operations go to `{repo.url}` via remote commands (push, open PR). The agent never clones the full site repository.
-2. **Merge ≠ production.** Human runs the locked publish path. Never imply the change is live until the human confirms it.
+2. **Merge ≠ production.** The founder releases, with `/core:fk-release` or from `docs/DEPLOYMENT.md`. Never imply the change is live until the human confirms it.
 3. **Never invent experiments.** When `experimental_changes: false`, stick to the brief. Refuse additions not in the brief.
 4. **Never auto-merge.** When `human_merge_gate: true` (the default), PRs are opened, never merged by the agent.
-5. **Never trigger publish.** When `human_publish_gate: true` (the default), the human runs the publish flow. The agent never calls Lovable APIs, `sst deploy`, or similar.
+5. **Never deploy.** When `human_publish_gate: true` (the default), delivery never deploys. The agent never calls Lovable APIs, `sst deploy`, `supabase db push`, `supabase functions deploy` or similar, and never invokes `/core:fk-release`.
 6. **Confirm live is a human step.** The agent cannot verify a site is live. The human confirms it after publish.
 7. **Thin path is valid.** Do not treat `tracker.kind: none`, or a missing `tracker` key, as incomplete. It is the designed default for non-coders who want brief-to-PR without tracker overhead.
 8. **Report defaults.** If a config value falls back to a default, say so. Silent defaulting is a bug.
@@ -272,6 +276,6 @@ When off, refuse any change not in the brief:
 
 - **No live GraphQL or Linear API calls** during orchestration that the config does not explicitly enable (thin path makes zero tracker calls)
 - **No auto CloudAgent launch** (future integration, not wired in v0.0.1)
-- **No publish flow execution** (always human-run, never agent-triggered)
+- **No deploys.** Releasing is `/core:fk-release`, started by the founder, or `docs/DEPLOYMENT.md`
 - **No "confirm live" verification** (human checklist item, not agent-verifiable)
 - **No merging** (human gate always)

@@ -2,9 +2,9 @@
 name: fk-onboard
 description: >
   Guide a smart non-coding founder through configuring site delivery: a plain-language wizard
-  that writes the site-delivery section of .vf-founder-kit/config.yaml with their site repo,
-  publish platform, and optional tracker integration, and migrates an older standalone config
-  file on request. Defaults to the thin brief-to-PR path that requires no GitHub Project or
+  that writes the site-delivery section of .vf-founder-kit/config.yaml with their site repo and
+  optional tracker integration, plus the shared release key (how the site goes live) when it is
+  missing, and migrates an older standalone config file or publish block on request. Defaults to the thin brief-to-PR path that requires no GitHub Project or
   Linear setup. Use this skill when someone wants to set up, configure, or get started with
   site delivery. Triggers on: "onboard my site for delivery", "set up site-delivery",
   "/site-delivery:fk-onboard", "configure site delivery for my project", "prepare my site repo
@@ -19,7 +19,7 @@ A plain-language wizard that writes the `site-delivery` section of `.vf-founder-
 
 Onboarding is complete when:
 
-1. The `site-delivery` section of `.vf-founder-kit/config.yaml` exists with all required values (`repo.url` and `publish.kind`), and, for the fuller path, the shared top-level `tracker` key exists with a board (GitHub) and a `stage_map`.
+1. The `site-delivery` section of `.vf-founder-kit/config.yaml` exists with its required value (`repo.url`), the shared top-level `release` key exists with at least one target, and, for the fuller path, the shared top-level `tracker` key exists with a board (GitHub) and a `stage_map`.
 2. Every value was either provided by the user or is a documented default that was **reported as a default**.
 3. The user knows which path they chose: thin (no tracker) or fuller (tracker + compound-engineering stages).
 4. Re-running on an already-configured repository detects the existing config, reports what would change, and asks before overwriting.
@@ -52,6 +52,14 @@ If the `site-delivery` section already exists as well, do not overwrite it from 
 4. Show them exactly what you wrote, and remove the old `tracker` block from the section **only after they confirm**.
 
 If a top-level `tracker` key already exists, leave it as it is: say the old block is ignored and offer only to remove it.
+
+**An old `publish` block inside the section.** Earlier versions kept where the site goes live in `site-delivery.publish`. It is now the shared top-level `release` key, which `core` reads too. If the section has a `publish` block and there is no top-level `release` key, offer to migrate it:
+
+1. Map it as the "Migrating from `site-delivery.publish`" table in [`../_shared/config-schema.md`](../_shared/config-schema.md) says: `lovable` becomes one `lovable` target; `supabase+lovable` becomes `supabase-migrations` and `supabase-functions` (with `supabase_project_ref`), then `lovable` (with `lovable_project_id`); `sst-web` becomes one `command` target running `npx sst deploy --stage <stage>`, with `AWS_PROFILE=<aws_profile>` when set.
+2. Show them exactly what will be written, in plain words and as YAML.
+3. Write `release` and remove `site-delivery.publish` **only after they confirm**. If they say no, leave both as they are: the old block keeps working.
+
+If a top-level `release` key already exists, leave it as it is: say the old `publish` block is ignored and offer only to remove it.
 
 After migrating, carry on with the steps below only if they want to change something; otherwise go to step 6.
 
@@ -113,31 +121,43 @@ Otherwise ask, as below, and write it as the shared top-level `tracker` key. The
 
 Never guess a column from a similar name. If they are unsure about one, leave that stage out: it is skipped and reported later, which is safe; a wrong column moves tickets to the wrong place.
 
-### 3. Ask about publish platform
+### 3. Ask how the site goes live
 
-**Frame the options clearly:**
+**If the top-level `release` key already exists** (usually written by `/core:fk-setup`), leave it as it is. Show it in plain words and ask only whether it is still right:
+
+> Your release steps are already set up: 1. database changes on Supabase, 2. Supabase edge functions, 3. publish in Lovable. Is that still right?
+
+Change it only if they say so.
+
+**Otherwise, frame the options clearly:**
 
 > Where does your site get published?
 > 1. Lovable (hosted site builder)
 > 2. SST Web (AWS deployment)
 > 3. Supabase + Lovable (database + frontend)
 
+Write the answer as the shared top-level `release` key (see [`../_shared/config-schema.md`](../_shared/config-schema.md)), with `branch` set to `repo.main_branch`:
+
 **If they choose Lovable (1):**
-- Set `publish.kind: lovable`
-- Ask: "What is your Lovable project ID?" (leave blank if they don't have it yet)
-- State: "When you merge a PR, you'll run the Lovable publish flow yourself. The plugin never triggers deploys."
+- One target: `kind: lovable`
+- Ask: "What is your Lovable project ID?" (optional; leave it out if they don't have it)
 
 **If they choose SST Web (2):**
-- Set `publish.kind: sst-web`
+- One target: `kind: command`, `name: Deploy site`, `run: npx sst deploy --stage <stage>`
 - Ask: "What is your SST stage name?" (default: "production")
-- Ask: "What is your AWS profile name?" (leave blank if they don't have it yet)
-- State: "When you merge a PR, you'll run `sst deploy` yourself. The plugin never triggers deploys."
+- Ask: "Which AWS profile do you deploy with?" (optional). When given, `run` starts with `AWS_PROFILE=<profile> `
 
 **If they choose Supabase + Lovable (3):**
-- Set `publish.kind: supabase+lovable`
-- Ask: "What is your Supabase project reference?" (leave blank if they don't have it yet)
-- Ask: "What is your Lovable project ID?" (leave blank if they don't have it yet)
-- State: "When you merge a PR, you'll run the publish flow yourself. The plugin never triggers deploys."
+- Three targets, in this order: `kind: supabase-migrations`, `kind: supabase-functions`, then `kind: lovable`. Database changes and functions always go before the frontend
+- Ask: "What is your Supabase project reference?" → `project_ref` on both Supabase targets. If they don't have it yet, say releasing cannot run until it is added, and leave a clear note in the report
+- Ask: "What is your Lovable project ID?" (optional)
+- Set `cli: npx supabase` when `supabase` is in the repository's dev dependencies; otherwise leave `cli` out (it defaults to `supabase`)
+
+Then state, whichever they chose:
+
+> Delivery never deploys. When you're ready, run `/core:fk-release` (if you have the core plugin) or follow `docs/DEPLOYMENT.md`.
+
+If the project has no `docs/DEPLOYMENT.md` and `core` is not installed, say that `/core:fk-setup` writes one from these steps. Do not write it from this skill: it belongs to `core`.
 
 ### 4. Confirm delivery rules
 
@@ -146,7 +166,7 @@ State the hard delivery rules that are always enforced:
 > Site delivery follows these hard rules (you can override them in the config file later, but the defaults are safe):
 >
 > 1. **Human merge gate:** PRs are never auto-merged. You review and merge.
-> 2. **Human publish gate:** Publish is never triggered by Claude. You run the locked publish path after merge.
+> 2. **Human publish gate:** Delivery never deploys. When you're ready, run `/core:fk-release` (if you have the core plugin) or follow `docs/DEPLOYMENT.md`.
 > 3. **Confirm live:** After publish, you confirm the change is live.
 > 4. **No experiments:** Claude refuses to invent features not in your brief.
 >
@@ -159,14 +179,15 @@ If they want to change any, note it. Otherwise, use the defaults.
 Using [`../_shared/config-schema.md`](../_shared/config-schema.md) as the reference and [`../_shared/config.example.yaml`](../_shared/config.example.yaml) as the template, write the `site-delivery` section of `.vf-founder-kit/config.yaml` with:
 
 - The repository URL, main branch, and branch prefix
-- The publish kind and platform-specific details
 - Stages enabled or disabled, which is the path choice
 - Delivery rules (defaults unless user changed them)
 - `agent_delivery_integration.enabled: false` (stub for future)
 
 For the fuller path, also write the top-level `tracker` key when it did not exist: `kind`, `board` (GitHub only) and `stage_map`. Never write a tracker block inside the `site-delivery` section.
 
-**The file is shared by every Founder Kit plugin. Write only the `site-delivery` section**, plus the `tracker` key when it is new. Keep every other key and section — `docs_root`, other plugins' sections, an existing `tracker` key, comments — exactly as it was. If the file does not exist, create it (and the `.vf-founder-kit/` folder) with just what you are writing.
+Write the top-level `release` key when it did not exist, from step 3. Never write a `publish` block inside the `site-delivery` section.
+
+**The file is shared by every Founder Kit plugin. Write only the `site-delivery` section**, plus the `tracker` and `release` keys when they are new. Keep every other key and section — `docs_root`, other plugins' sections, an existing `tracker` or `release` key, comments — exactly as it was. If the file does not exist, create it (and the `.vf-founder-kit/` folder) with just what you are writing.
 
 **Report every defaulted value explicitly:**
 
@@ -175,7 +196,7 @@ For the fuller path, also write the top-level `tracker` key when it did not exis
 > - Main branch: `main` (default)
 > - Branch prefix: `feature/` (default)
 > - Path: thin (no tracker calls)
-> - Publish: `lovable` with project ID `[you'll add this]`
+> - Release steps (shared `release` key): 1. publish in Lovable (project ID not given yet)
 > - Stages: disabled (thin path)
 > - Delivery rules: all safe defaults (human merge gate, human publish gate, confirm live, no experiments)
 
@@ -186,8 +207,9 @@ For the fuller path, also write the top-level `tracker` key when it did not exis
 > You're all set! To deliver a site change:
 > 1. Give Claude a plain-language brief of what you want changed
 > 2. Claude opens a PR against your repository
-> 3. You review, merge, and run your publish flow
-> 4. You confirm it's live
+> 3. You review and merge it
+> 4. You release it: run `/core:fk-release` (if you have the core plugin) or follow `docs/DEPLOYMENT.md`
+> 5. You confirm it's live
 >
 > Run `/site-delivery:fk-orchestrate <brief>` to start a delivery.
 
@@ -199,8 +221,9 @@ For the fuller path, also write the top-level `tracker` key when it did not exis
 > 3. Run `/site-delivery:fk-orchestrate <ticket-id>`
 > 4. Claude reads the ticket, works out the next stage from its plan or its column, runs it, and moves the ticket along as the work progresses
 > 5. When a pull request is ready for you, the ticket moves to your review column
-> 6. You review, merge, and run your publish flow
-> 7. You confirm it's live
+> 6. You review and merge it
+> 7. You release it: run `/core:fk-release` (if you have the core plugin) or follow `docs/DEPLOYMENT.md`. `/core:fk-release` also moves the ticket to your "live" column
+> 8. You confirm it's live
 >
 > Make sure you have compound-engineering installed for the stages to work.
 
@@ -213,17 +236,18 @@ For the fuller path, also write the top-level `tracker` key when it did not exis
 
 ## Rules
 
-1. **Never write a secret value anywhere.** Publish platform IDs and AWS profiles are configuration, not secrets. Actual credentials (API keys, tokens) never go in the config file and are never requested by this skill.
+1. **Never write a secret value anywhere.** Project refs, Lovable project IDs and AWS profile names are configuration, not secrets. Actual credentials (API keys, tokens) never go in the config file and are never requested by this skill.
 2. **Report defaults as defaults.** See phase 5. A value that was defaulted and a value that was detected look identical in the file but completely different when they turn out to be wrong.
 3. **Thin path is the default.** Frame the fuller path as an opt-in choice for teams who already have a planning workflow and want richer stages.
 4. **Stop and ask rather than guessing.** If a value is ambiguous (e.g. which GitHub Project board name), ask. Do not invent a plausible-sounding name.
 5. **Re-running is safe.** Detect an existing config, report what would change, and ask before overwriting. Someone may have hand-edited it since the last onboard.
 6. **No tracker means no compound-engineering stages.** When `tracker.kind` is `none` or there is no `tracker` key, `stages.enabled` must be `false`. The fuller path requires a tracker to read stage state from.
-7. **Touch only your own section**, plus a new shared `tracker` key. `.vf-founder-kit/config.yaml` is shared. Never change another key or section, never rewrite an existing `tracker` key without the founder's say-so, and never delete an old config file or block without the founder's confirmation.
+7. **Touch only your own section**, plus a new shared `tracker` or `release` key. `.vf-founder-kit/config.yaml` is shared. Never change another key or section, never rewrite an existing `tracker` or `release` key without the founder's say-so, and never delete an old config file or block without the founder's confirmation.
 
 ## Out of scope
 
 - **No live GraphQL or API calls** to GitHub Projects or Linear during onboarding. The tracker configuration is written to the file; the fk-orchestrate skill reads it at runtime.
 - **No cloud environment setup** (that's agent-delivery's job, not site-delivery's).
 - **No auto-launching cloud agents** (future integration, not wired in v0.0.1).
-- **No publish flow execution** (always human-run, never agent-triggered).
+- **No deploys.** Delivery never deploys. Releasing is `/core:fk-release` (if the founder has the core plugin) or `docs/DEPLOYMENT.md`.
+- **No `docs/DEPLOYMENT.md`.** `core`'s `fk-setup` generates it from the `release` key.

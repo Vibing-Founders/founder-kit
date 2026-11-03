@@ -42,6 +42,35 @@
         {"id": "others-proposed", "text": "The other columns are proposed for confirmation, not written without asking"},
         {"id": "old-kept-until-confirmed", "text": "The old tracker block is not removed before the founder confirms"}
       ]
+    },
+    {
+      "id": 4,
+      "name": "publish-block-migrated-to-release",
+      "prompt": "Check my site-delivery config.",
+      "expected_output": "The site-delivery section has an old publish block (kind: supabase+lovable with supabase_project_ref <project-ref> and lovable_project_id <lovable-project-id>) and there is no top-level release key. Onboarding explains in plain words that where the site goes live is now the shared release key, and shows what it would write: branch main; supabase-migrations and supabase-functions, both with project_ref <project-ref>; then lovable with project_id <lovable-project-id>. It writes the release key and removes the publish block only after the founder confirms, and keeps every other key exactly as it was. It says delivery never deploys and that the founder releases with /core:fk-release (if they have the core plugin) or by following docs/DEPLOYMENT.md.",
+      "files": [".vf-founder-kit/config.yaml with docs_root: docs, a top-level tracker key (kind: none), and a site-delivery section with schema_version 1, repo (url, main_branch: main), publish (kind: supabase+lovable, supabase_project_ref: <project-ref>, lovable_project_id: <lovable-project-id>), stages.enabled: false and the default delivery_rules; no top-level release key"],
+      "founder_replies": ["Yes, move it."],
+      "assertions": [
+        {"id": "shows-mapping", "text": "The release key to be written is shown before anything is written, with migrations, then functions, then lovable"},
+        {"id": "confirm-first", "text": "The release key is written and site-delivery.publish removed only after the founder confirms"},
+        {"id": "top-level", "text": "release is written as a top-level key, not inside the site-delivery section"},
+        {"id": "keeps-rest", "text": "docs_root, the tracker key and every other site-delivery key are unchanged"},
+        {"id": "never-deploys", "text": "The reply says delivery never deploys and names /core:fk-release and docs/DEPLOYMENT.md as the ways to release"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "existing-release-key-reused",
+      "prompt": "Set up site-delivery for this repo. It's a Lovable site.",
+      "expected_output": "A top-level release key already exists (written by core's fk-setup) with a single lovable target. Onboarding shows it in plain words and asks only whether it is still right; it does not ask the publish-platform question again and does not rewrite the key. It writes the site-delivery section without a publish block.",
+      "files": [".vf-founder-kit/config.yaml with docs_root: docs, a core section, and a top-level release key (branch: main, targets: one lovable target with project_id <lovable-project-id>); no site-delivery section"],
+      "founder_replies": ["Yes, that's right. Thin path, defaults for the rest."],
+      "assertions": [
+        {"id": "reuses", "text": "The existing release key is shown and the founder is asked only whether it is still right"},
+        {"id": "release-untouched", "text": "The release key is byte-identical afterwards"},
+        {"id": "no-publish-block", "text": "The new site-delivery section has no publish block"},
+        {"id": "core-kept", "text": "docs_root and the core section are unchanged"}
+      ]
     }
   ]
 }
