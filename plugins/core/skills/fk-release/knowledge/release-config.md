@@ -89,7 +89,8 @@ for example `supabase` in `devDependencies` (then `npx supabase`).
 
 - **`fk-setup` and `fk-onboard`** show the founder exactly what will be written, then write
   `release` and remove `site-delivery.publish` only after they confirm. Until then the old block
-  stays and is read as below.
-- **`fk-release`** never writes the file. It applies the mapping in memory for that run, says so,
-  and says that `/core:fk-setup` or `/site-delivery:fk-onboard` will migrate it.
+  stays, and the skills that read `release` map it in memory.
+- **`fk-release`** (core) and **`fk-orchestrate`** (site-delivery) never write the file. They
+  apply the mapping in memory for that run, say so, and say that `/core:fk-setup` or
+  `/site-delivery:fk-onboard` will migrate it.
 - When both exist, `release` wins and `site-delivery.publish` is reported as ignored.
