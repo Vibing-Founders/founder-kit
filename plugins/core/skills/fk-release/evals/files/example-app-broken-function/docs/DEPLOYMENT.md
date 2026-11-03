@@ -19,5 +19,6 @@ Rules:
 - If `db push` refuses out-of-order migration files, use `--include-all`, never
   `migration repair --status reverted`.
 - Deploy all edge functions, never named ones.
+- Publish the frontend after the backend.
 
 Run `/core:fk-release` to release.

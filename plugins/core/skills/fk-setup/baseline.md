@@ -1,6 +1,6 @@
 # Founder Kit project baseline
 
-**Baseline version: 2**
+**Baseline version: 3**
 
 What a project has once `fk-setup` has run on it. Each item has an id so an audit can report on it
 and a founder can decline it. `<angle brackets>` are per-project values: detect them or ask, never
@@ -41,13 +41,13 @@ Sections, in this order:
 Create each of these as a stub: a title and one line saying what belongs there. A directory gets a
 `README.md` stub, because git does not track an empty directory. List every one in the Where to
 Find Things table, and give `docs/conventions/ticket-stages.md` its own row ("Moving a ticket on
-the board") when B9 applies. `docs/` here means the project's `docs_root` from `.vf-founder-kit/config.yaml`
+the board") when B9 applies, and `docs/DEPLOYMENT.md` the row "Releasing". `docs/` here means the project's `docs_root` from `.vf-founder-kit/config.yaml`
 when that is set.
 
 | Path | What belongs there |
 |---|---|
 | `docs/ARCHITECTURE.md` | Structure, dependency rules, data flow |
-| `docs/DEPLOYMENT.md` | How releasing works |
+| `docs/DEPLOYMENT.md` | How releasing works. Generated from the shared `release` key (B10), not a stub; "Not set up yet." when releasing is not decided |
 | `docs/TESTING_GUIDELINES.md` | How tests are written and run |
 | `docs/decisions/` | Architecture decision records |
 | `docs/solutions/` | Past problems and their fixes |
@@ -105,9 +105,15 @@ allowlist, a derived port silently breaks sign-in. Leave the port as the project
 
 ### B3.3 Releasing
 
-> **Releasing**: <what deploys on merge, what does not, and the manual steps in order>
+> **Releasing**: Only what is merged on `<release branch>` and pushed to origin is released. Run
+> `/core:fk-release` to release; without Founder Kit, follow the steps in order in
+> `docs/DEPLOYMENT.md`. Releasing moves tickets, so whoever releases keeps the board in step.
 
-Ask the founder. If releasing is not decided yet, write "Not set up yet. Update this rule and
+The steps live in the shared `release` key and `docs/DEPLOYMENT.md` (B10), not in the rule, so the
+rule does not go stale when a target changes. `<release branch>` is `release.branch`. Leave out the
+last sentence when B3.7 does not apply.
+
+If releasing is not decided yet, write "Not set up yet. Update this rule and
 `docs/DEPLOYMENT.md` when it is." rather than guessing.
 
 ### B3.4 Database migrations *(database)*
@@ -144,7 +150,7 @@ applicable when it is `none`.
 >   agent that opened it moves it.
 > - <column for for_release> — its pull request is merged. Whoever merges moves it.
 > - <column for released_measure_impact> — it is deployed to production. Whoever releases moves
->   it.
+>   it; `/core:fk-release` does this when it releases.
 > - <column for done> — its impact has been checked. The founder moves it.
 >
 > Plans, branch names and pull requests name their ticket, so the next session can find it. Link
@@ -267,13 +273,14 @@ Leave out any step the project does not have.
 
 The `core` section of `.vf-founder-kit/config.yaml`, a tracked file. Write only this section; keep
 every other key and section as it was; create the file if it does not exist. Under `commands`,
-write only the keys the project has and leave the others out. Releasing and naming are recorded
-in `CLAUDE.md`, not here. The ticket stage map is not recorded here either: it lives in the
-shared top-level `tracker` key (B9), because `agent-delivery` and `site-delivery` read it too.
+write only the keys the project has and leave the others out. Naming is recorded in `CLAUDE.md`,
+not here. Releasing is not recorded here either: it lives in the shared top-level `release` key
+(B10), because `site-delivery` reads and writes it too. Nor is the ticket stage map: it lives in
+the shared top-level `tracker` key (B9), because `agent-delivery` and `site-delivery` read it too.
 
 ```yaml
 core:
-  baseline_version: 2            # the baseline this project was last checked against
+  baseline_version: 3            # the baseline this project was last checked against
   workflow_plugin: compound-engineering    # or the founder's alternative
   worktree_skill: ce-worktree    # omit when the alternative has none
   product_plugins: [pm-product-discovery, pm-go-to-market]   # or the founder's alternative
@@ -353,7 +360,7 @@ Ticket stages rule in `CLAUDE.md` says. The stage map is recorded in the `tracke
 | In progress | <column> | A branch or worktree is opened for it, or it is dispatched | The agent starting work |
 | Human review | <column> | Its pull request is open and ready for review (not draft) | The agent that opened it |
 | For release | <column> | Its pull request is merged | Whoever merges |
-| Released, measuring impact | <column> | It is deployed to production | Whoever releases |
+| Released, measuring impact | <column> | It is deployed to production | Whoever releases (`/core:fk-release` does it) |
 | Done | <column> | Its impact has been checked | The founder |
 
 Columns not in this table are left alone. A stage not in this table is skipped: say so, and do
@@ -407,6 +414,94 @@ two teams can have states with the same name; setting another team's state moves
 nowhere visible. Match on the state's name, not its type.
 ```
 
+## B10. Release steps: the `release` key and `docs/DEPLOYMENT.md`
+
+Applies to every project. When releasing is not decided yet, the key is not written and
+`docs/DEPLOYMENT.md` says "Not set up yet. Update this file and the Releasing rule in `CLAUDE.md`
+when it is."
+
+### The shared `release` key
+
+`fk-setup` records the release steps as the top-level `release` key of
+`.vf-founder-kit/config.yaml`, beside `docs_root` and `tracker`. The schema, the five target kinds
+v1 supports, the order rules and the migration from `site-delivery.publish` are in
+[`../fk-release/knowledge/release-config.md`](../fk-release/knowledge/release-config.md). Read it
+before writing the key.
+
+```yaml
+release:
+  branch: main
+  targets:                        # run in this order
+    - kind: supabase-migrations
+      project_ref: <project-ref>
+      cli: npx supabase
+    - kind: supabase-functions
+      project_ref: <project-ref>
+      cli: npx supabase
+    - kind: lovable
+```
+
+Write it only when it is missing, and change an existing one only with the founder's say-so. Keep
+every other key in the file as it was. Never write `supabase-functions` before
+`supabase-migrations`.
+
+**Detecting targets.** Propose, for the founder to confirm or correct:
+
+| Found | Propose |
+|---|---|
+| `supabase/migrations/` with at least one `.sql` file | `supabase-migrations` |
+| `supabase/functions/` with at least one function directory (not `_shared/`) | `supabase-functions`, after the migrations |
+| A Lovable sign in the repository: `lovable-tagger` in the manifest's dependencies, a README that says the project was built in Lovable, or a `lovable.dev` project link | `lovable`, after every Supabase target |
+
+`project_ref` is asked for, never guessed. `cli` is `npx supabase` when `supabase` is in the manifest's dev dependencies, otherwise
+`supabase`. `branch` is the main branch (B1), unless the founder names another. Anything else the
+founder releases by hand (a deploy command, a step in a dashboard) becomes a `command` or `manual`
+target, where they say it goes.
+
+### The file
+
+`docs/DEPLOYMENT.md` is generated from the `release` key. The config is the source: regenerate
+the file whenever the key changes, and show the difference before overwriting an existing one. It
+is written into the project so releasing still works, by hand, in a session without Founder Kit
+installed. Title `# Deployment`, then:
+
+```markdown
+Generated from the `release` key of `.vf-founder-kit/config.yaml`. Change the config, not this
+file; re-run `/core:fk-setup` to regenerate it.
+
+Release only what is merged on `<branch>` and pushed to origin.
+
+<one numbered step per target, in order, below>
+
+Rules:
+
+<the rules below that apply to these targets>
+
+Run `/core:fk-release` to release.
+```
+
+One step per target:
+
+| Kind | Step |
+|---|---|
+| `supabase-migrations` | **Database migrations** (Supabase project `<project_ref>`): `<cli> link --project-ref <project_ref>`, then `<cli> db push --linked --dry-run` to see what will apply, then `<cli> db push --linked` |
+| `supabase-functions` | **Edge functions** (Supabase project `<project_ref>`): `<cli> functions deploy --project-ref <project_ref>`, with no function name, so every function is deployed |
+| `lovable` | **Frontend** (Lovable): click **Publish**, then **Publish changes**, and check the live site |
+| `command` | **`<name>`**: `<run>` |
+| `manual` | `<say>` |
+
+Rules, each only when its target is in the list:
+
+- Migrations before functions, always. *(both Supabase targets)*
+- Never push a migration to production ahead of its merge to `<branch>`. *(`supabase-migrations`)*
+- If `db push` refuses out-of-order migration files, use `--include-all`, never
+  `migration repair --status reverted`. *(`supabase-migrations`)*
+- Deploy all edge functions, never named ones. *(`supabase-functions`)*
+- Publish the frontend after the backend. *(`lovable` with a Supabase target)*
+
+The rules come from `../fk-release/knowledge/supabase.md` and `../fk-release/knowledge/lovable.md`;
+when those change, so does this list.
+
 ---
 
 ## Change log
@@ -415,3 +510,4 @@ nowhere visible. Match on the state's name, not its type.
 |---|---|
 | 1 | First baseline: B1–B8 |
 | 2 | Added B3.7 (Ticket stages rule) and B9 (`docs/conventions/ticket-stages.md`), both for projects with a tracker. Changed B2 (lists `ticket-stages.md`) and B8 (the stage map lives in the shared `tracker` key, and `baseline_version` is now 2) |
+| 3 | Added B10 (the shared `release` key, with targets detected from `supabase/` and Lovable, and `docs/DEPLOYMENT.md` generated from it). Changed B2 (`docs/DEPLOYMENT.md` is generated from `release`, and has a "Releasing" row), B3.3 (the Releasing rule points to `docs/DEPLOYMENT.md` and `/core:fk-release` instead of holding the steps), B3.7 and B9 (`/core:fk-release` moves tickets to `released_measure_impact`) and B8 (releasing is recorded in the shared `release` key, and `baseline_version` is now 3) |

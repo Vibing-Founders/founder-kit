@@ -5,14 +5,15 @@ description: >
   project that is already set up against the current baseline and offers to fill the gaps. The
   baseline is a CLAUDE.md with standing rules (including the worktree rule and, for a project with
   a GitHub Projects board or Linear, the rule that keeps tickets in step with the work), a docs
-  layout, the default plugins, ignore entries and a worktree setup script. Detects the project's stack rather
+  layout, the release steps (detected from supabase/ and Lovable, recorded once and written out
+  as docs/DEPLOYMENT.md), the default plugins, ignore entries and a worktree setup script. Detects the project's stack rather
   than assuming one, shows a diff before changing any existing file, and is safe to re-run at any
   time. Also reports other Founder Kit plugins that are installed but not yet onboarded. Use this
   skill when someone starts a new project, or wants to know what their project setup is missing.
   Triggers on: "set up this new project", "set up this project for Founder Kit", "apply the project
   baseline", "/core:fk-setup", "check my project setup", "what is my project missing", "is my
   setup up to date", "what's new in the baseline", "add the worktree rule to this project", "map
-  my board's columns", "keep my tickets in step with the work".
+  my board's columns", "keep my tickets in step with the work", "set up how I release".
   NOT for configuring cloud dispatch or site delivery: those are the `fk-onboard` skills of the
   `agent-delivery` and `site-delivery` plugins, which this skill points to when they apply.
 ---
@@ -53,6 +54,10 @@ changes between releases of this plugin. Do not work from memory of an earlier r
    Read the top-level `tracker` key as well: it holds the ticket stage map (B9). When it is
    missing but an old `agent-delivery.tracker` section exists, read that instead, as B9 describes,
    and note that it will be offered for migration.
+   Read the top-level `release` key too: it holds the release steps (B10). When it is missing but
+   a `site-delivery.publish` block exists, map it as
+   [`../fk-release/knowledge/release-config.md`](../fk-release/knowledge/release-config.md) says
+   and note that it will be offered for migration.
 3. If the directory is not a git repository, say so and offer to run `git init`. The worktree
    items need git; the rest do not.
 
@@ -69,6 +74,7 @@ Read the project before asking anything. For each value, record the evidence.
 | Where tests live | Existing test files or the test runner's config. On a project with none, the stack's usual directory, reported as defaulted |
 | Env files | Names only: `.env*` files present (tracked or not), env patterns in `.gitignore`, env files the code or scripts load. Check nested app directories in a monorepo |
 | Main branch | `git symbolic-ref --short HEAD`, or the remote's default branch |
+| Release targets | `supabase/migrations/` and `supabase/functions/`, and signs of Lovable, as B10 says. How the repo calls the Supabase CLI: `supabase` in the manifest's dev dependencies means `npx supabase` |
 | Naming conventions | Existing source files, when there are enough to show a pattern |
 | Directory structure | The tree, two levels deep, leaving out dependencies and build output |
 
@@ -103,7 +109,11 @@ can know:
 
 - the commands above that the project does not reveal (on an empty project, usually all of them;
   "not decided yet" is an acceptable answer, and that item is then written as not set up yet);
-- how releasing works: what deploys on merge, what does not, and the manual steps in order;
+- the release targets, unless `release` is already recorded: show the detected ones in order
+  (for example "1. Supabase migrations, 2. Supabase edge functions, 3. Publish in Lovable") and ask
+  them to confirm or correct the targets and the order, to give the Supabase project ref, and to
+  add anything else they do by hand to release, and where it goes. "Not decided yet" is an
+  acceptable answer: `release` is then not written;
 - naming conventions, when there is no code to read them from;
 - the board and field, when there was not exactly one, and whether the proposed stage map is
   right (they confirm or correct it; the unmapped items are shown so they can fill them);
@@ -150,8 +160,17 @@ the old `agent-delivery.tracker` location, report it as Different and say migrat
 
 When the project's recorded baseline version is lower than the current one, start with a line
 saying what is new, taken from the change log in `baseline.md`: "New since your last check
-(baseline 1 → 2): …". From 1 to 2, that is the Ticket stages rule (B3.7) and
-`docs/conventions/ticket-stages.md` (B9).
+(baseline 2 → 3): …". From 1 to 2, that is the Ticket stages rule (B3.7) and
+`docs/conventions/ticket-stages.md` (B9). From 2 to 3, that is the shared `release` key and a
+`docs/DEPLOYMENT.md` generated from it (B10), and a Releasing rule (B3.3) that points to
+`/core:fk-release` instead of holding the steps. A project that skipped a version gets both lines.
+
+For B10, a `release` key that would put `supabase-functions` before `supabase-migrations` is
+Different, whatever the founder wrote, and the fix is offered. A `docs/DEPLOYMENT.md` that does
+not match what B10 generates from the current key is Different. When the release steps are still
+in `site-delivery.publish`, report B10 as Different and say migration is offered. A Releasing rule
+that holds steps of its own (the baseline 2 form) is Different: show it beside the B3.3 text, and
+offer to move any step that is not in the key into a `command` or `manual` target.
 
 If everything is Present, Not applicable or Declined, say the project is up to date, update the
 recorded version, and go to Step 7.
@@ -175,8 +194,9 @@ down in `declined`.
 
 Apply only what was approved, in this order: `.gitignore`, docs layout, the worktree script,
 `docs/conventions/local-dev.md`, the shared `tracker` key, `docs/conventions/ticket-stages.md`,
-`CLAUDE.md`, `.claude/settings.json`. The tracker key and `ticket-stages.md` come before
-`CLAUDE.md` so the rule never points at a file or a map that is not there yet.
+the shared `release` key, `docs/DEPLOYMENT.md`, `CLAUDE.md`, `.claude/settings.json`. The tracker
+and release keys and the files generated from them come before `CLAUDE.md` so a rule never points
+at a file or a key that is not there yet.
 
 - Write the `tracker` key of `.vf-founder-kit/config.yaml` and nothing else in that step. Keep
   every other key and section as it was, and create the file if it does not exist.
@@ -184,6 +204,14 @@ Apply only what was approved, in this order: `.gitignore`, docs layout, the work
   its values into the top-level key unchanged (B9 says which is which), show the founder what was
   written, and offer to remove the old `kind` and `review_marker` keys. Remove them only after the
   founder confirms; until then the top-level key wins and the old keys are ignored.
+- Write the `release` key only when it is missing, or when the founder approved a change to it,
+  and nothing else in that step. Keep every other key and section as it was.
+- **Migrating `site-delivery.publish`.** Show the founder the `release` key the mapping in
+  `release-config.md` produces, write it, and remove `site-delivery.publish` only after they
+  confirm. Leave the rest of the `site-delivery` section as it was. Until they confirm, the old
+  block stays and the skills that read it keep working.
+- Generate `docs/DEPLOYMENT.md` from the `release` key as B10 says. Regenerate it whenever the key
+  changes, showing the difference first.
 
 - Copy `assets/worktree-setup.sh` to `scripts/worktree-setup.sh` byte for byte and make it
   executable. Do not adapt it to the project; the env file names are arguments.
@@ -218,7 +246,8 @@ End with:
 - **Done** — what was created and changed.
 - **Detected and defaulted** — which values came from the project, which from the founder, and
   which were defaulted.
-- **Still open** — items written as "not set up yet", declined items, stages with no column
+- **Still open** — items written as "not set up yet" (including releasing, when the targets are
+  not decided), declined items, stages with no column
   ("no column mapped for `for_release`; tickets will be left where they are at that stage"),
   board columns that are not in the map, and anything from Step 7.
 - **Try it** — when the worktree items were applied: commit the changes first, then the command
